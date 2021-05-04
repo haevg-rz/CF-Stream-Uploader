@@ -18,6 +18,6 @@ jobs:
       with:
         dotnet-version: 3.1.101
     - name: Build with dotnet
-      run: dotnet build --configuration Release
+      run: dotnet build CfStreamUploader/CfStreamUploader.sln --configuration Release
     - name: Test with dotnet
-      run: dotnet test --configuration Release
+      run: dotnet test CfStreamUploader/CfStreamUploader.sln --configuration Release
