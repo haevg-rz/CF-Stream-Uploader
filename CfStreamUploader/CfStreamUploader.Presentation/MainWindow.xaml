@@ -37,6 +37,7 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
+            <!-- Video Upload -->
             <Grid Margin="10">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
@@ -44,9 +45,11 @@
                 </Grid.ColumnDefinitions>
 
                 <StackPanel Margin="5">
+
                     <Border Style="{StaticResource DragAndDropBorderStyle}">
                         <TextBlock Style="{StaticResource DragAndDropTextBlockStyle}" Text="Drop video here" />
                     </Border>
+
                     <Grid Margin="5">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition />
@@ -55,14 +58,18 @@
                         <TextBlock Style="{StaticResource VideoNameTextBlockStyle}" Text="MyVideo(1).mp4" />
                         <Button Style="{StaticResource UploadButtonStyle}" Content="Upload Video" Grid.Column="1" />
                     </Grid>
+
                     <Button Content="Start" Style="{StaticResource StartButtonStyle}" />
+
                 </StackPanel>
 
                 <Grid Grid.Column="1" Margin="5">
+
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
+
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition />
@@ -72,14 +79,17 @@
                     <Button Style="{StaticResource EditButtonStyle}" Content="edit" Grid.Column="1" />
 
                     <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Margin="5">
+
                         <RadioButton Content="Company Ips only" Style="{StaticResource RestrictionRadioButtonStyle}" />
                         <RadioButton Content="No Restrictions" Style="{StaticResource RestrictionRadioButtonStyle}" />
-                        <RadioButton Content="US Only" Style="{StaticResource RestrictionRadioButtonStyle}"/>
+                        <RadioButton Content="US Only" Style="{StaticResource RestrictionRadioButtonStyle}" />
                         <RadioButton Content="Access 1 day" Style="{StaticResource RestrictionRadioButtonStyle}" />
+
                         <!-- <Button Style="{StaticResource RestrictionButtonStyle}" Content="Company Ips only" /> -->
                         <!-- <Button Style="{StaticResource RestrictionButtonStyle}" Content="No Restrictions" /> -->
                         <!-- <Button Style="{StaticResource RestrictionButtonStyle}" Content="US Only" /> -->
                         <!-- <Button Style="{StaticResource RestrictionButtonStyle}" Content="Access 1 day" /> -->
+
                     </StackPanel>
 
                 </Grid>
@@ -87,14 +97,19 @@
 
             <Grid Grid.Row="1" Margin="10">
                 <StackPanel Orientation="Horizontal">
+
                     <Image Style="{StaticResource UploadProgressImageStyle}" />
                     <TextBlock Style="{StaticResource UploadProgressTextBlockStyle}" Text="Uploading" />
+
                     <Image Style="{StaticResource UploadProgressImageStyle}" />
                     <TextBlock Style="{StaticResource UploadProgressTextBlockStyle}" Text="Set-Private" />
+
                     <Image Style="{StaticResource UploadProgressImageStyle}" />
                     <TextBlock Style="{StaticResource UploadProgressTextBlockStyle}" Text="Add Restrictions" />
+
                     <Image Style="{StaticResource UploadProgressImageStyle}" />
                     <TextBlock Style="{StaticResource UploadProgressTextBlockStyle}" Text="Generate HTML" />
+
                 </StackPanel>
             </Grid>
 
@@ -112,12 +127,16 @@
                     <Hyperlink>How to use this HTML Code?</Hyperlink>
                 </TextBlock>
             </Grid>
+            <!-- Video Upload -->
 
+            <!-- MemoryCapacity -->
             <Grid Grid.Column="1">
                 <ProgressBar Style="{StaticResource ProgressBarStyle}" />
-                <TextBlock Style="{StaticResource ProgressBarTextBlockStyle}" Text="CF memory capacity" />
+                <TextBlock Style="{StaticResource ProgressBarTextBlockStyle}" Text="...coming soon" />
             </Grid>
+            <!-- MemoryCapacity -->
 
+            <!-- SettingButtons -->
             <Grid Grid.Row="2" Grid.Column="1" Margin="10">
                 <StackPanel>
                     <Button Style="{StaticResource SettingButtonStyle}" Content="Open history" />
@@ -125,6 +144,7 @@
                     <Button Style="{StaticResource SettingButtonStyle}" Content="Manage uploaded videos" />
                 </StackPanel>
             </Grid>
+            <!-- SettingButtons -->
 
         </Grid>
     </Grid>
