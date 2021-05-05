@@ -17,6 +17,7 @@
                 <ResourceDictionary Source="Resources/Styles/TextBlockStyles.xaml" />
                 <ResourceDictionary Source="Resources/Styles/TextBoxStyles.xaml" />
                 <ResourceDictionary Source="Resources/Styles/ProgressBarStyles.xaml" />
+                <ResourceDictionary Source="Resources/Styles/RadioButtonStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
@@ -25,8 +26,8 @@
         <Grid>
 
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
             <Grid.RowDefinitions>
@@ -69,12 +70,18 @@
 
                     <TextBlock Style="{StaticResource RestrictionTextBlockStyle}" Text="Restrictions Set" />
                     <Button Style="{StaticResource EditButtonStyle}" Content="edit" Grid.Column="1" />
+
                     <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Margin="5">
-                        <Button Style="{StaticResource RestrictionButtonStyle}" Content="Company Ips only" />
-                        <Button Style="{StaticResource RestrictionButtonStyle}" Content="No Restrictions" />
-                        <Button Style="{StaticResource RestrictionButtonStyle}" Content="US Only" />
-                        <Button Style="{StaticResource RestrictionButtonStyle}" Content="Access 1 day" />
+                        <RadioButton Content="Company Ips only" Style="{StaticResource RestrictionRadioButtonStyle}" />
+                        <RadioButton Content="No Restrictions" Style="{StaticResource RestrictionRadioButtonStyle}" />
+                        <RadioButton Content="US Only" Style="{StaticResource RestrictionRadioButtonStyle}"/>
+                        <RadioButton Content="Access 1 day" Style="{StaticResource RestrictionRadioButtonStyle}" />
+                        <!-- <Button Style="{StaticResource RestrictionButtonStyle}" Content="Company Ips only" /> -->
+                        <!-- <Button Style="{StaticResource RestrictionButtonStyle}" Content="No Restrictions" /> -->
+                        <!-- <Button Style="{StaticResource RestrictionButtonStyle}" Content="US Only" /> -->
+                        <!-- <Button Style="{StaticResource RestrictionButtonStyle}" Content="Access 1 day" /> -->
                     </StackPanel>
+
                 </Grid>
             </Grid>
 
