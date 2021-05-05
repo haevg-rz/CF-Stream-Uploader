@@ -27,7 +27,7 @@
     </Style>
 
     <Style TargetType="Button" x:Key="UploadButtonStyle">
-        <Setter Property="Margin" Value="5" />
+        <Setter Property="Margin" Value="0,5,0,5" />
         <Setter Property="Padding" Value="2" />
         <Setter Property="HorizontalAlignment" Value="Right" />
         <Setter Property="BorderThickness" Value="1" />
@@ -46,9 +46,11 @@
     </Style>
 
     <Style TargetType="Button" x:Key="EditButtonStyle">
-        <Setter Property="Margin" Value="5" />
+        <Setter Property="Margin" Value="15,5,5,5" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Background" Value="Transparent" />
+        <Setter Property="HorizontalAlignment" Value="Right"></Setter>
+        <Setter Property="VerticalAlignment" Value="Center"></Setter>
     </Style>
 
 </ResourceDictionary>
