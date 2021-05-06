@@ -4,5 +4,6 @@ namespace CfStreamUploader.Presentation
 {
     public class ViewModel : ViewModelBase
     {
+        
     }
 }

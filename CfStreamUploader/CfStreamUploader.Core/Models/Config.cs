@@ -6,11 +6,11 @@ namespace CfStreamUploader.Core.Models
 {
     public class Config
     {
-        public string Token { get; set; }
+        public string CfToken { get; set; }
 
-        public Config(string token)
+        public Config(string cfToken)
         {
-            this.Token = token;
+            this.CfToken = cfToken;
         }
     }
 }

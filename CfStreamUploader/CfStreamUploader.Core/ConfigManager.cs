@@ -1,37 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using CfStreamUploader.Core.Models;
+﻿using CfStreamUploader.Core.Models;
 using Newtonsoft.Json;
+using System;
+using System.IO;
 
 namespace CfStreamUploader.Core
 {
     public class ConfigManager
     {
-        private static string ConfigPath { get; } =
-            $@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\CfStreamUploader\Config.JSON";
-
-        private readonly string cfStreamUploaderGuiPath =
+        public Config Config { get; set; }
+        public string ConfigPath =
             $@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\CfStreamUploader";
 
-        public Config ReadConfig()
-        {
-            if (!File.Exists(ConfigPath))
-                return null;
+        private const string configFile = "\\Config.json";
 
-            var jsonString = File.ReadAllText(ConfigPath);
-            var config = JsonConvert.DeserializeObject<Config>(jsonString);
-            return config;
+        public void ReadConfig()
+        {
+            if (!File.Exists(Path.Combine(ConfigPath, configFile)))
+                this.Config = null;
+
+            var jsonString = File.ReadAllText(Path.Combine(ConfigPath, configFile));
+            this.Config = JsonConvert.DeserializeObject<Config>(jsonString);
         }
 
-        public void WriteConfig(Config config)
+        public void UpdateConfig(string cfToken)
         {
-            if (!Directory.Exists(cfStreamUploaderGuiPath))
-                Directory.CreateDirectory(cfStreamUploaderGuiPath);
+            SetConfig(cfToken);
+            WriteConfig();
+        }
 
-            var jsonString = JsonConvert.SerializeObject(config, Formatting.Indented);
-            File.WriteAllText(ConfigPath, jsonString);
+        private void SetConfig(string cfToken)
+        {
+            this.Config = new Config(cfToken);
+        }
+
+        private void WriteConfig()
+        {
+            if (!Directory.Exists(ConfigPath))
+                Directory.CreateDirectory(ConfigPath);
+
+            var jsonString = JsonConvert.SerializeObject(this.Config, Formatting.Indented);
+            File.WriteAllText(Path.Combine(ConfigPath, configFile), jsonString);
 
         }
 
