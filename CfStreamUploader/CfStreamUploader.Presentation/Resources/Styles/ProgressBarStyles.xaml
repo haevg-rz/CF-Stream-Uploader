@@ -1,10 +1,12 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <SolidColorBrush x:Key="BlueColor" Color="#4690eb " />
+    <!-- <ResourceDictionary x:Key="Colors" Source="Colors.xaml" /> -->
+
+    <SolidColorBrush x:Key="CfStreamUploaderBlue" Color="#4690eb " />
 
     <Style TargetType="ProgressBar" x:Key="ProgressBarStyle">
-        <Setter Property="Foreground" Value="{DynamicResource BlueColor}" />
+        <Setter Property="Foreground" Value="{DynamicResource CfStreamUploaderBlue}" />
         <Setter Property="Margin" Value="20,0,20,0" />
         <Setter Property="Minimum" Value="0" />
         <Setter Property="Maximum" Value="1000" />
