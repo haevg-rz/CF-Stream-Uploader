@@ -1,9 +1,11 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
+    <SolidColorBrush x:Key="CfStreamUploaderTextColor" Color="{DynamicResource TextColor}" />
+
+
     <Style TargetType="Border" x:Key="DragAndDropBorderStyle">
         <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="AllowDrop" Value="True" />
         <Setter Property="Height" Value="200" />
         <Setter Property="Width" Value="350" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
@@ -12,7 +14,7 @@
                 <DrawingBrush Viewport="0,0,8,8" ViewportUnits="Absolute" TileMode="FlipXY">
                     <DrawingBrush.Drawing>
                         <DrawingGroup>
-                            <GeometryDrawing Brush="Black">
+                            <GeometryDrawing Brush="{DynamicResource CfStreamUploaderTextColor}">
                                 <GeometryDrawing.Geometry>
                                     <GeometryGroup>
                                         <RectangleGeometry Rect="0,0,50,50" />

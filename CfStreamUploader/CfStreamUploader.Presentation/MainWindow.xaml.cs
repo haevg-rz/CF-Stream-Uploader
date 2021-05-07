@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System.Drawing;
+using System.Windows;
+using System.Windows.Media;
 
 namespace CfStreamUploader.Presentation
 {
@@ -10,6 +12,11 @@ namespace CfStreamUploader.Presentation
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void DarkModeToggleButton(object sender, RoutedEventArgs e)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

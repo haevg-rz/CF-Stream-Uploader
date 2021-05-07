@@ -4,6 +4,11 @@
              xmlns:local="clr-namespace:CfStreamUploader.Presentation"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-        <local:ViewModel x:Key="ViewModel" />
+        <ResourceDictionary>
+            <local:ViewModel x:Key="ViewModel" />
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

@@ -1,34 +1,43 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
+    <SolidColorBrush x:Key="CfStreamUploaderTextColor" Color="{DynamicResource TextColor}" />
+    <SolidColorBrush x:Key="CfStreamUploaderProgressColor" Color="{DynamicResource ProgressColor}" />
+
+
     <Style TargetType="TextBlock" x:Key="VideoNameTextBlockStyle">
         <Setter Property="Margin" Value="0,5,0,5" />
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Foreground" Value="{DynamicResource CfStreamUploaderTextColor}" />
     </Style>
 
     <Style TargetType="TextBlock" x:Key="DragAndDropTextBlockStyle">
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource CfStreamUploaderTextColor}" />
     </Style>
 
     <Style TargetType="TextBlock" x:Key="UploadProgressTextBlockStyle">
         <Setter Property="Margin" Value="5" />
-        <Setter Property="Foreground" Value="Green" />
+        <Setter Property="Foreground" Value="{DynamicResource CfStreamUploaderProgressColor}" />
     </Style>
 
     <Style TargetType="TextBlock" x:Key="RestrictionTextBlockStyle">
         <Setter Property="FontWeight" Value="Bold" />
         <Setter Property="Margin" Value="10,5,5,5" />
         <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource CfStreamUploaderTextColor}" />
     </Style>
 
     <Style TargetType="TextBlock" x:Key="ProgressBarTextBlockStyle">
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource CfStreamUploaderTextColor}" />
     </Style>
 
     <Style TargetType="TextBlock" x:Key="WikiLinkTextBlockStyle">

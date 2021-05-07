@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Title="CF Stream Uploader" Height="650" Width="1000"
-        DataContext="{StaticResource ViewModel}">
+        DataContext="{StaticResource ViewModel}"
+        WindowStyle="SingleBorderWindow">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -16,12 +17,19 @@
                 <ResourceDictionary Source="Resources/Styles/TextBlockStyles.xaml" />
                 <ResourceDictionary Source="Resources/Styles/TextBoxStyles.xaml" />
                 <ResourceDictionary Source="Resources/Styles/ProgressBarStyles.xaml" />
-                <ResourceDictionary Source="Resources/Styles/RadioButtonStyles.xaml" />
+                <ResourceDictionary Source="Resources/Styles/CheckBoxStyles.xaml" />
+                <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
+                <ResourceDictionary Source="Resources/Styles/ToggleButtonStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <SolidColorBrush x:Key="BackgroundColor" Color="{DynamicResource BaseColor}" />
         </ResourceDictionary>
     </Window.Resources>
 
-    <Grid>
+    <Grid Background="{DynamicResource BackgroundColor}">
+        <Grid Background="Transparent">
+            <ToggleButton Content="Darkmode" Style="{StaticResource DarkmodeToggleButtonStyle}"
+                          Click="DarkModeToggleButton" />
+        </Grid>
         <Grid>
 
             <Grid.ColumnDefinitions>
@@ -46,9 +54,12 @@
 
                 <StackPanel Margin="5">
 
-                    <Border Style="{StaticResource DragAndDropBorderStyle}">
-                        <TextBlock Style="{StaticResource DragAndDropTextBlockStyle}" Text="Drop video here" />
-                    </Border>
+                    <Grid AllowDrop="True" Background="{DynamicResource BackgroundColor}">
+                        <Border Style="{StaticResource DragAndDropBorderStyle}">
+                            <TextBlock Style="{StaticResource DragAndDropTextBlockStyle}" Text="Drop video here" />
+                        </Border>
+                    </Grid>
+
 
                     <Grid Margin="0,5,0,5">
                         <Grid.ColumnDefinitions>
@@ -66,7 +77,7 @@
                 <Grid Grid.Column="1" Margin="5">
 
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
+                        <ColumnDefinition Width="100" />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
 
@@ -75,20 +86,16 @@
                         <RowDefinition />
                     </Grid.RowDefinitions>
 
-                    <TextBlock Style="{StaticResource RestrictionTextBlockStyle}" Text="Restrictions Set" />
+                    <TextBlock Style="{StaticResource RestrictionTextBlockStyle}" Text="Set Restriction" />
+
                     <Button Style="{StaticResource EditButtonStyle}" Content="edit" Grid.Column="1" />
 
                     <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Margin="5">
 
-                        <RadioButton Content="Company Ips only" Style="{StaticResource RestrictionRadioButtonStyle}" />
-                        <RadioButton Content="No Restrictions" Style="{StaticResource RestrictionRadioButtonStyle}" />
-                        <RadioButton Content="US Only" Style="{StaticResource RestrictionRadioButtonStyle}" />
-                        <RadioButton Content="Access 1 day" Style="{StaticResource RestrictionRadioButtonStyle}" />
-
-                        <!-- <Button Style="{StaticResource RestrictionButtonStyle}" Content="Company Ips only" /> -->
-                        <!-- <Button Style="{StaticResource RestrictionButtonStyle}" Content="No Restrictions" /> -->
-                        <!-- <Button Style="{StaticResource RestrictionButtonStyle}" Content="US Only" /> -->
-                        <!-- <Button Style="{StaticResource RestrictionButtonStyle}" Content="Access 1 day" /> -->
+                        <CheckBox Content="Company Ips only" Style="{StaticResource RestrictionCheckBoxStyle}" />
+                        <CheckBox Content="No Restrictions" Style="{StaticResource RestrictionCheckBoxStyle}" />
+                        <CheckBox Content="Country Only" Style="{StaticResource RestrictionCheckBoxStyle}" />
+                        <CheckBox Content="Access 1 day" Style="{StaticResource RestrictionCheckBoxStyle}" />
 
                     </StackPanel>
 
