@@ -2,14 +2,14 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <SolidColorBrush x:Key="CfStreamUploaderBackGround" Color="{DynamicResource Button1Bg}" />
-    <SolidColorBrush x:Key="CfStreamUploaderBG" Color="{DynamicResource BaseColor}"></SolidColorBrush>
-    <SolidColorBrush x:Key="CfStreamUploaderTextColor" Color="{DynamicResource TextColor}"></SolidColorBrush>
+    <SolidColorBrush x:Key="CfStreamUploaderBG" Color="{DynamicResource BaseColor}" />
+    <SolidColorBrush x:Key="CfStreamUploaderTextColor" Color="{DynamicResource TextColor}" />
 
     <Style TargetType="ProgressBar" x:Key="ProgressBarStyle">
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="Foreground" Value="{DynamicResource CfStreamUploaderBackGround}" />
         <Setter Property="Background" Value="{DynamicResource CfStreamUploaderBG}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource CfStreamUploaderTextColor}"></Setter>
+        <Setter Property="BorderBrush" Value="{DynamicResource CfStreamUploaderTextColor}" />
         <Setter Property="Margin" Value="20,0,20,0" />
         <Setter Property="Minimum" Value="0" />
         <Setter Property="Maximum" Value="1000" />

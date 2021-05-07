@@ -11,27 +11,14 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Resources/Styles/ButtonStyles.xaml" />
-                <ResourceDictionary Source="Resources/Styles/BorderStyles.xaml" />
-                <ResourceDictionary Source="Resources/Styles/ImageStyle.xaml" />
-                <ResourceDictionary Source="Resources/Styles/TextBlockStyles.xaml" />
-                <ResourceDictionary Source="Resources/Styles/TextBoxStyles.xaml" />
-                <ResourceDictionary Source="Resources/Styles/ProgressBarStyles.xaml" />
-                <ResourceDictionary Source="Resources/Styles/CheckBoxStyles.xaml" />
-                <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
-                <ResourceDictionary Source="Resources/Styles/ToggleButtonStyles.xaml" />
+                <ResourceDictionary Source="Resources/Styles/AllStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <SolidColorBrush x:Key="BackgroundColor" Color="{DynamicResource BaseColor}" />
         </ResourceDictionary>
     </Window.Resources>
 
     <Grid Background="{DynamicResource BackgroundColor}">
-        <Grid Background="Transparent">
-            <ToggleButton Content="Darkmode" Style="{StaticResource DarkmodeToggleButtonStyle}"
-                          Click="DarkModeToggleButton" />
-        </Grid>
         <Grid>
-
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="40" />

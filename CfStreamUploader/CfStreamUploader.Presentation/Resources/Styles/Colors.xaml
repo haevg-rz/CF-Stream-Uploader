@@ -1,20 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <!-- Darkmode -->
-    <!-- <Color x:Key="BaseColor">#1b2867</Color> -->
-    <!-- <Color x:Key="ContrastColor">#223075</Color> -->
-    <!-- <Color x:Key="TextColor">White</Color> -->
-    <!-- <Color x:Key="BorderBrush">White</Color> -->
-    <!-- <Color x:Key="Button1Bg">#223075</Color> -->
-    <!-- <Color x:Key="Button1Fg">White</Color> -->
-    <!-- <Color x:Key="Button2Bg">White</Color> -->
-    <!-- <Color x:Key="Button2Fg">White</Color> -->
-    <!-- <Color x:Key="Button2FgMouseOver">#223075</Color> -->
-    <!-- <Color x:Key="ProgressColor">LawnGreen</Color> -->
-
-
-    <!-- NormalMode -->
+    <!-- NormalTheme -->
     <Color x:Key="BaseColor">Transparent</Color>
     <Color x:Key="ContrastColor">Transparent</Color>
     <Color x:Key="TextColor">Black</Color>
@@ -26,5 +13,16 @@
     <Color x:Key="Button2FgMouseOver">White</Color>
     <Color x:Key="ProgressColor">Green</Color>
 
+    <!-- Darkmode -->
+    <!-- <Color x:Key="BaseColor">#1b2867</Color> -->
+    <!-- <Color x:Key="ContrastColor">#223075</Color> -->
+    <!-- <Color x:Key="TextColor">White</Color> -->
+    <!-- <Color x:Key="BorderBrush">White</Color> -->
+    <!-- <Color x:Key="Button1Bg">#223075</Color> -->
+    <!-- <Color x:Key="Button1Fg">White</Color> -->
+    <!-- <Color x:Key="Button2Bg">White</Color> -->
+    <!-- <Color x:Key="Button2Fg">White</Color> -->
+    <!-- <Color x:Key="Button2FgMouseOver">#223075</Color> -->
+    <!-- <Color x:Key="ProgressColor">LawnGreen</Color> -->
 
 </ResourceDictionary>
