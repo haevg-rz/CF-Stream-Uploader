@@ -12,5 +12,10 @@ namespace CfStreamUploader.Core.Models
         {
             this.CfToken = cfToken;
         }
+
+        public Config()
+        {
+            this.CfToken = String.Empty;
+        }
     }
 }
