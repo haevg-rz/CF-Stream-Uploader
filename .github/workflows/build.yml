@@ -21,6 +21,7 @@ jobs:
       run: dotnet build CfStreamUploader/CfStreamUploader.sln --configuration Release
    
   test:
+  
     runs-on: window-latest
     
     steps:
