@@ -13,11 +13,10 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources/Styles/AllStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <SolidColorBrush x:Key="BackgroundColor" Color="{DynamicResource BaseColor}" />
         </ResourceDictionary>
     </Window.Resources>
 
-    <Grid Background="{DynamicResource BackgroundColor}">
+    <Grid Background="{Binding BaseColor}">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
@@ -32,6 +31,11 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
+            <Grid Grid.Column="2">
+                <Button Style="{DynamicResource DarkmodeButtonStyle}" Content="{Binding ThemeText}"
+                        Command="{Binding SetDarkmodeCommand}" />
+            </Grid>
+
             <!-- Video Upload -->
             <Grid Margin="10">
                 <Grid.ColumnDefinitions>
@@ -41,7 +45,7 @@
 
                 <StackPanel Margin="5">
 
-                    <Grid AllowDrop="True" Background="{DynamicResource BackgroundColor}">
+                    <Grid AllowDrop="True" Background="{Binding BaseColor}">
                         <Border Style="{StaticResource DragAndDropBorderStyle}">
                             <TextBlock Style="{StaticResource DragAndDropTextBlockStyle}" Text="Drop video here" />
                         </Border>
