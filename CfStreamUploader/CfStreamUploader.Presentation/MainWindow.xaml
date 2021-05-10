@@ -17,11 +17,19 @@
     </Window.Resources>
 
     <Grid Background="{Binding BaseColor}">
+
         <Grid>
+            <Button Style="{DynamicResource DarkmodeButtonStyle}" Content="{Binding ThemeText}"
+                    Command="{Binding SetDarkmodeCommand}" />
+        </Grid>
+
+        <Grid>
+
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="40" />
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition MaxWidth="550" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
             <Grid.RowDefinitions>
@@ -31,10 +39,6 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <Grid Grid.Column="2">
-                <Button Style="{DynamicResource DarkmodeButtonStyle}" Content="{Binding ThemeText}"
-                        Command="{Binding SetDarkmodeCommand}" />
-            </Grid>
 
             <!-- Video Upload -->
             <Grid Margin="10">
