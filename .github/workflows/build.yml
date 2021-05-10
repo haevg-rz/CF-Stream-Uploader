@@ -22,7 +22,7 @@ jobs:
    
   test:
   
-    runs-on: window-latest
+    runs-on: windows-latest
     
     steps:
     - uses: actions/checkout@v2
