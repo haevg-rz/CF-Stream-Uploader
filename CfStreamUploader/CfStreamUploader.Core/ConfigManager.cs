@@ -44,7 +44,7 @@ namespace CfStreamUploader.Core
                 Directory.CreateDirectory(ConfigPath);
 
             var jsonString = JsonConvert.SerializeObject(this.Config, Formatting.Indented);
-            File.WriteAllText(ConfigPath + configFile, jsonString);
+            File.WriteAllText(Path.Combine(ConfigPath , configFile), jsonString);
 
         }
 
