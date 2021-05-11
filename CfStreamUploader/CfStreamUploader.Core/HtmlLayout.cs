@@ -7,7 +7,7 @@ namespace CfStreamUploader.Core
 {
     public class HtmlLayout
     {
-        private string CfStreamUploaderPath =
+        public string CfStreamUploaderPath =
             $@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\CfStreamUploader";
 
         private string htmlLayoutFile = "HtmlLayout.txt";
