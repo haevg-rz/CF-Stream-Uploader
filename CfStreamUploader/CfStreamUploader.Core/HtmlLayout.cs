@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using System.Reflection.Metadata;
 
 namespace CfStreamUploader.Core
 {
@@ -31,7 +32,8 @@ namespace CfStreamUploader.Core
         private string GetDefaultHtmlLayout()
         {
             var assembly = Assembly.GetExecutingAssembly();
-            var str = assembly.GetManifestResourceStream("CfStreamUploader.Resources.defaultHtmlLayout.txt");
+            var a = assembly.GetManifestResourceNames();
+            var str = assembly.GetManifestResourceStream("CfStreamUploader.Core.Resources.defaultHtmlLayout.txt");
             var rd = new StreamReader(str);
             return rd.ReadToEnd();
         }

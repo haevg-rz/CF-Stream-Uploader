@@ -56,7 +56,6 @@ namespace CfStreamUploader.Presentation
 
         #endregion
 
-
         #region ColorChange
 
         private bool isDarkmode = false;
