@@ -1,0 +1,11 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="ButtonStyles.xaml" />
+        <ResourceDictionary Source="BorderStyles.xaml" />
+        <ResourceDictionary Source="ImageStyle.xaml" />
+        <ResourceDictionary Source="TextBlockStyles.xaml" />
+        <ResourceDictionary Source="TextBoxStyles.xaml" />
+        <ResourceDictionary Source="ProgressBarStyles.xaml" />
+        <ResourceDictionary Source="CheckBoxStyles.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+</ResourceDictionary>
