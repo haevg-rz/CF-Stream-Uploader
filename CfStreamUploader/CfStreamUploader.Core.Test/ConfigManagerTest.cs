@@ -14,7 +14,7 @@ namespace CfStreamUploader.Core.Test
          private readonly string solutionDir =
              Path.GetDirectoryName(Path.GetDirectoryName(Environment.CurrentDirectory));
         
-         private const string txtPath = "Config.json";
+         private const string configPath = "Config.json";
         
          [Theory]
          [InlineData("ReadConfig TestToken", true, "ReadConfig TestToken")]
@@ -30,7 +30,7 @@ namespace CfStreamUploader.Core.Test
              if (writeFile)
              {
                  var jsonString = JsonConvert.SerializeObject(config, Formatting.Indented);
-                 File.WriteAllText(Path.Combine(solutionDir, txtPath), jsonString);
+                 File.WriteAllText(Path.Combine(solutionDir, configPath), jsonString);
              }
         
              #endregion
@@ -65,7 +65,7 @@ namespace CfStreamUploader.Core.Test
         
              #region Assert
         
-             Equals(File.Exists(Path.Combine(this.solutionDir + txtPath)), Equals(true));
+             Equals(File.Exists(Path.Combine(this.solutionDir + configPath)), Equals(true));
              TearDown();
         
              #endregion
@@ -73,7 +73,7 @@ namespace CfStreamUploader.Core.Test
         
          private void SetUp()
          {
-             this.ConfigManager.ConfigPath = this.solutionDir;
+             this.ConfigManager.CfStreamUploaderPath = this.solutionDir;
              DeletePath();
          }
         
@@ -84,11 +84,8 @@ namespace CfStreamUploader.Core.Test
         
          private void DeletePath()
          {
-             var a = Path.Combine(this.solutionDir, txtPath);
-        
-             if (File.Exists(Path.Combine(this.solutionDir, txtPath)))
-                 File.Delete(Path.Combine(this.solutionDir, txtPath));
-        
+             if (File.Exists(Path.Combine(this.solutionDir, configPath)))
+                 File.Delete(Path.Combine(this.solutionDir, configPath));
          }
     }
 }

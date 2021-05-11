@@ -8,22 +8,20 @@ namespace CfStreamUploader.Core
     public class ConfigManager
     {
         public Config Config { get; set; }
-        public string ConfigPath =
+        public string CfStreamUploaderPath =
             $@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\CfStreamUploader";
 
         private const string configFile = "Config.json";
 
         public void ReadConfig()
         {
-            if (!File.Exists(Path.Combine(ConfigPath, configFile)))
+            if (!File.Exists(Path.Combine(CfStreamUploaderPath, configFile)))
             {
                 this.Config = new Config();
                 return;
             }
 
-            var a = Path.Combine(ConfigPath, configFile);
-
-            var jsonString = File.ReadAllText(Path.Combine(ConfigPath, configFile));
+            var jsonString = File.ReadAllText(Path.Combine(CfStreamUploaderPath, configFile));
             this.Config = JsonConvert.DeserializeObject<Config>(jsonString);
         }
 
@@ -40,11 +38,11 @@ namespace CfStreamUploader.Core
 
         private void WriteConfig()
         {
-            if (!Directory.Exists(ConfigPath))
-                Directory.CreateDirectory(ConfigPath);
+            if (!Directory.Exists(CfStreamUploaderPath))
+                Directory.CreateDirectory(CfStreamUploaderPath);
 
             var jsonString = JsonConvert.SerializeObject(this.Config, Formatting.Indented);
-            File.WriteAllText(Path.Combine(ConfigPath , configFile), jsonString);
+            File.WriteAllText(Path.Combine(CfStreamUploaderPath , configFile), jsonString);
 
         }
 
