@@ -4,11 +4,16 @@ using GalaSoft.MvvmLight.Command;
 namespace CfStreamUploader.Presentation
 {
     public class ViewModel : ViewModelBase
-    {
+    { 
+        public ViewModel()
+        {
+            this.SetDarkmodeCommand = new RelayCommand(this.SetDarkmode);
+        }
+
         #region ColorChange
 
         private bool isDarkmode = false;
-        public string themeText = "Lightmode";
+        private string themeText = "Lightmode";
 
         private string baseColor = "Transparent";
         private string contrastColor = "Transparent";
@@ -127,9 +132,5 @@ namespace CfStreamUploader.Presentation
 
         #endregion
 
-        public ViewModel()
-        {
-            this.SetDarkmodeCommand = new RelayCommand(this.SetDarkmode);
-        }
     }
 }

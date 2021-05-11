@@ -164,7 +164,7 @@
         </Setter>
     </Style>
 
-    <Style x:Key="DarkmodeButtonStyle" TargetType="Button">
+    <Style TargetType="Button" x:Key="DarkmodeButtonStyle">
         <Setter Property="HorizontalAlignment" Value="Right" />
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="Background" Value="Transparent" />
