@@ -13,9 +13,9 @@ namespace CfStreamUploader.Core.Test
         
          private readonly string solutionDir =
              Path.GetDirectoryName(Path.GetDirectoryName(Environment.CurrentDirectory));
-        
+
          private const string configPath = "Config.json";
-        
+
          [Theory]
          [InlineData("ReadConfig TestToken", true, "ReadConfig TestToken")]
          [InlineData("ReadConfig TestToken", false, "")]
