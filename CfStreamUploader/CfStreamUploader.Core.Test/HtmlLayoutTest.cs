@@ -1,19 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using CfStreamUploader.Core.Test.TestSamples;
+using System;
 using System.IO;
-using System.Text;
-using CfStreamUploader.Core.Models;
-using CfStreamUploader.Core.Test.TestSamples;
-using Newtonsoft.Json;
 using Xunit;
 
 namespace CfStreamUploader.Core.Test
 {
     public class HtmlLayoutTest
     {
-        public HtmlLayout HtmlLayout { get; set; } = new HtmlLayout();
+        private HtmlLayout HtmlLayout { get; set; } = new HtmlLayout();
+
         private readonly string solutionDir =
             Path.GetDirectoryName(Path.GetDirectoryName(Environment.CurrentDirectory));
+
         private string htmlLayoutFile = "HtmlLayout.txt";
 
         [Fact]
@@ -23,12 +21,11 @@ namespace CfStreamUploader.Core.Test
 
             this.SetUp();
 
-
             #endregion
 
             #region Act
 
-            var result = HtmlLayout.GetHtmlLayout();
+            var result = this.HtmlLayout.GetHtmlLayout();
 
             #endregion
 
@@ -52,7 +49,7 @@ namespace CfStreamUploader.Core.Test
 
             #region Act
 
-            var result = HtmlLayout.GetHtmlLayout();
+            var result = this.HtmlLayout.GetHtmlLayout();
 
             #endregion
 
@@ -67,18 +64,18 @@ namespace CfStreamUploader.Core.Test
         private void SetUp()
         {
             this.HtmlLayout.CfStreamUploaderPath = this.solutionDir;
-            DeletePath();
+            this.DeletePath();
         }
 
         private void TearDown()
         {
-            DeletePath();
+            this.DeletePath();
         }
 
         private void DeletePath()
         {
-            if (File.Exists(Path.Combine(this.solutionDir, htmlLayoutFile)))
-                File.Delete(Path.Combine(this.solutionDir, htmlLayoutFile));
+            if (File.Exists(Path.Combine(this.solutionDir, this.htmlLayoutFile)))
+                File.Delete(Path.Combine(this.solutionDir, this.htmlLayoutFile));
         }
     }
 }

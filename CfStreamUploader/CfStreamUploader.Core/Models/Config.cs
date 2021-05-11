@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace CfStreamUploader.Core.Models
+﻿namespace CfStreamUploader.Core.Models
 {
     public class Config
     {
@@ -15,7 +11,7 @@ namespace CfStreamUploader.Core.Models
 
         public Config()
         {
-            this.CfToken = String.Empty;
+            this.CfToken = string.Empty;
         }
     }
 }

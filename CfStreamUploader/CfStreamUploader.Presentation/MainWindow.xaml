@@ -65,7 +65,8 @@
                         <Button Style="{StaticResource UploadButtonStyle}" Content="Upload Video" Grid.Column="1" />
                     </Grid>
 
-                    <Button Content="Start" Style="{StaticResource StartButtonStyle}" Command="{Binding UploadViedeoCommand}"/>
+                    <Button Content="Start" Style="{StaticResource StartButtonStyle}"
+                            Command="{Binding UploadViedeoCommand}" />
 
                 </StackPanel>
 
@@ -127,7 +128,8 @@
                     <ColumnDefinition />
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <Button Style="{StaticResource CopyToClipboardButtonStyle}" Content="Copy to clipboard" Command="{Binding CopyToClipbordCommad}"/>
+                <Button Style="{StaticResource CopyToClipboardButtonStyle}" Content="Copy to clipboard"
+                        Command="{Binding CopyToClipbordCommad}" />
                 <TextBlock Grid.Column="1" Style="{StaticResource WikiLinkTextBlockStyle}">
                     <Hyperlink>How to use this HTML Code?</Hyperlink>
                 </TextBlock>

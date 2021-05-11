@@ -16,11 +16,11 @@ namespace CfStreamUploader.Core
             if (File.Exists(Path.Combine(this.CfStreamUploaderPath, this.htmlLayoutFile))) return this.ReadHtmlLayout();
 
             var defaultHtmlLayout = this.GetDefaultHtmlLayout();
-            this.WritedefaultHtmlLayout(defaultHtmlLayout);
+            this.WriteDefaultHtmlLayout(defaultHtmlLayout);
             return defaultHtmlLayout;
         }
 
-        private void WritedefaultHtmlLayout(string defaultHtmlLayout)
+        private void WriteDefaultHtmlLayout(string defaultHtmlLayout)
         {
             if (!Directory.Exists(this.CfStreamUploaderPath))
                 Directory.CreateDirectory(this.CfStreamUploaderPath);
@@ -31,7 +31,6 @@ namespace CfStreamUploader.Core
         private string GetDefaultHtmlLayout()
         {
             var assembly = Assembly.GetExecutingAssembly();
-            var a = assembly.GetManifestResourceNames();
             var str = assembly.GetManifestResourceStream("CfStreamUploader.Core.Resources.defaultHtmlLayout.txt");
             var rd = new StreamReader(str);
             return rd.ReadToEnd();

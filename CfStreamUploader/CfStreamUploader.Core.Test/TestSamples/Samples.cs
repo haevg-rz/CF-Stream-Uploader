@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace CfStreamUploader.Core.Test.TestSamples
+﻿namespace CfStreamUploader.Core.Test.TestSamples
 {
     public static class Samples
     {
