@@ -19,5 +19,16 @@ jobs:
         dotnet-version: 3.1.101
     - name: Build with dotnet
       run: dotnet build CfStreamUploader/CfStreamUploader.sln --configuration Release
+   
+  test:
+  
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+       dotnet-version: 3.1.101
     - name: Test with dotnet
       run: dotnet test CfStreamUploader/CfStreamUploader.sln --configuration Release
