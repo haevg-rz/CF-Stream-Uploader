@@ -4,7 +4,7 @@ using GalaSoft.MvvmLight.Command;
 namespace CfStreamUploader.Presentation
 {
     public class ViewModel : ViewModelBase
-    { 
+    {
         public ViewModel()
         {
             this.SetDarkmodeCommand = new RelayCommand(this.SetDarkmode);
@@ -131,6 +131,5 @@ namespace CfStreamUploader.Presentation
         }
 
         #endregion
-
     }
 }
