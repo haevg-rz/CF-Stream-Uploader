@@ -1,14 +1,60 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using System.Windows;
 
 namespace CfStreamUploader.Presentation
 {
     public class ViewModel : ViewModelBase
     {
+        #region Fields
+
+        private string htmlOutput = "HTML";
+
+        #endregion
+
+        #region props
+
+        public string HtmlOutput
+        {
+            get => this.htmlOutput;
+            set => this.Set(ref this.htmlOutput, value);
+        }
+
+        public Core.Core Core { get; set; } = new Core.Core();
+
+
+        #endregion
+
+        #region RelayCommands
+
+        public RelayCommand CopyToClipbordCommad { get; set; }
+        public RelayCommand UploadViedeoCommand { get; set; }
+
+        #endregion
+
+        #region Constructor
+
         public ViewModel()
         {
             this.SetDarkmodeCommand = new RelayCommand(this.SetDarkmode);
+            this.UploadViedeoCommand = new RelayCommand(this.UploadViedeo);
+            this.CopyToClipbordCommad = new RelayCommand(this.CopyToClipbord);
         }
+
+        #endregion
+
+        #region Methods
+
+        private void UploadViedeo()
+        {
+            this.HtmlOutput = this.Core.HtmlLayout.GetHtmlLayout();
+        }
+        private void CopyToClipbord()
+        {
+            Clipboard.SetText(this.HtmlOutput);
+        }
+
+        #endregion
 
         #region ColorChange
 
