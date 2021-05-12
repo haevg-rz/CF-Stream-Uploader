@@ -7,44 +7,69 @@ namespace CfStreamUploader.Core
 {
     public class ConfigManager
     {
-        public Config Config { get; set; }
+        #region fields
+
         public string CfStreamUploaderPath =
             $@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\CfStreamUploader";
 
         private const string configFile = "Config.json";
 
+        #endregion
+
+        #region props
+
+        public Config Config { get; set; }
+
+        #endregion
+
+        #region constructor
+
+        public ConfigManager()
+        {
+            this.ReadConfig();
+        }
+
+        #endregion
+
+        #region public
+
         public void ReadConfig()
         {
-            if (!File.Exists(Path.Combine(CfStreamUploaderPath, configFile)))
+            if (!File.Exists(Path.Combine(this.CfStreamUploaderPath, configFile)))
             {
                 this.Config = new Config();
+                this.WriteConfig();
                 return;
             }
 
-            var jsonString = File.ReadAllText(Path.Combine(CfStreamUploaderPath, configFile));
+            var jsonString = File.ReadAllText(Path.Combine(this.CfStreamUploaderPath, configFile));
             this.Config = JsonConvert.DeserializeObject<Config>(jsonString);
         }
 
-        public void UpdateConfig(string cfToken)
+        public void UpdateConfig(string cfToken, string videoId, string keyId, string privateKey, int expiresIn)
         {
-            SetConfig(cfToken);
-            WriteConfig();
+            this.SetConfig(cfToken, videoId, keyId, privateKey, expiresIn);
+            this.WriteConfig();
         }
 
-        private void SetConfig(string cfToken)
+        #endregion
+
+        #region private
+
+        private void SetConfig(string cfToken, string videoId, string keyId, string privateKey, int expiresIn)
         {
-            this.Config = new Config(cfToken);
+            this.Config = new Config(cfToken, videoId, keyId, privateKey, expiresIn);
         }
 
         private void WriteConfig()
         {
-            if (!Directory.Exists(CfStreamUploaderPath))
-                Directory.CreateDirectory(CfStreamUploaderPath);
+            if (!Directory.Exists(this.CfStreamUploaderPath))
+                Directory.CreateDirectory(this.CfStreamUploaderPath);
 
             var jsonString = JsonConvert.SerializeObject(this.Config, Formatting.Indented);
-            File.WriteAllText(Path.Combine(CfStreamUploaderPath , configFile), jsonString);
-
+            File.WriteAllText(Path.Combine(this.CfStreamUploaderPath, configFile), jsonString);
         }
 
+        #endregion
     }
 }

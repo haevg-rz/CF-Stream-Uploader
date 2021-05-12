@@ -8,12 +8,22 @@ namespace CfStreamUploader.Core.Test
 {
     public class ConfigManagerTest
     {
-        private ConfigManager ConfigManager { get; } = new ConfigManager();
+        #region filds
 
         private readonly string solutionDir =
             Path.GetDirectoryName(Path.GetDirectoryName(Environment.CurrentDirectory));
 
         private const string configPath = "Config.json";
+
+        #endregion
+
+        #region props
+
+        private ConfigManager ConfigManager { get; } = new ConfigManager();
+
+        #endregion
+
+        #region tests
 
         [Theory]
         [InlineData("ReadConfig TestToken", true, "ReadConfig TestToken")]
@@ -24,7 +34,7 @@ namespace CfStreamUploader.Core.Test
 
             this.SetUp();
 
-            var config = new Config(token);
+            var config = new Config(token, string.Empty, string.Empty, string.Empty, 0);
 
             if (writeFile)
             {
@@ -59,7 +69,7 @@ namespace CfStreamUploader.Core.Test
 
             #region Act
 
-            this.ConfigManager.UpdateConfig("testToken");
+            this.ConfigManager.UpdateConfig("testToken", string.Empty, string.Empty, string.Empty, 0);
 
             #endregion
 
@@ -70,6 +80,10 @@ namespace CfStreamUploader.Core.Test
 
             #endregion
         }
+
+        #endregion
+
+        #region SetUp
 
         private void SetUp()
         {
@@ -87,5 +101,7 @@ namespace CfStreamUploader.Core.Test
             if (File.Exists(Path.Combine(this.solutionDir, configPath)))
                 File.Delete(Path.Combine(this.solutionDir, configPath));
         }
+
+        #endregion
     }
 }

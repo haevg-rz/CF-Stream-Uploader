@@ -49,19 +49,18 @@
 
                 <StackPanel Margin="5">
 
-                    <Grid AllowDrop="True" Background="{Binding BaseColor}">
+                    <Grid AllowDrop="True" Drop="UIElement_OnDrop" Background="{Binding BaseColor}">
                         <Border Style="{StaticResource DragAndDropBorderStyle}">
                             <TextBlock Style="{StaticResource DragAndDropTextBlockStyle}" Text="Drop video here" />
                         </Border>
                     </Grid>
-
 
                     <Grid Margin="0,5,0,5">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition />
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
-                        <TextBlock Style="{StaticResource VideoNameTextBlockStyle}" Text="MyVideo(1).mp4" />
+                        <TextBlock Name="VideoNameTextBlock" Style="{StaticResource VideoNameTextBlockStyle}" Text="MyVideo(1).mp4" />
                         <Button Style="{StaticResource UploadButtonStyle}" Content="Upload Video" Grid.Column="1" />
                     </Grid>
 

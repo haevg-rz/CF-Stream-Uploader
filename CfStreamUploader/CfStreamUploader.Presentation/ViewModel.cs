@@ -37,7 +37,7 @@ namespace CfStreamUploader.Presentation
         public ViewModel()
         {
             this.SetDarkmodeCommand = new RelayCommand(this.SetDarkmode);
-            this.UploadViedeoCommand = new RelayCommand(this.UploadViedeo);
+            this.UploadViedeoCommand = new RelayCommand(this.UploadVideo);
             this.CopyToClipbordCommad = new RelayCommand(this.CopyToClipbord);
         }
 
@@ -45,15 +45,27 @@ namespace CfStreamUploader.Presentation
 
         #region Methods
 
-        private void UploadViedeo()
+        private void UploadVideo()
         {
+            
+            this.Core.VideoUploader.UploadVideo();
+            //Step1
+
+            var videoToken = this.Core.VideoUploader.GetToken(this.Core.ConfigManager.Config);
+            //Step2
+
             this.HtmlOutput = this.Core.HtmlLayout.GetHtmlLayout();
+            //Step3
+
+            //finished
+            //Step4
         }
+
         private void CopyToClipbord()
         {
             Clipboard.SetText(this.HtmlOutput);
         }
-
+        
         #endregion
 
         #region ColorChange
