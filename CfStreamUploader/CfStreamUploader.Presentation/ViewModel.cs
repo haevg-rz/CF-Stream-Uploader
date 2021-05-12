@@ -1,14 +1,21 @@
-﻿using GalaSoft.MvvmLight;
+﻿using System.IO;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using System.Windows;
+using GongSolutions.Wpf.DragDrop;
 
 namespace CfStreamUploader.Presentation
 {
-    public class ViewModel : ViewModelBase
+    public class ViewModel : ViewModelBase, IDropTarget
     {
         #region Fields
 
         private string htmlOutput = "HTML";
+        private string videoTitel = "No video found";
+        private string dragAndDropInfo = "Drop video here";
+        private IDropTarget _dropTargetImplementation;
 
         #endregion
 
@@ -18,6 +25,18 @@ namespace CfStreamUploader.Presentation
         {
             get => this.htmlOutput;
             set => this.Set(ref this.htmlOutput, value);
+        }
+
+        public string VideoTitel
+        {
+            get => this.videoTitel;
+            set => this.Set(ref this.videoTitel, value);
+        }
+
+        public string DragAndDropInfo
+        {
+            get => this.dragAndDropInfo;
+            set => this.Set(ref this.dragAndDropInfo, value);
         }
 
         public Core.Core Core { get; set; } = new Core.Core();
@@ -186,5 +205,32 @@ namespace CfStreamUploader.Presentation
         }
 
         #endregion
+
+        public void DragOver(IDropInfo dropInfo)
+        {
+            var dragFileList = ((DataObject) dropInfo.Data).GetFileDropList().Cast<string>();
+            dropInfo.Effects = dragFileList.Any(item =>
+            {
+                var extension = Path.GetExtension(item);
+                return extension != null && extension.Equals(".txt");
+            })
+                ? DragDropEffects.Copy
+                : DragDropEffects.None;
+        }
+
+        public void Drop(IDropInfo dropInfo)
+        {
+            var dragFileList = ((DataObject) dropInfo.Data).GetFileDropList().Cast<string>();
+            dropInfo.Effects = dragFileList.Any(item =>
+            {
+                var extension = Path.GetExtension(item);
+                return extension != null && extension.Equals(".txt");
+            })
+                ? DragDropEffects.Copy
+                : DragDropEffects.None;
+
+            this.Core.VideoUploader.VideoPath = ((DataObject) dropInfo.Data).GetFileDropList().Cast<string>().First();
+            this.VideoTitel = this.Core.VideoUploader.VideoPath.Split("\\").Last();
+        }
     }
 }

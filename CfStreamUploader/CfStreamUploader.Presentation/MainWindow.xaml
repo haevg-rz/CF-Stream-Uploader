@@ -3,6 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:dd="urn:gong-wpf-dragdrop"
         mc:Ignorable="d"
         Title="CF Stream Uploader" Height="650" Width="1000"
         DataContext="{StaticResource ViewModel}"
@@ -49,9 +50,9 @@
 
                 <StackPanel Margin="5">
 
-                    <Grid AllowDrop="True" Drop="UIElement_OnDrop" Background="{Binding BaseColor}">
+                    <Grid dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" AllowDrop="True" Background="{Binding BaseColor}" >
                         <Border Style="{StaticResource DragAndDropBorderStyle}">
-                            <TextBlock Style="{StaticResource DragAndDropTextBlockStyle}" Text="Drop video here" />
+                            <TextBlock Style="{StaticResource DragAndDropTextBlockStyle}" Text="{Binding DragAndDropInfo}" />
                         </Border>
                     </Grid>
 
@@ -60,8 +61,7 @@
                             <ColumnDefinition />
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
-                        <TextBlock Name="VideoNameTextBlock" Style="{StaticResource VideoNameTextBlockStyle}"
-                                   Text="No video found" />
+                        <TextBlock Text="{Binding VideoTitel}" Style="{StaticResource VideoNameTextBlockStyle}"/>
                         <Button Style="{StaticResource UploadButtonStyle}" Content="Upload Video" Grid.Column="1" />
                     </Grid>
 
