@@ -46,9 +46,9 @@ namespace CfStreamUploader.Core
             this.Config = JsonConvert.DeserializeObject<Config>(jsonString);
         }
 
-        public void UpdateConfig(string cfToken, string videoId, string keyId, string privateKey, int expiresIn)
+        public void UpdateConfig(Config config)
         {
-            this.SetConfig(cfToken, videoId, keyId, privateKey, expiresIn);
+            this.SetConfig(config);
             this.WriteConfig();
         }
 
@@ -56,9 +56,9 @@ namespace CfStreamUploader.Core
 
         #region private
 
-        private void SetConfig(string cfToken, string videoId, string keyId, string privateKey, int expiresIn)
+        private void SetConfig(Config config)
         {
-            this.Config = new Config(cfToken, videoId, keyId, privateKey, expiresIn);
+            this.Config = new Config(config);
         }
 
         private void WriteConfig()

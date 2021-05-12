@@ -50,9 +50,11 @@
 
                 <StackPanel Margin="5">
 
-                    <Grid dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" AllowDrop="True" Background="{Binding BaseColor}" >
+                    <Grid dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" AllowDrop="True"
+                          Background="{Binding BaseColor}">
                         <Border Style="{StaticResource DragAndDropBorderStyle}">
-                            <TextBlock Style="{StaticResource DragAndDropTextBlockStyle}" Text="{Binding DragAndDropInfo}" />
+                            <TextBlock Style="{StaticResource DragAndDropTextBlockStyle}"
+                                       Text="{Binding DragAndDropInfo}" />
                         </Border>
                     </Grid>
 
@@ -61,8 +63,9 @@
                             <ColumnDefinition />
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="{Binding VideoTitel}" Style="{StaticResource VideoNameTextBlockStyle}"/>
-                        <Button Style="{StaticResource UploadButtonStyle}" Content="Upload Video" Grid.Column="1" />
+                        <TextBlock Text="{Binding VideoTitel}" Style="{StaticResource VideoNameTextBlockStyle}" />
+                        <Button Style="{StaticResource UploadButtonStyle}" Content="Upload Video" Grid.Column="1"
+                                Command="{Binding SelectVideoCommand}" />
                     </Grid>
 
                     <Button Content="Start" Style="{StaticResource StartButtonStyle}"

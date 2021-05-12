@@ -1,4 +1,5 @@
 ﻿using CfStreamUploader.Core.Models;
+using CfStreamUploader.Core.Test.TestSamples;
 using Newtonsoft.Json;
 using System;
 using System.IO;
@@ -20,27 +21,23 @@ namespace CfStreamUploader.Core.Test
         #region props
 
         private ConfigManager ConfigManager { get; } = new ConfigManager();
+        private Samples Samples { get; } = new Samples();
 
         #endregion
 
         #region tests
 
-        [Theory]
-        [InlineData("ReadConfig TestToken", true, "ReadConfig TestToken")]
-        [InlineData("ReadConfig TestToken", false, "")]
-        public void ReadConfigTest(string token, bool writeFile, string result)
+        [Fact]
+        public void ReadConfigTest()
         {
             #region Assign
 
             this.SetUp();
 
-            var config = new Config(token, string.Empty, string.Empty, string.Empty, 0);
+            var config = new Config(this.Samples.Config);
 
-            if (writeFile)
-            {
-                var jsonString = JsonConvert.SerializeObject(config, Formatting.Indented);
-                File.WriteAllText(Path.Combine(this.solutionDir, configPath), jsonString);
-            }
+            var jsonString = JsonConvert.SerializeObject(config, Formatting.Indented);
+            File.WriteAllText(Path.Combine(this.solutionDir, configPath), jsonString);
 
             #endregion
 
@@ -52,7 +49,30 @@ namespace CfStreamUploader.Core.Test
 
             #region Assert
 
-            Equals(result, this.ConfigManager.Config.CfToken);
+            Equals(this.Samples.Config, this.ConfigManager.Config);
+            this.TearDown();
+
+            #endregion
+        }
+
+        [Fact]
+        public void ReadConfigNotExistsTest()
+        {
+            #region Assign
+
+            this.SetUp();
+
+            #endregion
+
+            #region Act
+
+            this.ConfigManager.ReadConfig();
+
+            #endregion
+
+            #region Assert
+
+            Equals(this.Samples.DefaultConfig, this.ConfigManager.Config);
             this.TearDown();
 
             #endregion
@@ -69,7 +89,7 @@ namespace CfStreamUploader.Core.Test
 
             #region Act
 
-            this.ConfigManager.UpdateConfig("testToken", string.Empty, string.Empty, string.Empty, 0);
+            this.ConfigManager.UpdateConfig(this.Samples.DefaultConfig);
 
             #endregion
 

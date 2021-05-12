@@ -1,10 +1,10 @@
-﻿using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using GalaSoft.MvvmLight;
+﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using System.Windows;
 using GongSolutions.Wpf.DragDrop;
+using Microsoft.Win32;
+using System.IO;
+using System.Linq;
+using System.Windows;
 
 namespace CfStreamUploader.Presentation
 {
@@ -14,12 +14,15 @@ namespace CfStreamUploader.Presentation
 
         private string htmlOutput = "HTML";
         private string videoTitel = "No video found";
+
         private string dragAndDropInfo = "Drop video here";
-        private IDropTarget _dropTargetImplementation;
+        // private IDropTarget dropTargetImplementation;
 
         #endregion
 
         #region props
+
+        public Core.Core Core { get; set; } = new Core.Core();
 
         public string HtmlOutput
         {
@@ -39,14 +42,13 @@ namespace CfStreamUploader.Presentation
             set => this.Set(ref this.dragAndDropInfo, value);
         }
 
-        public Core.Core Core { get; set; } = new Core.Core();
-
         #endregion
 
         #region RelayCommands
 
         public RelayCommand CopyToClipbordCommad { get; set; }
         public RelayCommand UploadViedeoCommand { get; set; }
+        public RelayCommand SelectVideoCommand { get; set; }
 
         #endregion
 
@@ -57,6 +59,13 @@ namespace CfStreamUploader.Presentation
             this.SetDarkmodeCommand = new RelayCommand(this.SetDarkmode);
             this.UploadViedeoCommand = new RelayCommand(this.UploadVideo);
             this.CopyToClipbordCommad = new RelayCommand(this.CopyToClipbord);
+            this.SelectVideoCommand = new RelayCommand(this.SelectVideo);
+
+            this.isDarkmode = this.Core.ConfigManager.Config.IsDarkmode;
+            if (this.isDarkmode)
+                this.Darkmode();
+            else
+                this.Lightmode();
         }
 
         #endregion
@@ -80,6 +89,60 @@ namespace CfStreamUploader.Presentation
         private void CopyToClipbord()
         {
             Clipboard.SetText(this.HtmlOutput);
+        }
+
+        private void SelectVideo()
+        {
+            var fileDialog = new OpenFileDialog();
+
+            if (fileDialog.ShowDialog() != true) return;
+
+            if (fileDialog.FileName.Split(".").Last() == "txt")
+            {
+                this.Core.VideoUploader.VideoPath = fileDialog.FileName;
+                this.VideoTitel = this.Core.VideoUploader.VideoPath.Split("\\").Last();
+            }
+            else
+            {
+                MessageBox.Show("You selected a file with a not supported format", "Error", MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+        }
+
+        public void DragOver(IDropInfo dropInfo)
+        {
+            var dragFileList = ((DataObject) dropInfo.Data).GetFileDropList().Cast<string>();
+            dropInfo.Effects = dragFileList.Any(item =>
+            {
+                var extension = Path.GetExtension(item);
+                return extension != null && extension.Equals(".txt");
+            })
+                ? DragDropEffects.Copy
+                : DragDropEffects.None;
+        }
+
+        public void Drop(IDropInfo dropInfo)
+        {
+            var dragFileList = ((DataObject) dropInfo.Data).GetFileDropList().Cast<string>();
+            dropInfo.Effects = dragFileList.Any(item =>
+            {
+                var extension = Path.GetExtension(item);
+                return extension != null && extension.Equals(".txt");
+            })
+                ? DragDropEffects.Copy
+                : DragDropEffects.None;
+
+            this.Core.VideoUploader.VideoPath = ((DataObject) dropInfo.Data).GetFileDropList().Cast<string>().First();
+            this.VideoTitel = this.Core.VideoUploader.VideoPath.Split("\\").Last();
+        }
+
+        private void UpdateConfig()
+        {
+            this.Core.ConfigManager.Config.IsDarkmode = this.isDarkmode;
+
+            var config = this.Core.ConfigManager.Config;
+            config.IsDarkmode = this.isDarkmode;
+            this.Core.ConfigManager.UpdateConfig(config);
         }
 
         #endregion
@@ -172,65 +235,50 @@ namespace CfStreamUploader.Presentation
         {
             if (this.isDarkmode)
             {
-                this.BaseColor = "Transparent";
-                this.ContrastColor = "Transparent";
-                this.TextColor = "Black";
-                this.BorderBrush = "#6497e8";
-                this.Button1Bg = "#6497e8";
-                this.Button1Fg = "White";
-                this.Button2Bg = "#6497e8";
-                this.Button2Fg = "#6497e8";
-                this.Button2FgMouseOver = "White";
-                this.ProgressColor = "Green";
-
+                this.Lightmode();
                 this.ThemeText = "Lightmode";
+
                 this.isDarkmode = false;
+                this.UpdateConfig();
             }
             else
             {
-                this.BaseColor = "#1b2867";
-                this.ContrastColor = "#223075";
-                this.TextColor = "White";
-                this.BorderBrush = "White";
-                this.Button1Bg = "#223075";
-                this.Button1Fg = "White";
-                this.Button2Bg = "White";
-                this.Button2Fg = "White";
-                this.Button2FgMouseOver = "#223075";
-                this.ProgressColor = "LawnGreen";
-
+                this.Darkmode();
                 this.ThemeText = "Darkmode";
+
                 this.isDarkmode = true;
+                this.UpdateConfig();
             }
         }
 
+        private void Darkmode()
+        {
+            this.BaseColor = "#1b2867";
+            this.ContrastColor = "#223075";
+            this.TextColor = "White";
+            this.BorderBrush = "White";
+            this.Button1Bg = "#223075";
+            this.Button1Fg = "White";
+            this.Button2Bg = "White";
+            this.Button2Fg = "White";
+            this.Button2FgMouseOver = "#223075";
+            this.ProgressColor = "LawnGreen";
+        }
+
+        private void Lightmode()
+        {
+            this.BaseColor = "Transparent";
+            this.ContrastColor = "Transparent";
+            this.TextColor = "Black";
+            this.BorderBrush = "#6497e8";
+            this.Button1Bg = "#6497e8";
+            this.Button1Fg = "White";
+            this.Button2Bg = "#6497e8";
+            this.Button2Fg = "#6497e8";
+            this.Button2FgMouseOver = "White";
+            this.ProgressColor = "Green";
+        }
+
         #endregion
-
-        public void DragOver(IDropInfo dropInfo)
-        {
-            var dragFileList = ((DataObject) dropInfo.Data).GetFileDropList().Cast<string>();
-            dropInfo.Effects = dragFileList.Any(item =>
-            {
-                var extension = Path.GetExtension(item);
-                return extension != null && extension.Equals(".txt");
-            })
-                ? DragDropEffects.Copy
-                : DragDropEffects.None;
-        }
-
-        public void Drop(IDropInfo dropInfo)
-        {
-            var dragFileList = ((DataObject) dropInfo.Data).GetFileDropList().Cast<string>();
-            dropInfo.Effects = dragFileList.Any(item =>
-            {
-                var extension = Path.GetExtension(item);
-                return extension != null && extension.Equals(".txt");
-            })
-                ? DragDropEffects.Copy
-                : DragDropEffects.None;
-
-            this.Core.VideoUploader.VideoPath = ((DataObject) dropInfo.Data).GetFileDropList().Cast<string>().First();
-            this.VideoTitel = this.Core.VideoUploader.VideoPath.Split("\\").Last();
-        }
     }
 }
