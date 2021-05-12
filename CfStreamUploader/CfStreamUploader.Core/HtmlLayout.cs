@@ -31,9 +31,9 @@ namespace CfStreamUploader.Core
         private string GetDefaultHtmlLayout()
         {
             var assembly = Assembly.GetExecutingAssembly();
-            var str = assembly.GetManifestResourceStream("CfStreamUploader.Core.Resources.defaultHtmlLayout.txt");
-            var rd = new StreamReader(str);
-            return rd.ReadToEnd();
+            var stream = assembly.GetManifestResourceStream("CfStreamUploader.Core.Resources.defaultHtmlLayout.txt");
+            var streamReader = new StreamReader(stream);
+            return streamReader.ReadToEnd();
         }
 
         private string ReadHtmlLayout()
