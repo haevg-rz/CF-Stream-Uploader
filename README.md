@@ -8,7 +8,12 @@ The JSON config file has the following format.
 
 ```
 {
-  cfToken: "Example"
+  "CfToken": "exampleToken",
+  "VideoId": "exampleVideoId",
+  "KeyId": "exampleKeyId",
+  "PrivateKey": "examplePrivateKey",
+  "ExpiresIn": 0,
+  "IsDarkmode": false
 }
 ```
 
