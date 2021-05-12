@@ -60,7 +60,8 @@
                             <ColumnDefinition />
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
-                        <TextBlock Name="VideoNameTextBlock" Style="{StaticResource VideoNameTextBlockStyle}" Text="MyVideo(1).mp4" />
+                        <TextBlock Name="VideoNameTextBlock" Style="{StaticResource VideoNameTextBlockStyle}"
+                                   Text="No video found" />
                         <Button Style="{StaticResource UploadButtonStyle}" Content="Upload Video" Grid.Column="1" />
                     </Grid>
 

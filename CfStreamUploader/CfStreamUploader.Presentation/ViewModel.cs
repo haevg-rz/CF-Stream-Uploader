@@ -22,7 +22,6 @@ namespace CfStreamUploader.Presentation
 
         public Core.Core Core { get; set; } = new Core.Core();
 
-
         #endregion
 
         #region RelayCommands
@@ -47,25 +46,23 @@ namespace CfStreamUploader.Presentation
 
         private void UploadVideo()
         {
-            
             this.Core.VideoUploader.UploadVideo();
             //Step1
 
             var videoToken = this.Core.VideoUploader.GetToken(this.Core.ConfigManager.Config);
             //Step2
 
-            this.HtmlOutput = this.Core.HtmlLayout.GetHtmlLayout();
+            this.HtmlOutput = string.Format(this.Core.HtmlLayout.GetHtmlLayout(), videoToken);
             //Step3
 
-            //finished
-            //Step4
+            //finished Step4
         }
 
         private void CopyToClipbord()
         {
             Clipboard.SetText(this.HtmlOutput);
         }
-        
+
         #endregion
 
         #region ColorChange
