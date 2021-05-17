@@ -1,11 +1,13 @@
-﻿namespace CfStreamUploader.Core.Models
+﻿using System;
+
+namespace CfStreamUploader.Core.Models
 {
     public class Config
     {
         #region props
 
         public string CfToken { get; set; }
-        public string VideoId { get; set; }
+        public string CfAccount { get; set; }
         public string KeyId { get; set; }
         public string PrivateKey { get; set; }
         public int ExpiresIn { get; set; }
@@ -18,17 +20,17 @@
         public Config()
         {
             this.CfToken = string.Empty;
-            this.VideoId = string.Empty;
+            this.CfAccount = string.Empty;
             this.KeyId = string.Empty;
             this.PrivateKey = string.Empty;
             this.ExpiresIn = 0;
             this.IsDarkmode = false;
         }
 
-        public Config(string cfToken, string videoId, string keyId, string privateKey, int expiresIn, bool isDarkmode)
+        public Config(string cfToken, string cfAccount, string keyId, string privateKey, int expiresIn, bool isDarkmode)
         {
             this.CfToken = cfToken;
-            this.VideoId = videoId;
+            this.CfAccount = cfAccount;
             this.KeyId = keyId;
             this.PrivateKey = privateKey;
             this.ExpiresIn = expiresIn;
@@ -38,7 +40,7 @@
         public Config(Config config)
         {
             this.CfToken = config.CfToken;
-            this.VideoId = config.VideoId;
+            this.CfAccount = config.CfAccount;
             this.KeyId = config.KeyId;
             this.PrivateKey = config.PrivateKey;
             this.ExpiresIn = config.ExpiresIn;
