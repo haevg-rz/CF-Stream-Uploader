@@ -34,7 +34,7 @@ namespace CfStreamUploader.Core.Test
 
             this.SetUp();
 
-            var config = new Config(this.Samples.Config);
+            var config = new Config(this.Samples.ConfigSample);
 
             var jsonString = JsonConvert.SerializeObject(config, Formatting.Indented);
             File.WriteAllText(Path.Combine(this.solutionDir, configPath), jsonString);
@@ -49,7 +49,7 @@ namespace CfStreamUploader.Core.Test
 
             #region Assert
 
-            Equals(this.Samples.Config, this.ConfigManager.Config);
+            Equals(this.Samples.ConfigSample, this.ConfigManager.Config);
             this.TearDown();
 
             #endregion
@@ -72,7 +72,7 @@ namespace CfStreamUploader.Core.Test
 
             #region Assert
 
-            Equals(this.Samples.DefaultConfig, this.ConfigManager.Config);
+            Equals(this.Samples.DefaultConfigSample, this.ConfigManager.Config);
             this.TearDown();
 
             #endregion
@@ -89,7 +89,7 @@ namespace CfStreamUploader.Core.Test
 
             #region Act
 
-            this.ConfigManager.UpdateConfig(this.Samples.DefaultConfig);
+            this.ConfigManager.UpdateConfig(this.Samples.DefaultConfigSample);
 
             #endregion
 

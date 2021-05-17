@@ -9,9 +9,9 @@ namespace CfStreamUploader.Core.Test.TestSamples
 
         public readonly string htmlLayoutSample = "TestSample123";
 
-        public Config Config { get; } =
+        public Config ConfigSample { get; } =
             new Config("TestCfToken", "TestVideoId", "TestKeyID", "TestPrivateKey", 0, false);
 
-        public Config DefaultConfig { get; } = new Config();
+        public Config DefaultConfigSample { get; } = new Config();
     }
 }
