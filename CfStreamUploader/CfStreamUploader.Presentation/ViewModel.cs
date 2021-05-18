@@ -74,7 +74,7 @@ namespace CfStreamUploader.Presentation
 
         private void UploadVideo()
         {
-            this.Core.VideoUploader.UploadVideo();
+            this.Core.VideoUploader.UploadVideo(this.Core.ConfigManager.Config);
             //Step1
 
             var videoToken = this.Core.VideoUploader.GetToken(this.Core.ConfigManager.Config);
