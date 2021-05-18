@@ -1,8 +1,10 @@
 ﻿using CfStreamUploader.Core.Models;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
+using System.Threading.Tasks;
 using TusDotNetClient;
 
 namespace CfStreamUploader.Core
@@ -38,7 +40,7 @@ namespace CfStreamUploader.Core
             return string.Empty;
         }
 
-        public VideoUploadResult UploadVideo(Config config)
+        public async Task<VideoUploadResult> UploadVideo(Config config)
         {
             var postUrl = string.Format(this.postCfUrl, config.CfAccount);
 
@@ -46,10 +48,13 @@ namespace CfStreamUploader.Core
             {
                 var tusClient = new TusClient();
                 var fileInfo = new FileInfo(this.VideoPath);
-                var a = tusClient.UploadAsync(postUrl, fileInfo);
 
-                var httpRequest = new TusHttpRequest(postUrl,RequestMethod.Post);
-                httpRequest.AddHeader("cftoken",config.CfToken);
+                var metadata = new (string key, string value)[1];
+                metadata[0].key = "Authorization";
+                metadata[0].value = config.CfToken;
+
+                var fileUrl = await tusClient.CreateAsync(postUrl, fileInfo.Length,metadata);
+                var response = tusClient.UploadAsync(fileUrl, fileInfo);
             }
             catch (Exception e)
             {
