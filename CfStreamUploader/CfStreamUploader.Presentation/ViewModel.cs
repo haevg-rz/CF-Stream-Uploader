@@ -72,18 +72,25 @@ namespace CfStreamUploader.Presentation
 
         #region Methods
 
-        private void UploadVideo()
+        private async void UploadVideo()
         {
-            this.Core.VideoUploader.UploadVideo(this.Core.ConfigManager.Config);
-            //Step1
+            var result = await this.Core.VideoUploader.UploadVideo(this.Core.ConfigManager.Config);
+            if (result.Success)
+            {
+                //Step1
 
-            var videoToken = this.Core.VideoUploader.GetToken(this.Core.ConfigManager.Config);
-            //Step2
+                var videoToken = this.Core.VideoUploader.GetToken(this.Core.ConfigManager.Config);
+                //Step2
 
-            this.HtmlOutput = string.Format(this.Core.HtmlLayout.GetHtmlLayout(), videoToken);
-            //Step3
+                this.HtmlOutput = string.Format(this.Core.HtmlLayout.GetHtmlLayout(), videoToken);
+                //Step3
 
-            //finished Step4
+                //finished Step4
+            }
+            else
+            {
+                MessageBox.Show(result.Exception.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void CopyToClipbord()
@@ -97,7 +104,7 @@ namespace CfStreamUploader.Presentation
 
             if (fileDialog.ShowDialog() != true) return;
 
-            if (fileDialog.FileName.Split(".").Last() == "txt")
+            if (fileDialog.FileName.Split(".").Last() == "mp4")
             {
                 this.Core.VideoUploader.VideoPath = fileDialog.FileName;
                 this.VideoTitel = this.Core.VideoUploader.VideoPath.Split("\\").Last();
@@ -115,7 +122,7 @@ namespace CfStreamUploader.Presentation
             dropInfo.Effects = dragFileList.Any(item =>
             {
                 var extension = Path.GetExtension(item);
-                return extension != null && extension.Equals(".txt");
+                return extension != null && extension.Equals(".mp4");
             })
                 ? DragDropEffects.Copy
                 : DragDropEffects.None;
@@ -127,7 +134,7 @@ namespace CfStreamUploader.Presentation
             dropInfo.Effects = dragFileList.Any(item =>
             {
                 var extension = Path.GetExtension(item);
-                return extension != null && extension.Equals(".txt");
+                return extension != null && extension.Equals(".mp4");
             })
                 ? DragDropEffects.Copy
                 : DragDropEffects.None;

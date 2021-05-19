@@ -1,11 +1,14 @@
 ﻿using CfStreamUploader.Core.Models;
 using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
-using TusDotNetClient;
 
 namespace CfStreamUploader.Core
 {
@@ -13,8 +16,7 @@ namespace CfStreamUploader.Core
     {
         #region fields
 
-        private readonly string getRequestCfUrl = "https://api.cloudflare.com/client/v4/accounts/{0}/stream?search={1}";
-        private readonly string postCfUrl = "https://api.cloudflare.com/client/v4/accounts/{0}/stream";
+        private readonly string script = "curl -X POST -H \"Authorization: Bearer {0}\" -F file=@{1} https://api.cloudflare.com/client/v4/accounts/{2}/stream";
 
         #endregion
 
@@ -31,30 +33,54 @@ namespace CfStreamUploader.Core
 
         public string GetToken(Config config)
         {
-            var videoId = this.GetVideoId();
             return "TestTokenABC";
-
-            var result = this.DecodePrivateKey(config.PrivateKey, config.ExpiresIn);
-            this.SignJwt();
-
-            return string.Empty;
         }
 
         public async Task<VideoUploadResult> UploadVideo(Config config)
         {
-            var postUrl = string.Format(this.postCfUrl, config.CfAccount);
-
+            // var cmdCommand = this.GetCmdScript(config);
             try
             {
-                var tusClient = new TusClient();
-                var fileInfo = new FileInfo(this.VideoPath);
+                var client = new HttpClient();
 
-                var metadata = new (string key, string value)[1];
-                metadata[0].key = "Authorization";
-                metadata[0].value = config.CfToken;
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", config.CfToken);
+                // client.DefaultRequestHeaders.Add("content-type", this.VideoPath.Replace("\\", "/"));
+                // client.DefaultRequestHeaders.Add("Content-Type", this.VideoPath);
+                // client.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", this.VideoPath.Replace("\\", "/"));
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(this.VideoPath));
+                var url = new Uri(string.Format("https://api.cloudflare.com/client/v4/accounts/{2}/stream", config.CfAccount));
 
-                var fileUrl = await tusClient.CreateAsync(postUrl, fileInfo.Length,metadata);
-                var response = tusClient.UploadAsync(fileUrl, fileInfo);
+                var reponse = await client.PostAsync(url, null);
+
+
+                 //---------------------
+
+                // var request = new HttpRequestMessage
+                // {
+                //     RequestUri = url,
+                //     Method = HttpMethod.Post
+                // };
+                // request.Content.Headers.ContentType = new MediaTypeHeaderValue(this.VideoPath.Replace("\\", "/"));
+
+
+                var aa = "hello";
+
+
+                // using (var myProcess = new Process())
+                // {
+                //     myProcess.StartInfo.FileName = "cmd";
+                //     myProcess.StartInfo.CreateNoWindow = true;
+                //     myProcess.StartInfo.UseShellExecute = false;
+                //     myProcess.StartInfo.RedirectStandardOutput = true;
+                //     myProcess.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                //     myProcess.StartInfo.Arguments = $"/c {cmdCommand}";
+                //
+                //     myProcess.Start();
+                //
+                //     var outputStreamReader = myProcess.StandardOutput;
+                //     var output = outputStreamReader.ReadToEnd();
+                //     var b = "hello";
+                // }
             }
             catch (Exception e)
             {
@@ -64,38 +90,14 @@ namespace CfStreamUploader.Core
             return new VideoUploadResult(true, null);
         }
 
+        private string GetCmdScript(Config config)
+        {
+            return string.Format(this.script, config.CfToken, this.VideoPath.Replace("\\", "/"), config.CfAccount);
+        }
+        
         #endregion
 
         #region private
-
-        private string GetVideoId()
-        {
-            return null;
-            // try
-            // {
-            //     using (var client = new WebClient())
-            //     {
-            //         client.Headers[HttpRequestHeader.ContentType] = config.CfToken;
-            //         var postResult = client.UploadFile(cfHeader, "Get", this.VideoPath);
-            //     }
-            //
-            // }
-            // catch (Exception e)
-            // {
-            //     
-            // }
-            // return null;
-        }
-
-        private void PrepareToSign(string privateKey)
-        {
-            return;
-        }
-
-        private void SignJwt()
-        {
-            return;
-        }
 
         private int DecodePrivateKey(string privateKey, int expiresIn)
         {
