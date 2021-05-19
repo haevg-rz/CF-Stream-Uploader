@@ -80,7 +80,14 @@ namespace CfStreamUploader.Presentation
 
         private async void UploadVideo()
         {
+            if (this.Core.VideoUploader.VideoPath == string.Empty)
+            {
+                MessageBox.Show("Please select a Video.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+
+            }  
             if (!this.IsConfigSolid()) return;
+
 
             var result = await this.Core.VideoUploader.UploadVideo(this.Core.ConfigManager.Config);
 
@@ -104,7 +111,7 @@ namespace CfStreamUploader.Presentation
 
             var openConfig = MessageBox.Show(
                 "There are missing attribute in the config.\nYou can open your config here",
-                "Error", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning);
 
             if (openConfig != MessageBoxResult.Yes) return false;
 

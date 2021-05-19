@@ -25,7 +25,7 @@ namespace CfStreamUploader.Core
         public string VideoId { get; set; }
         private Claims Claim { get; } = new Claims();
         public RSA Rsa { get; set; } = RSA.Create();
-        public string VideoPath { get; set; }
+        public string VideoPath { get; set; } = String.Empty;
 
         #endregion
 
