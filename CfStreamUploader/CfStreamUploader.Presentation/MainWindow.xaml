@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:dd="urn:gong-wpf-dragdrop"
         mc:Ignorable="d"
-        Title="CF Stream Uploader" Height="650" Width="1000"
+        Title="CF Stream Uploader" Height="670" Width="1000"
         DataContext="{StaticResource ViewModel}"
         WindowStyle="SingleBorderWindow">
 
@@ -64,7 +64,7 @@
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
                         <TextBlock Text="{Binding VideoTitel}" Style="{StaticResource VideoNameTextBlockStyle}" />
-                        <Button Style="{StaticResource UploadButtonStyle}" Content="Upload Video" Grid.Column="1"
+                        <Button Style="{StaticResource UploadButtonStyle}" Content="Select Video" Grid.Column="1"
                                 Command="{Binding SelectVideoCommand}" />
                     </Grid>
 
@@ -126,7 +126,7 @@
                 <TextBox Style="{DynamicResource HtmlOutputTextBoxStyle}" Text="{Binding HtmlOutput}" />
             </Grid>
 
-            <Grid Grid.Row="3" Margin="10">
+            <Grid Grid.Row="3" Margin="10,0,10,10">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="170" />
                     <ColumnDefinition />

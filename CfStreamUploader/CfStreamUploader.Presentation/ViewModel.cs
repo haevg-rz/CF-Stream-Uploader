@@ -2,6 +2,7 @@
 using GalaSoft.MvvmLight.Command;
 using GongSolutions.Wpf.DragDrop;
 using Microsoft.Win32;
+using System;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -17,6 +18,9 @@ namespace CfStreamUploader.Presentation
         private string videoUrl = string.Empty;
         private readonly string defaultUri = "https://iframe.videodelivery.net/{0}?preload=true";
         private string dragAndDropInfo = "Drop video here";
+
+        private string CfStreamUploaderPath =
+            $@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\CfStreamUploader\Config.json";
 
         #endregion
 
@@ -76,6 +80,8 @@ namespace CfStreamUploader.Presentation
 
         private async void UploadVideo()
         {
+            if (!this.IsConfigSolid()) return;
+
             var result = await this.Core.VideoUploader.UploadVideo(this.Core.ConfigManager.Config);
 
             if (result.Success)
@@ -89,6 +95,21 @@ namespace CfStreamUploader.Presentation
             {
                 MessageBox.Show(result.Exception.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private bool IsConfigSolid()
+        {
+            if (this.Core.ConfigManager.Config.CfToken != string.Empty &&
+                this.Core.ConfigManager.Config.CfAccount != string.Empty) return true;
+
+            var openConfig = MessageBox.Show(
+                "There are missing attribute in the config.\nYou can open your config here",
+                "Error", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+
+            if (openConfig != MessageBoxResult.Yes) return false;
+
+            this.Core.ConfigManager.OpenConfig();
+            return false;
         }
 
         private void CopyToClipbord()
