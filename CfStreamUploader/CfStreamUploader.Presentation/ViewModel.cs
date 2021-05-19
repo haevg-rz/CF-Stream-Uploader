@@ -14,9 +14,9 @@ namespace CfStreamUploader.Presentation
 
         private string htmlOutput = "HTML";
         private string videoTitel = "No video found";
-
+        private string videoUrl = string.Empty;
+        private readonly string defaultUri = "https://iframe.videodelivery.net/{0}?preload=true";
         private string dragAndDropInfo = "Drop video here";
-        // private IDropTarget dropTargetImplementation;
 
         #endregion
 
@@ -49,6 +49,7 @@ namespace CfStreamUploader.Presentation
         public RelayCommand CopyToClipbordCommad { get; set; }
         public RelayCommand UploadViedeoCommand { get; set; }
         public RelayCommand SelectVideoCommand { get; set; }
+        public RelayCommand CopyVideoUrlCommand { get; set; }
 
         #endregion
 
@@ -60,6 +61,7 @@ namespace CfStreamUploader.Presentation
             this.UploadViedeoCommand = new RelayCommand(this.UploadVideo);
             this.CopyToClipbordCommad = new RelayCommand(this.CopyToClipbord);
             this.SelectVideoCommand = new RelayCommand(this.SelectVideo);
+            this.CopyVideoUrlCommand = new RelayCommand(this.CopyVideoUrl);
 
             this.isDarkmode = this.Core.ConfigManager.Config.IsDarkmode;
             if (this.isDarkmode)
@@ -75,17 +77,13 @@ namespace CfStreamUploader.Presentation
         private async void UploadVideo()
         {
             var result = await this.Core.VideoUploader.UploadVideo(this.Core.ConfigManager.Config);
+
             if (result.Success)
             {
-                //Step1
-
                 var videoToken = this.Core.VideoUploader.GetToken(this.Core.ConfigManager.Config);
-                //Step2
 
                 this.HtmlOutput = string.Format(this.Core.HtmlLayout.GetHtmlLayout(), videoToken);
-                //Step3
-
-                //finished Step4
+                this.videoUrl = string.Format(this.defaultUri, videoToken);
             }
             else
             {
@@ -96,6 +94,11 @@ namespace CfStreamUploader.Presentation
         private void CopyToClipbord()
         {
             Clipboard.SetText(this.HtmlOutput);
+        }
+
+        private void CopyVideoUrl()
+        {
+            Clipboard.SetText(this.videoUrl);
         }
 
         private void SelectVideo()

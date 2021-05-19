@@ -2,9 +2,12 @@
 using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
+
+[assembly: InternalsVisibleTo("CfStreamUploader.Core.Test")]
 
 namespace CfStreamUploader.Core
 {
@@ -65,7 +68,7 @@ namespace CfStreamUploader.Core
             return new VideoUploadResult(true, null);
         }
 
-        private string GetCmdScript(Config config)
+        internal string GetCmdScript(Config config)
         {
             return string.Format(this.script, config.CfToken, this.VideoPath.Replace("\\", "/"), config.CfAccount);
         }

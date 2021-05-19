@@ -128,11 +128,16 @@
 
             <Grid Grid.Row="3" Margin="10">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
+                    <ColumnDefinition Width="170" />
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <Button Style="{StaticResource CopyToClipboardButtonStyle}" Content="Copy to clipboard"
-                        Command="{Binding CopyToClipbordCommad}" />
+                <StackPanel>
+                    <Button Style="{StaticResource CopyToClipboardButtonStyle}" Content="Copy to clipboard"
+                            Command="{Binding CopyToClipbordCommad}" />
+                    <Button Style="{StaticResource CopyToClipboardButtonStyle}" Content="Copy video-url"
+                            Command="{Binding CopyVideoUrlCommand}" />
+                </StackPanel>
+
                 <TextBlock Grid.Column="1" Style="{StaticResource WikiLinkTextBlockStyle}">
                     <Hyperlink>How to use this HTML Code?</Hyperlink>
                 </TextBlock>
