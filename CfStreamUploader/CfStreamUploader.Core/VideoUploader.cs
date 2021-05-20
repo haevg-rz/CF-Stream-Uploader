@@ -25,7 +25,7 @@ namespace CfStreamUploader.Core
         public string VideoId { get; set; }
         private Claims Claim { get; } = new Claims();
         public RSA Rsa { get; set; } = RSA.Create();
-        public string VideoPath { get; set; } = String.Empty;
+        public string VideoPath { get; set; } = string.Empty;
 
         #endregion
 
@@ -37,7 +37,7 @@ namespace CfStreamUploader.Core
             return this.VideoId;
         }
 
-        public async Task<VideoUploadResult> UploadVideo(Config config)
+        public async Task<VideoUploadResult> UploadVideoAsync(Config config)
         {
             var cmdCommand = this.GetCmdScript(config);
             try
@@ -54,7 +54,10 @@ namespace CfStreamUploader.Core
                     myProcess.Start();
 
                     var outputStreamReader = myProcess.StandardOutput;
-                    var output = outputStreamReader.ReadToEnd();
+                    var output = await outputStreamReader.ReadToEndAsync();
+
+                    if (output == null)
+                        return new VideoUploadResult(false, new Exception("Please check your Settings"));
 
                     var json = JsonConvert.DeserializeObject<HttpResponse>(output);
                     this.VideoId = json.result.uid;
@@ -67,6 +70,7 @@ namespace CfStreamUploader.Core
 
             return new VideoUploadResult(true, null);
         }
+
 
         internal string GetCmdScript(Config config)
         {

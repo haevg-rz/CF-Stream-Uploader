@@ -20,9 +20,9 @@ The CF-Stream-Uploader is an UI to upload your videos in your [cloudflare](https
 ### Roadmap
 
 Here are our milestones:
-- [M1](https://github.com/haevg-rz/CF-Stream-Uploader/milestone/1)
-- [M2](https://github.com/haevg-rz/CF-Stream-Uploader/milestone/2)
-- [M3](https://github.com/haevg-rz/CF-Stream-Uploader/milestone/3)
+- [M1](https://github.com/haevg-rz/CF-Stream-Uploader/milestone/1) The user can upload a given video and gets generated HTML Code to embedded in websites.
+- [M2](https://github.com/haevg-rz/CF-Stream-Uploader/milestone/2) The user can apply video restrictions and the complete process is visualised.
+- [M3](https://github.com/haevg-rz/CF-Stream-Uploader/milestone/3) The user can manage history and settings and can view remaining video runtime capacity.
 
 ### MockUp
 

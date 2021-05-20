@@ -3,8 +3,11 @@ using GalaSoft.MvvmLight.Command;
 using GongSolutions.Wpf.DragDrop;
 using Microsoft.Win32;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace CfStreamUploader.Presentation
@@ -62,7 +65,7 @@ namespace CfStreamUploader.Presentation
         public ViewModel()
         {
             this.SetDarkmodeCommand = new RelayCommand(this.SetDarkmode);
-            this.UploadViedeoCommand = new RelayCommand(this.UploadVideo);
+            this.UploadViedeoCommand = new RelayCommand(this.UploadVideoAsync);
             this.CopyToClipbordCommad = new RelayCommand(this.CopyToClipbord);
             this.SelectVideoCommand = new RelayCommand(this.SelectVideo);
             this.CopyVideoUrlCommand = new RelayCommand(this.CopyVideoUrl);
@@ -78,7 +81,7 @@ namespace CfStreamUploader.Presentation
 
         #region Methods
 
-        private async void UploadVideo()
+        private async void UploadVideoAsync()
         {
             if (this.Core.VideoUploader.VideoPath == string.Empty)
             {
@@ -88,8 +91,7 @@ namespace CfStreamUploader.Presentation
             }  
             if (!this.IsConfigSolid()) return;
 
-
-            var result = await this.Core.VideoUploader.UploadVideo(this.Core.ConfigManager.Config);
+            var result = await this.Core.VideoUploader.UploadVideoAsync(this.Core.ConfigManager.Config);
 
             if (result.Success)
             {
@@ -103,7 +105,7 @@ namespace CfStreamUploader.Presentation
                 MessageBox.Show(result.Exception.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-
+        
         private bool IsConfigSolid()
         {
             if (this.Core.ConfigManager.Config.CfToken != string.Empty &&
