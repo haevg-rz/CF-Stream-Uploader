@@ -4,15 +4,16 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:dd="urn:gong-wpf-dragdrop"
+        xmlns:viewModels="clr-namespace:CfStreamUploader.Presentation.ViewModels"
         mc:Ignorable="d"
         Title="CF Stream Uploader" Height="670" Width="1000"
-        DataContext="{StaticResource ViewModel}"
-        WindowStyle="SingleBorderWindow">
+        WindowStyle="SingleBorderWindow"
+        DataContext="{StaticResource ViewModel}">
 
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Resources/Styles/AllStyles.xaml" />
+                <ResourceDictionary Source="../Resources/Styles/AllStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
@@ -87,7 +88,7 @@
 
                     <TextBlock Style="{StaticResource RestrictionTextBlockStyle}" Text="Set Restriction" />
 
-                    <Button Style="{StaticResource EditButtonStyle}" Content="edit" Grid.Column="1" />
+                    <Button Style="{StaticResource EditButtonStyle}" Content="edit" Grid.Column="1" Command="{Binding EditRestrictionsCommand}" />
 
                     <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Margin="5">
 

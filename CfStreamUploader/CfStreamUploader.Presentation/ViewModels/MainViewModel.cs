@@ -1,4 +1,5 @@
-﻿using GalaSoft.MvvmLight;
+﻿using CfStreamUploader.Presentation.Windows;
+using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GongSolutions.Wpf.DragDrop;
 using Microsoft.Win32;
@@ -7,9 +8,9 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 
-namespace CfStreamUploader.Presentation
+namespace CfStreamUploader.Presentation.ViewModels
 {
-    public class ViewModel : ViewModelBase, IDropTarget
+    public class MainViewModel : ViewModelBase, IDropTarget
     {
         #region Fields
 
@@ -54,18 +55,20 @@ namespace CfStreamUploader.Presentation
         public RelayCommand UploadViedeoCommand { get; set; }
         public RelayCommand SelectVideoCommand { get; set; }
         public RelayCommand CopyVideoUrlCommand { get; set; }
+        public RelayCommand EditRestrictionsCommand { get; set; }
 
         #endregion
 
         #region Constructor
 
-        public ViewModel()
+        public MainViewModel()
         {
             this.SetDarkmodeCommand = new RelayCommand(this.SetDarkmode);
             this.UploadViedeoCommand = new RelayCommand(this.UploadVideoAsync);
             this.CopyToClipbordCommad = new RelayCommand(this.CopyToClipbord);
             this.SelectVideoCommand = new RelayCommand(this.SelectVideo);
             this.CopyVideoUrlCommand = new RelayCommand(this.CopyVideoUrl);
+            this.EditRestrictionsCommand = new RelayCommand(this.EditRestrictions);
 
             this.isDarkmode = this.Core.ConfigManager.Config.IsDarkmode;
             if (this.isDarkmode)
@@ -181,6 +184,16 @@ namespace CfStreamUploader.Presentation
             var config = this.Core.ConfigManager.Config;
             config.IsDarkmode = this.isDarkmode;
             this.Core.ConfigManager.UpdateConfig(config);
+        }
+        private void EditRestrictions()
+        {
+            var editWindow = new EditWindow
+            {
+                DataContext = new EditViewModel(this.Core.ConfigManager.Config)
+            };
+            editWindow.ShowDialog();
+
+            this.Core.ConfigManager.ReadConfig();
         }
 
         #endregion
