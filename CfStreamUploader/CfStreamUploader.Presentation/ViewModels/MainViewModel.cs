@@ -79,8 +79,40 @@ namespace CfStreamUploader.Presentation.ViewModels
 
         #endregion
 
-        #region Methods
+        #region public
 
+        public void DragOver(IDropInfo dropInfo)
+        {
+            var dragFileList = ((DataObject)dropInfo.Data).GetFileDropList().Cast<string>();
+            dropInfo.Effects = dragFileList.Any(item =>
+            {
+                var extension = Path.GetExtension(item);
+                return extension != null && extension.Equals(".mp4");
+            })
+                ? DragDropEffects.Copy
+                : DragDropEffects.None;
+        }
+
+        public void Drop(IDropInfo dropInfo)
+        {
+            var dragFileList = ((DataObject)dropInfo.Data).GetFileDropList().Cast<string>();
+            dropInfo.Effects = dragFileList.Any(item =>
+            {
+                var extension = Path.GetExtension(item);
+                return extension != null && extension.Equals(".mp4");
+            })
+                ? DragDropEffects.Copy
+                : DragDropEffects.None;
+
+            this.Core.VideoUploader.VideoPath = ((DataObject)dropInfo.Data).GetFileDropList().Cast<string>().First();
+            this.VideoTitel = this.Core.VideoUploader.VideoPath.Split("\\").Last();
+        }
+
+
+
+        #endregion
+
+        #region private
         private async void UploadVideoAsync()
         {
             if (this.Core.VideoUploader.VideoPath == string.Empty)
@@ -149,34 +181,6 @@ namespace CfStreamUploader.Presentation.ViewModels
                     MessageBoxImage.Error);
             }
         }
-
-        public void DragOver(IDropInfo dropInfo)
-        {
-            var dragFileList = ((DataObject) dropInfo.Data).GetFileDropList().Cast<string>();
-            dropInfo.Effects = dragFileList.Any(item =>
-            {
-                var extension = Path.GetExtension(item);
-                return extension != null && extension.Equals(".mp4");
-            })
-                ? DragDropEffects.Copy
-                : DragDropEffects.None;
-        }
-
-        public void Drop(IDropInfo dropInfo)
-        {
-            var dragFileList = ((DataObject) dropInfo.Data).GetFileDropList().Cast<string>();
-            dropInfo.Effects = dragFileList.Any(item =>
-            {
-                var extension = Path.GetExtension(item);
-                return extension != null && extension.Equals(".mp4");
-            })
-                ? DragDropEffects.Copy
-                : DragDropEffects.None;
-
-            this.Core.VideoUploader.VideoPath = ((DataObject) dropInfo.Data).GetFileDropList().Cast<string>().First();
-            this.VideoTitel = this.Core.VideoUploader.VideoPath.Split("\\").Last();
-        }
-
         private void UpdateConfig()
         {
             this.Core.ConfigManager.Config.IsDarkmode = this.isDarkmode;
@@ -197,7 +201,7 @@ namespace CfStreamUploader.Presentation.ViewModels
         }
 
         #endregion
-
+     
         #region ColorChange
 
         private bool isDarkmode = false;
@@ -304,15 +308,15 @@ namespace CfStreamUploader.Presentation.ViewModels
 
         private void Darkmode()
         {
-            this.BaseColor = "#1b2867";
-            this.ContrastColor = "#223075";
+            this.BaseColor = "#162770";
+            this.ContrastColor = "#20328a";
             this.TextColor = "White";
             this.BorderBrush = "White";
-            this.Button1Bg = "#223075";
+            this.Button1Bg = "#20328a";
             this.Button1Fg = "White";
             this.Button2Bg = "White";
             this.Button2Fg = "White";
-            this.Button2FgMouseOver = "#223075";
+            this.Button2FgMouseOver = "#20328a";
             this.ProgressColor = "LawnGreen";
         }
 
