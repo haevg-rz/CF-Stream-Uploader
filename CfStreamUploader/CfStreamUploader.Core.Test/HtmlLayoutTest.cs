@@ -7,7 +7,7 @@ namespace CfStreamUploader.Core.Test
 {
     public class HtmlLayoutTest
     {
-        #region filds
+        #region fields
 
         private readonly string solutionDir =
             Path.GetDirectoryName(Path.GetDirectoryName(Environment.CurrentDirectory));

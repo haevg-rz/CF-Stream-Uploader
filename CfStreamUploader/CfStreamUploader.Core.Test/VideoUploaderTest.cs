@@ -15,7 +15,7 @@ namespace CfStreamUploader.Core.Test
         #region tests
 
         [Fact]
-        public void HtmlLayoutDoesNotExistTest()
+        public void GetCmdScriptsTest()
         {
             #region Assign
 
