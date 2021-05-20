@@ -7,12 +7,23 @@ namespace CfStreamUploader.Core.Test
 {
     public class HtmlLayoutTest
     {
-        private HtmlLayout HtmlLayout { get; } = new HtmlLayout();
+        #region fields
 
         private readonly string solutionDir =
             Path.GetDirectoryName(Path.GetDirectoryName(Environment.CurrentDirectory));
 
         private string htmlLayoutFile = "HtmlLayout.txt";
+
+        #endregion
+
+        #region props
+
+        private HtmlLayout HtmlLayout { get; } = new HtmlLayout();
+        private Samples Samples { get; } = new Samples();
+
+        #endregion
+
+        #region tests
 
         [Fact]
         public void HtmlLayoutDoesNotExistTest()
@@ -31,7 +42,7 @@ namespace CfStreamUploader.Core.Test
 
             #region Assert
 
-            Equals(result, Samples.defaultHtmlLayoutSample);
+            Equals(result, this.Samples.defaultHtmlLayoutSample);
             this.TearDown();
 
             #endregion
@@ -43,7 +54,7 @@ namespace CfStreamUploader.Core.Test
             #region Assign
 
             this.SetUp();
-            File.WriteAllText(Path.Combine(this.solutionDir, this.htmlLayoutFile), Samples.htmlLayoutSample);
+            File.WriteAllText(Path.Combine(this.solutionDir, this.htmlLayoutFile), this.Samples.htmlLayoutSample);
 
             #endregion
 
@@ -55,11 +66,15 @@ namespace CfStreamUploader.Core.Test
 
             #region Assert
 
-            Equals(result, Samples.htmlLayoutSample);
+            Equals(result, this.Samples.htmlLayoutSample);
             this.TearDown();
 
             #endregion
         }
+
+        #endregion
+
+        #region SetUp
 
         private void SetUp()
         {
@@ -77,5 +92,7 @@ namespace CfStreamUploader.Core.Test
             if (File.Exists(Path.Combine(this.solutionDir, this.htmlLayoutFile)))
                 File.Delete(Path.Combine(this.solutionDir, this.htmlLayoutFile));
         }
+
+        #endregion
     }
 }

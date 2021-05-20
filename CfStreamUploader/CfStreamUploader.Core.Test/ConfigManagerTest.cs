@@ -1,4 +1,5 @@
 ﻿using CfStreamUploader.Core.Models;
+using CfStreamUploader.Core.Test.TestSamples;
 using Newtonsoft.Json;
 using System;
 using System.IO;
@@ -8,29 +9,35 @@ namespace CfStreamUploader.Core.Test
 {
     public class ConfigManagerTest
     {
-        private ConfigManager ConfigManager { get; } = new ConfigManager();
+        #region fields
 
         private readonly string solutionDir =
             Path.GetDirectoryName(Path.GetDirectoryName(Environment.CurrentDirectory));
 
         private const string configPath = "Config.json";
 
-        [Theory]
-        [InlineData("ReadConfig TestToken", true, "ReadConfig TestToken")]
-        [InlineData("ReadConfig TestToken", false, "")]
-        public void ReadConfigTest(string token, bool writeFile, string result)
+        #endregion
+
+        #region props
+
+        private ConfigManager ConfigManager { get; } = new ConfigManager();
+        private Samples Samples { get; } = new Samples();
+
+        #endregion
+
+        #region tests
+
+        [Fact]
+        public void ReadConfigTest()
         {
             #region Assign
 
             this.SetUp();
 
-            var config = new Config(token);
+            var config = new Config(this.Samples.ConfigSample);
 
-            if (writeFile)
-            {
-                var jsonString = JsonConvert.SerializeObject(config, Formatting.Indented);
-                File.WriteAllText(Path.Combine(this.solutionDir, configPath), jsonString);
-            }
+            var jsonString = JsonConvert.SerializeObject(config, Formatting.Indented);
+            File.WriteAllText(Path.Combine(this.solutionDir, configPath), jsonString);
 
             #endregion
 
@@ -42,7 +49,30 @@ namespace CfStreamUploader.Core.Test
 
             #region Assert
 
-            Equals(result, this.ConfigManager.Config.CfToken);
+            Equals(this.Samples.ConfigSample, this.ConfigManager.Config);
+            this.TearDown();
+
+            #endregion
+        }
+
+        [Fact]
+        public void ReadConfigNotExistsTest()
+        {
+            #region Assign
+
+            this.SetUp();
+
+            #endregion
+
+            #region Act
+
+            this.ConfigManager.ReadConfig();
+
+            #endregion
+
+            #region Assert
+
+            Equals(this.Samples.DefaultConfigSample, this.ConfigManager.Config);
             this.TearDown();
 
             #endregion
@@ -59,7 +89,7 @@ namespace CfStreamUploader.Core.Test
 
             #region Act
 
-            this.ConfigManager.UpdateConfig("testToken");
+            this.ConfigManager.UpdateConfig(this.Samples.DefaultConfigSample);
 
             #endregion
 
@@ -70,6 +100,10 @@ namespace CfStreamUploader.Core.Test
 
             #endregion
         }
+
+        #endregion
+
+        #region SetUp
 
         private void SetUp()
         {
@@ -87,5 +121,7 @@ namespace CfStreamUploader.Core.Test
             if (File.Exists(Path.Combine(this.solutionDir, configPath)))
                 File.Delete(Path.Combine(this.solutionDir, configPath));
         }
+
+        #endregion
     }
 }

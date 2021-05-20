@@ -3,8 +3,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:dd="urn:gong-wpf-dragdrop"
         mc:Ignorable="d"
-        Title="CF Stream Uploader" Height="650" Width="1000"
+        Title="CF Stream Uploader" Height="670" Width="1000"
         DataContext="{StaticResource ViewModel}"
         WindowStyle="SingleBorderWindow">
 
@@ -49,20 +50,22 @@
 
                 <StackPanel Margin="5">
 
-                    <Grid AllowDrop="True" Background="{Binding BaseColor}">
+                    <Grid dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" AllowDrop="True"
+                          Background="{Binding BaseColor}">
                         <Border Style="{StaticResource DragAndDropBorderStyle}">
-                            <TextBlock Style="{StaticResource DragAndDropTextBlockStyle}" Text="Drop video here" />
+                            <TextBlock Style="{StaticResource DragAndDropTextBlockStyle}"
+                                       Text="{Binding DragAndDropInfo}" />
                         </Border>
                     </Grid>
-
 
                     <Grid Margin="0,5,0,5">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition />
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
-                        <TextBlock Style="{StaticResource VideoNameTextBlockStyle}" Text="MyVideo(1).mp4" />
-                        <Button Style="{StaticResource UploadButtonStyle}" Content="Upload Video" Grid.Column="1" />
+                        <TextBlock Text="{Binding VideoTitel}" Style="{StaticResource VideoNameTextBlockStyle}" />
+                        <Button Style="{StaticResource UploadButtonStyle}" Content="Select Video" Grid.Column="1"
+                                Command="{Binding SelectVideoCommand}" />
                     </Grid>
 
                     <Button Content="Start" Style="{StaticResource StartButtonStyle}"
@@ -123,13 +126,18 @@
                 <TextBox Style="{DynamicResource HtmlOutputTextBoxStyle}" Text="{Binding HtmlOutput}" />
             </Grid>
 
-            <Grid Grid.Row="3" Margin="10">
+            <Grid Grid.Row="3" Margin="10,0,10,10">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
+                    <ColumnDefinition Width="170" />
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <Button Style="{StaticResource CopyToClipboardButtonStyle}" Content="Copy to clipboard"
-                        Command="{Binding CopyToClipbordCommad}" />
+                <StackPanel>
+                    <Button Style="{StaticResource CopyToClipboardButtonStyle}" Content="Copy to clipboard"
+                            Command="{Binding CopyToClipbordCommad}" />
+                    <Button Style="{StaticResource CopyToClipboardButtonStyle}" Content="Copy video-url"
+                            Command="{Binding CopyVideoUrlCommand}" />
+                </StackPanel>
+
                 <TextBlock Grid.Column="1" Style="{StaticResource WikiLinkTextBlockStyle}">
                     <Hyperlink>How to use this HTML Code?</Hyperlink>
                 </TextBlock>

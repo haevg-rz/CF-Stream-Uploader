@@ -100,6 +100,8 @@
 
     <Style TargetType="Button" x:Key="CopyToClipboardButtonStyle">
         <Setter Property="Margin" Value="5" />
+        <Setter Property="Width" Value="150"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="Padding" Value="5" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Background" Value="{Binding Button1Bg}" />

@@ -11,8 +11,18 @@
     <None Remove="Resources\Images\check.png" />
   </ItemGroup>
 
+  <!-- <ItemGroup> -->
+  <!--   <COMReference Include="{215d64d2-031c-33c7-96e3-61794cd1ee61}"> -->
+  <!--     <WrapperTool>tlbimp</WrapperTool> -->
+  <!--     <VersionMinor>4</VersionMinor> -->
+  <!--     <VersionMajor>2</VersionMajor> -->
+  <!--     <Guid>215d64d2-031c-33c7-96e3-61794cd1ee61</Guid> -->
+  <!--   </COMReference> -->
+  <!-- </ItemGroup> -->
+
   <ItemGroup>
     <PackageReference Include="CommonServiceLocator" Version="2.0.6" />
+    <PackageReference Include="gong-wpf-dragdrop" Version="2.3.2" />
     <PackageReference Include="MvvmLightLibs" Version="5.4.1.1" />
   </ItemGroup>
 

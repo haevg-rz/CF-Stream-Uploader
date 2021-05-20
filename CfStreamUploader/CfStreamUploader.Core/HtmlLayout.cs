@@ -6,10 +6,16 @@ namespace CfStreamUploader.Core
 {
     public class HtmlLayout
     {
+        #region fields
+
         public string CfStreamUploaderPath =
             $@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\CfStreamUploader";
 
         private string htmlLayoutFile = "HtmlLayout.txt";
+
+        #endregion
+
+        #region puplic
 
         public string GetHtmlLayout()
         {
@@ -19,6 +25,10 @@ namespace CfStreamUploader.Core
             this.WriteDefaultHtmlLayout(defaultHtmlLayout);
             return defaultHtmlLayout;
         }
+
+        #endregion
+
+        #region private
 
         private void WriteDefaultHtmlLayout(string defaultHtmlLayout)
         {
@@ -40,5 +50,7 @@ namespace CfStreamUploader.Core
         {
             return File.ReadAllText(Path.Combine(this.CfStreamUploaderPath, this.htmlLayoutFile));
         }
+
+        #endregion
     }
 }

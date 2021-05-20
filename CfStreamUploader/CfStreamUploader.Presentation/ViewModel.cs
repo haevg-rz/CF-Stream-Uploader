@@ -1,18 +1,32 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GongSolutions.Wpf.DragDrop;
+using Microsoft.Win32;
+using System;
+using System.IO;
+using System.Linq;
 using System.Windows;
 
 namespace CfStreamUploader.Presentation
 {
-    public class ViewModel : ViewModelBase
+    public class ViewModel : ViewModelBase, IDropTarget
     {
         #region Fields
 
         private string htmlOutput = "HTML";
+        private string videoTitel = "No video found";
+        private string videoUrl = string.Empty;
+        private readonly string defaultUri = "https://iframe.videodelivery.net/{0}?preload=true";
+        private string dragAndDropInfo = "Drop video here";
+
+        private string CfStreamUploaderPath =
+            $@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\CfStreamUploader\Config.json";
 
         #endregion
 
         #region props
+
+        public Core.Core Core { get; set; } = new Core.Core();
 
         public string HtmlOutput
         {
@@ -20,8 +34,17 @@ namespace CfStreamUploader.Presentation
             set => this.Set(ref this.htmlOutput, value);
         }
 
-        public Core.Core Core { get; set; } = new Core.Core();
+        public string VideoTitel
+        {
+            get => this.videoTitel;
+            set => this.Set(ref this.videoTitel, value);
+        }
 
+        public string DragAndDropInfo
+        {
+            get => this.dragAndDropInfo;
+            set => this.Set(ref this.dragAndDropInfo, value);
+        }
 
         #endregion
 
@@ -29,6 +52,8 @@ namespace CfStreamUploader.Presentation
 
         public RelayCommand CopyToClipbordCommad { get; set; }
         public RelayCommand UploadViedeoCommand { get; set; }
+        public RelayCommand SelectVideoCommand { get; set; }
+        public RelayCommand CopyVideoUrlCommand { get; set; }
 
         #endregion
 
@@ -37,21 +62,125 @@ namespace CfStreamUploader.Presentation
         public ViewModel()
         {
             this.SetDarkmodeCommand = new RelayCommand(this.SetDarkmode);
-            this.UploadViedeoCommand = new RelayCommand(this.UploadViedeo);
+            this.UploadViedeoCommand = new RelayCommand(this.UploadVideoAsync);
             this.CopyToClipbordCommad = new RelayCommand(this.CopyToClipbord);
+            this.SelectVideoCommand = new RelayCommand(this.SelectVideo);
+            this.CopyVideoUrlCommand = new RelayCommand(this.CopyVideoUrl);
+
+            this.isDarkmode = this.Core.ConfigManager.Config.IsDarkmode;
+            if (this.isDarkmode)
+                this.Darkmode();
+            else
+                this.Lightmode();
         }
 
         #endregion
 
         #region Methods
 
-        private void UploadViedeo()
+        private async void UploadVideoAsync()
         {
-            this.HtmlOutput = this.Core.HtmlLayout.GetHtmlLayout();
+            if (this.Core.VideoUploader.VideoPath == string.Empty)
+            {
+                MessageBox.Show("Please select a Video.", "Information", MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+                return;
+            }
+
+            if (!this.IsConfigSolid()) return;
+
+            var result = await this.Core.VideoUploader.UploadVideoAsync(this.Core.ConfigManager.Config);
+
+            if (result.Success)
+            {
+                var videoToken = this.Core.VideoUploader.GetToken(this.Core.ConfigManager.Config);
+
+                this.HtmlOutput = string.Format(this.Core.HtmlLayout.GetHtmlLayout(), videoToken);
+                this.videoUrl = string.Format(this.defaultUri, videoToken);
+            }
+            else
+            {
+                MessageBox.Show(result.Exception.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
+
+        private bool IsConfigSolid()
+        {
+            if (this.Core.ConfigManager.Config.CfToken != string.Empty &&
+                this.Core.ConfigManager.Config.CfAccount != string.Empty) return true;
+
+            var openConfig = MessageBox.Show(
+                "There are missing attribute in the config.\nYou can open your config here",
+                "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+
+            if (openConfig != MessageBoxResult.Yes) return false;
+
+            this.Core.ConfigManager.OpenConfig();
+            return false;
+        }
+
         private void CopyToClipbord()
         {
             Clipboard.SetText(this.HtmlOutput);
+        }
+
+        private void CopyVideoUrl()
+        {
+            Clipboard.SetText(this.videoUrl);
+        }
+
+        private void SelectVideo()
+        {
+            var fileDialog = new OpenFileDialog();
+
+            if (fileDialog.ShowDialog() != true) return;
+
+            if (fileDialog.FileName.Split(".").Last() == "mp4")
+            {
+                this.Core.VideoUploader.VideoPath = fileDialog.FileName;
+                this.VideoTitel = this.Core.VideoUploader.VideoPath.Split("\\").Last();
+            }
+            else
+            {
+                MessageBox.Show("You selected a file with a not supported format", "Error", MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+        }
+
+        public void DragOver(IDropInfo dropInfo)
+        {
+            var dragFileList = ((DataObject) dropInfo.Data).GetFileDropList().Cast<string>();
+            dropInfo.Effects = dragFileList.Any(item =>
+            {
+                var extension = Path.GetExtension(item);
+                return extension != null && extension.Equals(".mp4");
+            })
+                ? DragDropEffects.Copy
+                : DragDropEffects.None;
+        }
+
+        public void Drop(IDropInfo dropInfo)
+        {
+            var dragFileList = ((DataObject) dropInfo.Data).GetFileDropList().Cast<string>();
+            dropInfo.Effects = dragFileList.Any(item =>
+            {
+                var extension = Path.GetExtension(item);
+                return extension != null && extension.Equals(".mp4");
+            })
+                ? DragDropEffects.Copy
+                : DragDropEffects.None;
+
+            this.Core.VideoUploader.VideoPath = ((DataObject) dropInfo.Data).GetFileDropList().Cast<string>().First();
+            this.VideoTitel = this.Core.VideoUploader.VideoPath.Split("\\").Last();
+        }
+
+        private void UpdateConfig()
+        {
+            this.Core.ConfigManager.Config.IsDarkmode = this.isDarkmode;
+
+            var config = this.Core.ConfigManager.Config;
+            config.IsDarkmode = this.isDarkmode;
+            this.Core.ConfigManager.UpdateConfig(config);
         }
 
         #endregion
@@ -144,36 +273,48 @@ namespace CfStreamUploader.Presentation
         {
             if (this.isDarkmode)
             {
-                this.BaseColor = "Transparent";
-                this.ContrastColor = "Transparent";
-                this.TextColor = "Black";
-                this.BorderBrush = "#6497e8";
-                this.Button1Bg = "#6497e8";
-                this.Button1Fg = "White";
-                this.Button2Bg = "#6497e8";
-                this.Button2Fg = "#6497e8";
-                this.Button2FgMouseOver = "White";
-                this.ProgressColor = "Green";
-
+                this.Lightmode();
                 this.ThemeText = "Lightmode";
+
                 this.isDarkmode = false;
+                this.UpdateConfig();
             }
             else
             {
-                this.BaseColor = "#1b2867";
-                this.ContrastColor = "#223075";
-                this.TextColor = "White";
-                this.BorderBrush = "White";
-                this.Button1Bg = "#223075";
-                this.Button1Fg = "White";
-                this.Button2Bg = "White";
-                this.Button2Fg = "White";
-                this.Button2FgMouseOver = "#223075";
-                this.ProgressColor = "LawnGreen";
-
+                this.Darkmode();
                 this.ThemeText = "Darkmode";
+
                 this.isDarkmode = true;
+                this.UpdateConfig();
             }
+        }
+
+        private void Darkmode()
+        {
+            this.BaseColor = "#1b2867";
+            this.ContrastColor = "#223075";
+            this.TextColor = "White";
+            this.BorderBrush = "White";
+            this.Button1Bg = "#223075";
+            this.Button1Fg = "White";
+            this.Button2Bg = "White";
+            this.Button2Fg = "White";
+            this.Button2FgMouseOver = "#223075";
+            this.ProgressColor = "LawnGreen";
+        }
+
+        private void Lightmode()
+        {
+            this.BaseColor = "Transparent";
+            this.ContrastColor = "Transparent";
+            this.TextColor = "Black";
+            this.BorderBrush = "#6497e8";
+            this.Button1Bg = "#6497e8";
+            this.Button1Fg = "White";
+            this.Button2Bg = "#6497e8";
+            this.Button2Fg = "#6497e8";
+            this.Button2FgMouseOver = "White";
+            this.ProgressColor = "Green";
         }
 
         #endregion
