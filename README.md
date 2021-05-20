@@ -3,34 +3,36 @@
 [![.NET Core](https://github.com/haevg-rz/CF-Stream-Uploader/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/haevg-rz/CF-Stream-Uploader/actions/workflows/build.yml)
 
 
-The CF-Stream-Uploader is an UI to upload your videos in your [cloudflare](https://www.cloudflare.com/de-de/) cloud.
+The CF-Stream-Uploader is an UI to upload your videos :video_camera: in your [cloudflare](https://www.cloudflare.com/de-de/) cloud.
 
 
-### Features
+### :speech_balloon: Features 
 
-- You can easily upload your videos in your own [cloudflare](https://www.cloudflare.com/de-de/) cloud
-- Additional you can set restrictions for all your videos
-- The CF-Stream-Uploader will genereate a HTML-Code with your embedded videolink
-- You can personalize the HTML-Code
-- The CF-Stream-Uploader displays your video-storage-capacity for an easy overview
-- The CF-Stream-Uploader saves your HTML-Codes on your pc
+- You can easily upload your videos in your own [cloudflare](https://www.cloudflare.com/de-de/) cloud :cloud:
+- Additional you can set restrictions for all your videos :unlock:
+- The CF-Stream-Uploader will genereate a HTML-Code with your embedded videolink :page_facing_up:
+- You can personalize the HTML-Code :pencil2:
+- The CF-Stream-Uploader displays your video-storage-capacity for an easy overview :part_alternation_mark:
+- The CF-Stream-Uploader saves your HTML-Codes on your pc :computer:
+- ...
+- More fearures are in progress :hourglass:
 
-- ...More fearures are in progress
-
-### Roadmap
+### :airplane: Roadmap 
 
 Here are our milestones:
-- [M1](https://github.com/haevg-rz/CF-Stream-Uploader/milestone/1) The user can upload a given video and gets generated HTML Code to embedded in websites.
+- [M1](https://github.com/haevg-rz/CF-Stream-Uploader/milestone/1) The user can upload a given video and gets generated HTML Code to embedded in websites. :heavy_check_mark:
 - [M2](https://github.com/haevg-rz/CF-Stream-Uploader/milestone/2) The user can apply video restrictions and the complete process is visualised.
 - [M3](https://github.com/haevg-rz/CF-Stream-Uploader/milestone/3) The user can manage history and settings and can view remaining video runtime capacity.
 
-### MockUp
+### :1234: MockUp 
 
-// comming
+Thats our first idea :stuck_out_tongue_winking_eye:
 
-## Video Upload
+![Unbenannt](https://user-images.githubusercontent.com/62097375/118947701-e3cba700-b957-11eb-9422-2e9b7ca0c986.PNG)
 
-### Select a video
+## :chart_with_upwards_trend: Video Upload 
+
+### :point_up: Select a video 
 
 There are two options to select a video:
  1. You can easily drop a video in the the "DragAndDrop" field
@@ -39,7 +41,7 @@ There are two options to select a video:
  Here is a list of supported video-formates:
  - .mp4
 
-### Video uploading
+### :movie_camera: Video uploading 
 
 - Press the Button "Start"
 - The single stepps will be displayed under the "Start" button
@@ -47,12 +49,12 @@ There are two options to select a video:
 - You can copy the HTML-Code with the Button "copy to clipboard" 
 - The Button "copy video-url" gives the link to your video
 
-Notice:
-If you try to upload a video with an empty config you will get an error.
-Make sure that you *save* the config before you try the upload again :)
+:bangbang: Notice:
+- If you try to upload a video with an empty config you will get an error.
+- Make sure that you *save* the config before you try the upload again :)
 
 
-## Config
+## :clipboard: Config 
 
 The JSON config file has the following format:
 
@@ -73,9 +75,9 @@ C:\Users\LOCAL_USER\AppData\Roaming\CfStreamUploader\Config.json
 (make sure to exchange "LOCAL_USER" with you local windows user name ;) )
 
 
-## HTML-Output
+## :newspaper: HTML-Output
 
-### Default HTML-Output
+### :file_folder: Default HTML-Output
 
 If you dont have an own HTML-Layout the CF-Stream-Uploader will generate a default HTML-Layout.
 This is the default HTML-Layout:
@@ -98,7 +100,7 @@ This is the default HTML-Layout:
 </div>
 ```
 
-### Personalized HTML-Output
+### :file_folder: Personalized HTML-Output
 
 There again you can copie your own Html-Layout named "HtmlLayout.txt" in:
 ```
