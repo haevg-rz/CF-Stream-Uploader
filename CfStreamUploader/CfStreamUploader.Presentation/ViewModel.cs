@@ -85,10 +85,11 @@ namespace CfStreamUploader.Presentation
         {
             if (this.Core.VideoUploader.VideoPath == string.Empty)
             {
-                MessageBox.Show("Please select a Video.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Please select a Video.", "Information", MessageBoxButton.OK,
+                    MessageBoxImage.Information);
                 return;
+            }
 
-            }  
             if (!this.IsConfigSolid()) return;
 
             var result = await this.Core.VideoUploader.UploadVideoAsync(this.Core.ConfigManager.Config);
@@ -105,7 +106,7 @@ namespace CfStreamUploader.Presentation
                 MessageBox.Show(result.Exception.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-        
+
         private bool IsConfigSolid()
         {
             if (this.Core.ConfigManager.Config.CfToken != string.Empty &&
