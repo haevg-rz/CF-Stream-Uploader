@@ -6,6 +6,7 @@ using Microsoft.Win32;
 using System;
 using System.IO;
 using System.Linq;
+using System.Media;
 using System.Windows;
 
 namespace CfStreamUploader.Presentation.ViewModels
@@ -341,6 +342,9 @@ namespace CfStreamUploader.Presentation.ViewModels
             this.Button2Fg = "White";
             this.Button2FgMouseOver = "#20328a";
             this.ProgressColor = "LawnGreen";
+
+            var darkmodeSound = new SoundPlayer("swvader02.wav");
+            darkmodeSound.PlaySync();
         }
 
         private void Lightmode()
