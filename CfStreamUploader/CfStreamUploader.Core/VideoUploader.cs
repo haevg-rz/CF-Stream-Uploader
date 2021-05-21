@@ -72,7 +72,7 @@ namespace CfStreamUploader.Core
 
         internal string GetCmdScript(Config config)
         {
-            return string.Format(this.script, config.CfToken, this.VideoPath.Replace("\\", "/"), config.CfAccount);
+            return string.Format(this.script, config.UserSettings.CfToken, this.VideoPath.Replace("\\", "/"), config.UserSettings.CfAccount);
         }
 
         #endregion

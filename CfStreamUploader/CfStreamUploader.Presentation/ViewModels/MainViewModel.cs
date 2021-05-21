@@ -164,8 +164,8 @@ namespace CfStreamUploader.Presentation.ViewModels
 
         private bool IsConfigSolid()
         {
-            if (this.Core.ConfigManager.Config.CfToken != string.Empty &&
-                this.Core.ConfigManager.Config.CfAccount != string.Empty) return true;
+            if (this.Core.ConfigManager.Config.UserSettings.CfToken != string.Empty &&
+                this.Core.ConfigManager.Config.UserSettings.CfAccount != string.Empty) return true;
 
             var openConfig = MessageBox.Show(
                 "There are missing attribute in the config.\nYou can open your config here",

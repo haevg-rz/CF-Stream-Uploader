@@ -6,11 +6,7 @@ namespace CfStreamUploader.Core.Models
     {
         #region props
 
-        public string CfToken { get; set; }
-        public string CfAccount { get; set; }
-        public string KeyId { get; set; }
-        public string PrivateKey { get; set; }
-        public int ExpiresIn { get; set; }
+        public UserSettings UserSettings { get; set; }
         public Restrictions Restrictions { get; set; }
         public bool IsDarkmode { get; set; }
 
@@ -20,33 +16,21 @@ namespace CfStreamUploader.Core.Models
 
         public Config()
         {
-            this.CfToken = string.Empty;
-            this.CfAccount = string.Empty;
-            this.KeyId = string.Empty;
-            this.PrivateKey = string.Empty;
-            this.ExpiresIn = 0;
+            this.UserSettings = new UserSettings();
             this.Restrictions = new Restrictions();
             this.IsDarkmode = false;
         }
 
-        public Config(string cfToken, string cfAccount, string keyId, string privateKey, int expiresIn, Restrictions restrictions, bool isDarkmode)
+        public Config(UserSettings userSettings, int expiresIn, Restrictions restrictions, bool isDarkmode)
         {
-            this.CfToken = cfToken;
-            this.CfAccount = cfAccount;
-            this.KeyId = keyId;
-            this.PrivateKey = privateKey;
-            this.ExpiresIn = expiresIn;
+            this.UserSettings = userSettings;
             this.Restrictions = restrictions;
             this.IsDarkmode = isDarkmode;
         }
 
         public Config(Config config)
         {
-            this.CfToken = config.CfToken;
-            this.CfAccount = config.CfAccount;
-            this.KeyId = config.KeyId;
-            this.PrivateKey = config.PrivateKey;
-            this.ExpiresIn = config.ExpiresIn;
+            this.UserSettings = config.UserSettings;
             this.Restrictions = config.Restrictions;
             this.IsDarkmode = config.IsDarkmode;
         }
