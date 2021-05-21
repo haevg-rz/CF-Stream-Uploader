@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json.Serialization;
 
 namespace CfStreamUploader.Core.Models
@@ -57,7 +58,7 @@ namespace CfStreamUploader.Core.Models
         {
             this.Action = "allow";
             this.Type = "ip.src";
-            this.Ip = new List<string>(){"127.0.0.1"};
+            this.Ip = new List<string>();
         }
 
         public RestrictionIp(RestrictionIp restrictionIp)
@@ -65,6 +66,13 @@ namespace CfStreamUploader.Core.Models
             this.Action = restrictionIp.Action;
             this.Type = restrictionIp.Type;
             this.Ip = restrictionIp.Ip;
+        }
+
+        public RestrictionIp(string action, string type, List<string> ip)
+        {
+            this.Action = action;
+            this.Type = type;
+            this.Ip = ip;
         }
 
 
@@ -98,13 +106,13 @@ namespace CfStreamUploader.Core.Models
     {
         [JsonPropertyName("action")] public string Action { get; private set; }
         [JsonPropertyName("type")] public string Type { get; }
-        [JsonPropertyName("country")] public List<string> Country { get; }
+        [JsonPropertyName("country")] public List<string> Country { get; private set; }
 
         public RestrictionCountry()
         {
             this.Action = "allow";
             this.Type = "ip.geoip.country";
-            this.Country = new List<string>(){"DE"};
+            this.Country = new List<string>();
         }
 
         public RestrictionCountry(RestrictionCountry restrictionCountry)
@@ -112,6 +120,13 @@ namespace CfStreamUploader.Core.Models
             this.Action = restrictionCountry.Action;
             this.Type = restrictionCountry.Type;
             this.Country = restrictionCountry.Country;
+        }
+
+        public RestrictionCountry(string action, string type, List<string> country)
+        {
+            this.Action = action;
+            this.Type = type;
+            this.Country = country;
         }
 
         public void Add(string country)

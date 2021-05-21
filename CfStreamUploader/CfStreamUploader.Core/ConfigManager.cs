@@ -40,12 +40,15 @@ namespace CfStreamUploader.Core
             if (!File.Exists(Path.Combine(this.CfStreamUploaderPath, configFile)))
             {
                 this.Config = new Config();
+                this.SetDefaultConfigItems();
                 this.WriteConfig();
                 return;
             }
 
             var jsonString = File.ReadAllText(Path.Combine(this.CfStreamUploaderPath, configFile));
             this.Config = JsonConvert.DeserializeObject<Config>(jsonString);
+
+            this.SetDefaultConfigItems();
         }
 
         public void UpdateConfig(Config config)
@@ -94,6 +97,15 @@ namespace CfStreamUploader.Core
 
             var jsonString = System.Text.Json.JsonSerializer.Serialize(this.Config, serializeOptions);
             File.WriteAllText(Path.Combine(this.CfStreamUploaderPath, configFile), jsonString);
+        }
+
+        private void SetDefaultConfigItems()
+        {
+            if (this.Config.Restrictions.RestrictionCountry.Country.Count == 0)
+                this.Config.Restrictions.RestrictionCountry.Country.Add("DE");
+
+            if (this.Config.Restrictions.RestrictionIp.Ip.Count == 0)
+                this.Config.Restrictions.RestrictionIp.Ip.Add("127.0.0.1");
         }
 
         #endregion

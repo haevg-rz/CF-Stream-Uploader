@@ -216,7 +216,7 @@ namespace CfStreamUploader.Presentation.ViewModels
         {
             var editWindow = new EditWindow
             {
-                DataContext = new EditViewModel(this.Core.ConfigManager.Config)
+                DataContext = new EditViewModel(this.Core.ConfigManager.Config.Restrictions, this.Core.ConfigManager.Config.IsDarkmode)
             };
             editWindow.ShowDialog();
 

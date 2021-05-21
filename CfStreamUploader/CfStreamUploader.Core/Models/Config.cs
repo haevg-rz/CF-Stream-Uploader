@@ -21,7 +21,7 @@ namespace CfStreamUploader.Core.Models
             this.IsDarkmode = false;
         }
 
-        public Config(UserSettings userSettings, int expiresIn, Restrictions restrictions, bool isDarkmode)
+        public Config(UserSettings userSettings, Restrictions restrictions, bool isDarkmode)
         {
             this.UserSettings = userSettings;
             this.Restrictions = restrictions;

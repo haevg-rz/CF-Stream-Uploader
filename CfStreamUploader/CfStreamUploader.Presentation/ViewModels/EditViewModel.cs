@@ -32,13 +32,13 @@ namespace CfStreamUploader.Presentation.ViewModels
 
         #region constructor
 
-        public EditViewModel(Config config)
+        public EditViewModel(Restrictions restrictions, bool isDarkmode)
         {
             this.SaveButtonCommand = new RelayCommand(this.SaveButton);
 
             this.ConfigManager.ReadConfig();
 
-            this.isDarkmode = config.IsDarkmode;
+            this.isDarkmode = isDarkmode;
             if (this.isDarkmode)
                 this.Darkmode();
             else
