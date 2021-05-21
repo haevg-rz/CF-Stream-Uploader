@@ -11,6 +11,7 @@ namespace CfStreamUploader.Core.Models
         public string KeyId { get; set; }
         public string PrivateKey { get; set; }
         public int ExpiresIn { get; set; }
+        public Restrictions Restrictions { get; set; }
         public bool IsDarkmode { get; set; }
 
         #endregion
@@ -24,16 +25,18 @@ namespace CfStreamUploader.Core.Models
             this.KeyId = string.Empty;
             this.PrivateKey = string.Empty;
             this.ExpiresIn = 0;
+            this.Restrictions = new Restrictions();
             this.IsDarkmode = false;
         }
 
-        public Config(string cfToken, string cfAccount, string keyId, string privateKey, int expiresIn, bool isDarkmode)
+        public Config(string cfToken, string cfAccount, string keyId, string privateKey, int expiresIn, Restrictions restrictions, bool isDarkmode)
         {
             this.CfToken = cfToken;
             this.CfAccount = cfAccount;
             this.KeyId = keyId;
             this.PrivateKey = privateKey;
             this.ExpiresIn = expiresIn;
+            this.Restrictions = restrictions;
             this.IsDarkmode = isDarkmode;
         }
 
@@ -44,6 +47,7 @@ namespace CfStreamUploader.Core.Models
             this.KeyId = config.KeyId;
             this.PrivateKey = config.PrivateKey;
             this.ExpiresIn = config.ExpiresIn;
+            this.Restrictions = config.Restrictions;
             this.IsDarkmode = config.IsDarkmode;
         }
 

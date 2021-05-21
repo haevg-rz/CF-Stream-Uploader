@@ -4,7 +4,6 @@ using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 [assembly: InternalsVisibleTo("CfStreamUploader.Core.Test")]
@@ -23,7 +22,6 @@ namespace CfStreamUploader.Core
         #region props
 
         public string VideoId { get; set; }
-        private Claims Claim { get; } = new Claims();
         public RSA Rsa { get; set; } = RSA.Create();
         public string VideoPath { get; set; } = string.Empty;
 
@@ -81,20 +79,6 @@ namespace CfStreamUploader.Core
 
         #region private
 
-        private int DecodePrivateKey(string privateKey, int expiresIn)
-        {
-            this.Claim.Expiry.AddYears(expiresIn);
-
-
-            var decryptedBytes = this.Rsa.Decrypt(
-                Convert.FromBase64String(privateKey),
-                RSAEncryptionPadding.Pkcs1
-            );
-
-            var rsaPrivateKey = new X509Certificate(decryptedBytes);
-
-            return 0;
-        }
 
         #endregion
     }

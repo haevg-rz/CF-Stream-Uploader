@@ -19,6 +19,9 @@ namespace CfStreamUploader.Presentation.ViewModels
         private string videoUrl = string.Empty;
         private readonly string defaultUri = "https://iframe.videodelivery.net/{0}?preload=true";
         private string dragAndDropInfo = "Drop video here";
+        private string restrictionIP = String.Empty;
+        private string restrictionCountry = String.Empty;
+        private string restrictionAny = String.Empty;
 
         private string CfStreamUploaderPath =
             $@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\CfStreamUploader\Config.json";
@@ -47,6 +50,22 @@ namespace CfStreamUploader.Presentation.ViewModels
             set => this.Set(ref this.dragAndDropInfo, value);
         }
 
+        public string RestrictionIP
+        {
+            get => this.restrictionIP;
+            set => this.Set(ref this.restrictionIP, value);
+        }
+        public string RestrictionCountry
+        {
+            get => this.restrictionCountry;
+            set => this.Set(ref this.restrictionCountry, value);
+        }   
+        public string RestrictionAny
+        {
+            get => this.restrictionAny;
+            set => this.Set(ref this.restrictionAny, value);
+        }
+
         #endregion
 
         #region RelayCommands
@@ -69,6 +88,10 @@ namespace CfStreamUploader.Presentation.ViewModels
             this.SelectVideoCommand = new RelayCommand(this.SelectVideo);
             this.CopyVideoUrlCommand = new RelayCommand(this.CopyVideoUrl);
             this.EditRestrictionsCommand = new RelayCommand(this.EditRestrictions);
+
+            this.RestrictionCountry = this.Core.ConfigManager.Config.Restrictions.RestrictionCountry.GetRestrictionCountry();
+            this.RestrictionAny = this.Core.ConfigManager.Config.Restrictions.RestrictionAny.GetRestrictionAny();
+            this.RestrictionIP = this.Core.ConfigManager.Config.Restrictions.RestrictionIp.GetRestrictionIp();
 
             this.isDarkmode = this.Core.ConfigManager.Config.IsDarkmode;
             if (this.isDarkmode)

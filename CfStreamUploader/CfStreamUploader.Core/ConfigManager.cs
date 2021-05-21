@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Text.Json;
 
 namespace CfStreamUploader.Core
 {
@@ -85,11 +86,16 @@ namespace CfStreamUploader.Core
             if (!Directory.Exists(this.CfStreamUploaderPath))
                 Directory.CreateDirectory(this.CfStreamUploaderPath);
 
-            var jsonString = JsonConvert.SerializeObject(this.Config, Formatting.Indented);
+            var serializeOptions = new JsonSerializerOptions()
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                WriteIndented = true
+            };
+
+            var jsonString = System.Text.Json.JsonSerializer.Serialize(this.Config, serializeOptions);
             File.WriteAllText(Path.Combine(this.CfStreamUploaderPath, configFile), jsonString);
         }
 
         #endregion
-
     }
 }
