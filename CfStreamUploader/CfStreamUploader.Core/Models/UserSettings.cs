@@ -15,6 +15,14 @@
             this.PrivateKey = string.Empty;
         }
 
+        public UserSettings(string cfToken, string cfAccount, string keyId, string privateKey)
+        {
+            this.CfToken = cfToken;
+            this.CfAccount = cfAccount;
+            this.KeyId = keyId;
+            this.PrivateKey = privateKey;
+        }
+
         public UserSettings(UserSettings userSettings)
         {
             this.CfToken = userSettings.CfToken;

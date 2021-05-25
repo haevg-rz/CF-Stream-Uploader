@@ -10,7 +10,12 @@ namespace CfStreamUploader.Core.Test.TestSamples
         public readonly string htmlLayoutSample = "TestSample123";
 
         public Config ConfigSample { get; } =
-            new Config("TestCfToken", "TestCfAccount", "TestKeyId", "TestPrivateKey", 0, false);
+            new Config()
+            { 
+                Restrictions = new Restrictions(),
+                UserSettings = new UserSettings("TestCfToken", "TestCfAccount", "TestKeyId", "TestPrivateKey"),
+                IsDarkmode = false
+            };
 
         public Config DefaultConfigSample { get; } = new Config();
     }

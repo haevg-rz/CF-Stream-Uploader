@@ -1,4 +1,5 @@
-﻿using CfStreamUploader.Presentation.Windows;
+﻿using CfStreamUploader.Presentation.Resources.Colors;
+using CfStreamUploader.Presentation.Windows;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GongSolutions.Wpf.DragDrop;
@@ -6,7 +7,6 @@ using Microsoft.Win32;
 using System;
 using System.IO;
 using System.Linq;
-using System.Media;
 using System.Windows;
 
 namespace CfStreamUploader.Presentation.ViewModels
@@ -20,9 +20,9 @@ namespace CfStreamUploader.Presentation.ViewModels
         private string videoUrl = string.Empty;
         private readonly string defaultUri = "https://iframe.videodelivery.net/{0}?preload=true";
         private string dragAndDropInfo = "Drop video here";
-        private string restrictionIP = String.Empty;
-        private string restrictionCountry = String.Empty;
-        private string restrictionAny = String.Empty;
+        private string restrictionIP = string.Empty;
+        private string restrictionCountry = string.Empty;
+        private string restrictionAny = string.Empty;
 
         private string CfStreamUploaderPath =
             $@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\CfStreamUploader\Config.json";
@@ -56,11 +56,13 @@ namespace CfStreamUploader.Presentation.ViewModels
             get => this.restrictionIP;
             set => this.Set(ref this.restrictionIP, value);
         }
+
         public string RestrictionCountry
         {
             get => this.restrictionCountry;
             set => this.Set(ref this.restrictionCountry, value);
-        }   
+        }
+
         public string RestrictionAny
         {
             get => this.restrictionAny;
@@ -90,7 +92,8 @@ namespace CfStreamUploader.Presentation.ViewModels
             this.CopyVideoUrlCommand = new RelayCommand(this.CopyVideoUrl);
             this.EditRestrictionsCommand = new RelayCommand(this.EditRestrictions);
 
-            this.RestrictionCountry = this.Core.ConfigManager.Config.Restrictions.RestrictionCountry.GetRestrictionCountry();
+            this.RestrictionCountry =
+                this.Core.ConfigManager.Config.Restrictions.RestrictionCountry.GetRestrictionCountry();
             this.RestrictionAny = this.Core.ConfigManager.Config.Restrictions.RestrictionAny.GetRestrictionAny();
             this.RestrictionIP = this.Core.ConfigManager.Config.Restrictions.RestrictionIp.GetRestrictionIp();
 
@@ -107,7 +110,7 @@ namespace CfStreamUploader.Presentation.ViewModels
 
         public void DragOver(IDropInfo dropInfo)
         {
-            var dragFileList = ((DataObject)dropInfo.Data).GetFileDropList().Cast<string>();
+            var dragFileList = ((DataObject) dropInfo.Data).GetFileDropList().Cast<string>();
             dropInfo.Effects = dragFileList.Any(item =>
             {
                 var extension = Path.GetExtension(item);
@@ -119,7 +122,7 @@ namespace CfStreamUploader.Presentation.ViewModels
 
         public void Drop(IDropInfo dropInfo)
         {
-            var dragFileList = ((DataObject)dropInfo.Data).GetFileDropList().Cast<string>();
+            var dragFileList = ((DataObject) dropInfo.Data).GetFileDropList().Cast<string>();
             dropInfo.Effects = dragFileList.Any(item =>
             {
                 var extension = Path.GetExtension(item);
@@ -128,15 +131,14 @@ namespace CfStreamUploader.Presentation.ViewModels
                 ? DragDropEffects.Copy
                 : DragDropEffects.None;
 
-            this.Core.VideoUploader.VideoPath = ((DataObject)dropInfo.Data).GetFileDropList().Cast<string>().First();
+            this.Core.VideoUploader.VideoPath = ((DataObject) dropInfo.Data).GetFileDropList().Cast<string>().First();
             this.VideoTitel = this.Core.VideoUploader.VideoPath.Split("\\").Last();
         }
-
-
 
         #endregion
 
         #region private
+
         private async void UploadVideoAsync()
         {
             if (this.Core.VideoUploader.VideoPath == string.Empty)
@@ -205,6 +207,7 @@ namespace CfStreamUploader.Presentation.ViewModels
                     MessageBoxImage.Error);
             }
         }
+
         private void UpdateConfig()
         {
             this.Core.ConfigManager.Config.IsDarkmode = this.isDarkmode;
@@ -213,19 +216,19 @@ namespace CfStreamUploader.Presentation.ViewModels
             config.IsDarkmode = this.isDarkmode;
             this.Core.ConfigManager.UpdateConfig(config);
         }
+
         private void EditRestrictions()
         {
-            var editWindow = new EditWindow
-            {
-                DataContext = new EditViewModel(this.Core.ConfigManager.Config.Restrictions, this.Core.ConfigManager.Config.IsDarkmode)
-            };
-            editWindow.ShowDialog();
+            WindowManager.OpenEditWindow();
 
             this.Core.ConfigManager.ReadConfig();
+            this.RestrictionCountry = this.Core.ConfigManager.Config.Restrictions.RestrictionCountry.GetRestrictionCountry();
+            this.RestrictionAny = this.Core.ConfigManager.Config.Restrictions.RestrictionAny.GetRestrictionAny();
+            this.RestrictionIP = this.Core.ConfigManager.Config.Restrictions.RestrictionIp.GetRestrictionIp();
         }
 
         #endregion
-     
+
         #region ColorChange
 
         private bool isDarkmode = false;
@@ -332,19 +335,16 @@ namespace CfStreamUploader.Presentation.ViewModels
 
         private void Darkmode()
         {
-            this.BaseColor = "#162770";
-            this.ContrastColor = "#20328a";
+            this.BaseColor = Colors.BlackmodeBaseColor;
+            this.ContrastColor = Colors.BlackmodeContrastColor;
             this.TextColor = "White";
             this.BorderBrush = "White";
-            this.Button1Bg = "#20328a";
+            this.Button1Bg = Colors.BlackmodeContrastColor;
             this.Button1Fg = "White";
             this.Button2Bg = "White";
             this.Button2Fg = "White";
-            this.Button2FgMouseOver = "#20328a";
+            this.Button2FgMouseOver = Colors.BlackmodeContrastColor;
             this.ProgressColor = "LawnGreen";
-
-            var darkmodeSound = new SoundPlayer("swvader02.wav");
-            darkmodeSound.PlaySync();
         }
 
         private void Lightmode()

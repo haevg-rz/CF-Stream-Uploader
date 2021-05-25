@@ -86,9 +86,9 @@ namespace CfStreamUploader.Core.Models
             this.Action = "block";
         }
 
-        public void Add(string ip)
+        public void SetIpList(List<string> ipList)
         {
-            this.Ip.Add(ip);
+            this.Ip = ipList;
         }
 
         public void Delete(string ip)
@@ -100,14 +100,18 @@ namespace CfStreamUploader.Core.Models
         {
             return $"{this.Action} {string.Join(",", this.Ip.ToArray())}";
         }
+        public string PrintIps()
+        {
+            return $"{string.Join(",", this.Ip.ToArray())}";
+        }
     }
 
     public class RestrictionCountry
     {
         [JsonPropertyName("action")] public string Action { get; private set; }
         [JsonPropertyName("type")] public string Type { get; }
-        [JsonPropertyName("country")] public List<string> Country { get; private set; }
-
+        [JsonPropertyName("country")] public List<string> Country { get ; private set; }
+        
         public RestrictionCountry()
         {
             this.Action = "allow";
@@ -129,9 +133,9 @@ namespace CfStreamUploader.Core.Models
             this.Country = country;
         }
 
-        public void Add(string country)
+        public void SetCountryList(List<string> country)
         {
-            this.Country.Add(country);
+            this.Country = country;
         }
 
         public void Remove(string country)
@@ -152,6 +156,10 @@ namespace CfStreamUploader.Core.Models
         public string GetRestrictionCountry()
         {
             return $"{this.Action} {string.Join(",", this.Country.ToArray())}";
+        }
+        public string PrintCounties()
+        {
+            return $"{string.Join(",", this.Country.ToArray())}";
         }
 
         #endregion

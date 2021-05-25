@@ -8,7 +8,8 @@
         mc:Ignorable="d"
         Title="CF Stream Uploader" Height="670" Width="1000"
         WindowStyle="SingleBorderWindow"
-        DataContext="{StaticResource ViewModel}">
+        DataContext="{StaticResource ViewModel}"
+        WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
         <ResourceDictionary>
