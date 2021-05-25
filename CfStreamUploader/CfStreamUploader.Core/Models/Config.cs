@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.Json.Serialization;
 
 namespace CfStreamUploader.Core.Models
 {
@@ -6,9 +7,9 @@ namespace CfStreamUploader.Core.Models
     {
         #region props
 
-        public UserSettings UserSettings { get; set; }
-        public Restrictions Restrictions { get; set; }
-        public bool IsDarkmode { get; set; }
+        [JsonPropertyName("userSettings")]public UserSettings UserSettings { get; set; }
+        [JsonPropertyName("accessRules")] public AccessRules AccessRules { get; set; }
+        [JsonPropertyName("isDarkmode")] public bool IsDarkmode { get; set; }
 
         #endregion
 
@@ -17,21 +18,21 @@ namespace CfStreamUploader.Core.Models
         public Config()
         {
             this.UserSettings = new UserSettings();
-            this.Restrictions = new Restrictions();
+            this.AccessRules = new AccessRules();
             this.IsDarkmode = false;
         }
 
-        public Config(UserSettings userSettings, Restrictions restrictions, bool isDarkmode)
+        public Config(UserSettings userSettings, AccessRules accessRules, bool isDarkmode)
         {
             this.UserSettings = userSettings;
-            this.Restrictions = restrictions;
+            this.AccessRules = accessRules;
             this.IsDarkmode = isDarkmode;
         }
 
         public Config(Config config)
         {
             this.UserSettings = config.UserSettings;
-            this.Restrictions = config.Restrictions;
+            this.AccessRules = config.AccessRules;
             this.IsDarkmode = config.IsDarkmode;
         }
 

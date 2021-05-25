@@ -93,9 +93,9 @@ namespace CfStreamUploader.Presentation.ViewModels
             this.EditRestrictionsCommand = new RelayCommand(this.EditRestrictions);
 
             this.RestrictionCountry =
-                this.Core.ConfigManager.Config.Restrictions.RestrictionCountry.GetRestrictionCountry();
-            this.RestrictionAny = this.Core.ConfigManager.Config.Restrictions.RestrictionAny.GetRestrictionAny();
-            this.RestrictionIP = this.Core.ConfigManager.Config.Restrictions.RestrictionIp.PrintRestrictionAndIp();
+                this.Core.ConfigManager.Config.AccessRules.Country.PrintRestriction();
+            this.RestrictionAny = this.Core.ConfigManager.Config.AccessRules.Any.PrintRestriction();
+            this.RestrictionIP = this.Core.ConfigManager.Config.AccessRules.Ip.PrintRestriction();
 
             this.isDarkmode = this.Core.ConfigManager.Config.IsDarkmode;
             if (this.isDarkmode)
@@ -222,9 +222,10 @@ namespace CfStreamUploader.Presentation.ViewModels
             WindowManager.OpenEditWindow();
 
             this.Core.ConfigManager.ReadConfig();
-            this.RestrictionCountry = this.Core.ConfigManager.Config.Restrictions.RestrictionCountry.GetRestrictionCountry();
-            this.RestrictionAny = this.Core.ConfigManager.Config.Restrictions.RestrictionAny.GetRestrictionAny();
-            this.RestrictionIP = this.Core.ConfigManager.Config.Restrictions.RestrictionIp.PrintRestrictionAndIp();
+
+            this.RestrictionCountry = this.Core.ConfigManager.Config.AccessRules.Country.PrintRestriction();
+            this.RestrictionAny = this.Core.ConfigManager.Config.AccessRules.Any.PrintRestriction();
+            this.RestrictionIP = this.Core.ConfigManager.Config.AccessRules.Ip.PrintRestriction();
         }
 
         #endregion

@@ -1,11 +1,8 @@
-﻿using System;
-using CfStreamUploader.Core;
-using CfStreamUploader.Core.Models;
+﻿using CfStreamUploader.Core;
 using CfStreamUploader.Presentation.Resources.Colors;
 using CfStreamUploader.Presentation.Windows;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace CfStreamUploader.Presentation.ViewModels
@@ -76,12 +73,12 @@ namespace CfStreamUploader.Presentation.ViewModels
 
             this.ConfigManager.ReadConfig();
 
-            this.IpTextBox = this.ConfigManager.Config.Restrictions.RestrictionIp.PrintIps();
-            if (!this.ConfigManager.Config.Restrictions.RestrictionIp.IsBlocked())
+            this.IpTextBox = this.ConfigManager.Config.AccessRules.Ip.PrintIps();
+            if (!this.ConfigManager.Config.AccessRules.Ip.IsBlocked())
                 this.BlockAndAllowAll = "block";
 
-            this.CountryTextBox = this.ConfigManager.Config.Restrictions.RestrictionCountry.PrintCounties();
-            if (!this.ConfigManager.Config.Restrictions.RestrictionCountry.IsBlocked())
+            this.CountryTextBox = this.ConfigManager.Config.AccessRules.Country.PrintCounties();
+            if (!this.ConfigManager.Config.AccessRules.Country.IsBlocked())
                 this.BlockAndAllowCountry = "block";
 
             this.ConfigManager.Config.IsDarkmode = this.isDarkmode;
@@ -97,53 +94,53 @@ namespace CfStreamUploader.Presentation.ViewModels
 
         private void AllowAll()
         {
-            if (this.ConfigManager.Config.Restrictions.RestrictionAny.IsBlocked())
+            if (this.ConfigManager.Config.AccessRules.Any.IsBlocked())
             {
                 this.BlockAndAllowAll = "block";
-                this.ConfigManager.Config.Restrictions.RestrictionAny.Block();
+                this.ConfigManager.Config.AccessRules.Any.Block();
             }
             else
             {
                 this.BlockAndAllowAll = "allow";
-                this.ConfigManager.Config.Restrictions.RestrictionAny.Allow();
+                this.ConfigManager.Config.AccessRules.Any.Allow();
             }
         }
 
         private void AllowCountries()
         {
-            if (this.ConfigManager.Config.Restrictions.RestrictionCountry.IsBlocked())
+            if (this.ConfigManager.Config.AccessRules.Country.IsBlocked())
             {
                 this.BlockAndAllowCountry = "block";
-                this.ConfigManager.Config.Restrictions.RestrictionCountry.Block();
+                this.ConfigManager.Config.AccessRules.Country.Block();
             }
             else
             {
                 this.BlockAndAllowCountry = "allow";
-                this.ConfigManager.Config.Restrictions.RestrictionCountry.Allow();
+                this.ConfigManager.Config.AccessRules.Country.Allow();
             }
         }
 
         private void AllowIps()
         {
-            if (this.ConfigManager.Config.Restrictions.RestrictionIp.IsBlocked())
+            if (this.ConfigManager.Config.AccessRules.Ip.IsBlocked())
             {
                 this.BlockAndAllowIp = "block";
-                this.ConfigManager.Config.Restrictions.RestrictionIp.Block();
+                this.ConfigManager.Config.AccessRules.Ip.Block();
             }
             else
             {
                 this.BlockAndAllowIp = "allow";
-                this.ConfigManager.Config.Restrictions.RestrictionIp.Allow();
+                this.ConfigManager.Config.AccessRules.Ip.Allow();
             }
         }
 
         private void SaveButton()
         {
             var ipString = this.IpTextBox.Trim();
-            this.ConfigManager.Config.Restrictions.RestrictionIp.SetIpList(ipString.Split(",").ToList());
+            this.ConfigManager.Config.AccessRules.Ip.SetIpList(ipString.Split(",").ToList());
 
             var countryString = this.CountryTextBox.Trim();
-            this.ConfigManager.Config.Restrictions.RestrictionCountry.SetCountryList(countryString.Split(",").ToList());
+            this.ConfigManager.Config.AccessRules.Country.SetCountryList(countryString.Split(",").ToList());
 
             this.ConfigManager.UpdateConfig(this.ConfigManager.Config);
 

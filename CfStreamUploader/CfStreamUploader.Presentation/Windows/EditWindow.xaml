@@ -4,7 +4,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Edit" Height="300" Width="400"
+        Title="Edit" Height="300" Width="470"
         DataContext="{StaticResource EditViewModel}"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen">

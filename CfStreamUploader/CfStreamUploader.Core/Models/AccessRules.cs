@@ -1,33 +1,32 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json.Serialization;
 
 namespace CfStreamUploader.Core.Models
 {
-    public class Restrictions
+    public class AccessRules
     {
-        public RestrictionAny RestrictionAny { get; }
-        public RestrictionIp RestrictionIp { get; }
-        public RestrictionCountry RestrictionCountry { get; }
+        [JsonPropertyName("any")]public Any Any { get; }
+        [JsonPropertyName("ip")] public Ip Ip { get; }
+        [JsonPropertyName("country")] public Country Country { get; }
 
-        public Restrictions()
+        public AccessRules()
         {
-            this.RestrictionAny = new RestrictionAny();
-            this.RestrictionIp = new RestrictionIp();
-            this.RestrictionCountry = new RestrictionCountry();
+            this.Any = new Any();
+            this.Ip = new Ip();
+            this.Country = new Country();
         }
 
-        public Restrictions(Restrictions restrictions)
+        public AccessRules(AccessRules accessRules)
         {
-            this.RestrictionAny = restrictions.RestrictionAny;
-            this.RestrictionIp = restrictions.RestrictionIp;
-            this.RestrictionCountry = restrictions.RestrictionCountry;
+            this.Any = accessRules.Any;
+            this.Ip = accessRules.Ip;
+            this.Country = accessRules.Country;
         }
     }
 
     #region restrictions
 
-    public class RestrictionAny
+    public class Any
     {
         [JsonPropertyName("action")] public string Action { get; set; } = "allow";
         [JsonPropertyName("type")] public string Type { get; } = "any";
@@ -47,39 +46,38 @@ namespace CfStreamUploader.Core.Models
             return this.Action == "allow";
         }
 
-        public string GetRestrictionAny()
+        public string PrintRestriction()
         {
             return $"{this.Action} {this.Type}";
         }
     }
 
-    public class RestrictionIp
+    public class Ip
     {
         [JsonPropertyName("action")] public string Action { get; set; }
         [JsonPropertyName("type")] public string Type { get; }
-        [JsonPropertyName("ip")] public List<string> Ip { get; set; }
+        [JsonPropertyName("ip")] public List<string> Ips { get; set; }
 
-        public RestrictionIp()
+        public Ip()
         {
             this.Action = "allow";
             this.Type = "ip.src";
-            this.Ip = new List<string>();
+            this.Ips = new List<string>();
         }
-
-        public RestrictionIp(RestrictionIp restrictionIp)
+        
+        public Ip(Ip ip)
         {
-            this.Action = restrictionIp.Action;
-            this.Type = restrictionIp.Type;
-            this.Ip = restrictionIp.Ip;
+            this.Action = ip.Action;
+            this.Type = ip.Type;
+            this.Ips = ip.Ips;
         }
-
-        public RestrictionIp(string action, string type, List<string> ip)
+        
+        public Ip(string action, string type, List<string> ips)
         {
             this.Action = action;
             this.Type = type;
-            this.Ip = ip;
+            this.Ips = ips;
         }
-
 
         public void Allow()
         {
@@ -98,50 +96,50 @@ namespace CfStreamUploader.Core.Models
 
         public void SetIpList(List<string> ipList)
         {
-            this.Ip = ipList;
+            this.Ips = ipList;
         }
 
-        public string PrintRestrictionAndIp()
+        public string PrintRestriction()
         {
-            return $"{this.Action} {string.Join(",", this.Ip.ToArray())}";
+            return $"{this.Action} {string.Join(",", this.Ips.ToArray())}";
         }
 
         public string PrintIps()
         {
-            return $"{string.Join(",", this.Ip.ToArray())}";
+            return $"{string.Join(",", this.Ips.ToArray())}";
         }
     }
 
-    public class RestrictionCountry
+    public class Country
     {
         [JsonPropertyName("action")] public string Action { get; set; }
         [JsonPropertyName("type")] public string Type { get; }
-        [JsonPropertyName("country")] public List<string> Country { get; set; }
+        [JsonPropertyName("country")] public List<string> Countries { get; set; }
 
-        public RestrictionCountry()
+        public Country()
         {
             this.Action = "allow";
             this.Type = "ip.geoip.country";
-            this.Country = new List<string>();
+            this.Countries = new List<string>();
         }
-
-        public RestrictionCountry(RestrictionCountry restrictionCountry)
+        
+        public Country(Country country)
         {
-            this.Action = restrictionCountry.Action;
-            this.Type = restrictionCountry.Type;
-            this.Country = restrictionCountry.Country;
+            this.Action = country.Action;
+            this.Type = country.Type;
+            this.Countries = country.Countries;
         }
-
-        public RestrictionCountry(string action, string type, List<string> country)
+        
+        public Country(string action, string type, List<string> countries)
         {
             this.Action = action;
             this.Type = type;
-            this.Country = country;
+            this.Countries = countries;
         }
 
         public void SetCountryList(List<string> country)
         {
-            this.Country = country;
+            this.Countries = country;
         }
 
         public void Allow()
@@ -159,14 +157,14 @@ namespace CfStreamUploader.Core.Models
             return this.Action == "allow";
         }
 
-        public string GetRestrictionCountry()
+        public string PrintRestriction()
         {
-            return $"{this.Action} {string.Join(",", this.Country.ToArray())}";
+            return $"{this.Action} {string.Join(",", this.Countries.ToArray())}";
         }
 
         public string PrintCounties()
         {
-            return $"{string.Join(",", this.Country.ToArray())}";
+            return $"{string.Join(",", this.Countries.ToArray())}";
         }
 
         #endregion

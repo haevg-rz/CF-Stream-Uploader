@@ -91,7 +91,7 @@ namespace CfStreamUploader.Core
 
             var serializeOptions = new JsonSerializerOptions()
             {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                // PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                 WriteIndented = true
             };
 
@@ -101,11 +101,11 @@ namespace CfStreamUploader.Core
 
         private void SetDefaultConfigItems()
         {
-            if (this.Config.Restrictions.RestrictionCountry.Country.Count == 0)
-                this.Config.Restrictions.RestrictionCountry.Country.Add("DE");
+            if (this.Config.AccessRules.Country.Countries.Count == 0)
+                this.Config.AccessRules.Country.Countries.Add("DE");
 
-            if (this.Config.Restrictions.RestrictionIp.Ip.Count == 0)
-                this.Config.Restrictions.RestrictionIp.Ip.Add("127.0.0.1");
+            if (this.Config.AccessRules.Ip.Ips.Count == 0)
+                this.Config.AccessRules.Ip.Ips.Add("127.0.0.1");
         }
 
         #endregion

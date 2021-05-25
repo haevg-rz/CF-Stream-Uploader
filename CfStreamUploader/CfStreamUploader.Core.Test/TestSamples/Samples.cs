@@ -12,7 +12,7 @@ namespace CfStreamUploader.Core.Test.TestSamples
         public Config ConfigSample { get; } =
             new Config()
             { 
-                Restrictions = new Restrictions(),
+                AccessRules = new AccessRules(),
                 UserSettings = new UserSettings("TestCfToken", "TestCfAccount", "TestKeyId", "TestPrivateKey"),
                 IsDarkmode = false
             };
