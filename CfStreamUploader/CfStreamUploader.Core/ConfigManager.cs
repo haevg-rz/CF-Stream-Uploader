@@ -89,13 +89,7 @@ namespace CfStreamUploader.Core
             if (!Directory.Exists(this.CfStreamUploaderPath))
                 Directory.CreateDirectory(this.CfStreamUploaderPath);
 
-            var serializeOptions = new JsonSerializerOptions()
-            {
-                // PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                WriteIndented = true
-            };
-
-            var jsonString = System.Text.Json.JsonSerializer.Serialize(this.Config, serializeOptions);
+            var jsonString = JsonConvert.SerializeObject(this.Config, Formatting.Indented);
             File.WriteAllText(Path.Combine(this.CfStreamUploaderPath, configFile), jsonString);
         }
 

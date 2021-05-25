@@ -2,10 +2,10 @@
 {
     public static class Colors
     {
-        public static string BlackmodeBaseColor = "#1e1e1e";
-        public static string BlackmodeContrastColor = "#404040";
+        public static string DarkmodeBaseColor = "#1e1e1e";
+        public static string DarkmodeContrastColor = "#404040";
 
-        public static string LightmodeBaseColor = "#1e1e1e";
-        public static string LightmodeContrastColor = "#1e1e1e";
+        public static string LightmodeBaseColor = "Transparent";
+        public static string LightmodeContrastColor = "#6497e8";
     }
 }

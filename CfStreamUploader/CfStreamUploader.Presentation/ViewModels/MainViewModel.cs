@@ -336,28 +336,28 @@ namespace CfStreamUploader.Presentation.ViewModels
 
         private void Darkmode()
         {
-            this.BaseColor = Colors.BlackmodeBaseColor;
-            this.ContrastColor = Colors.BlackmodeContrastColor;
+            this.BaseColor = Colors.DarkmodeBaseColor;
+            this.ContrastColor = Colors.DarkmodeContrastColor;
             this.TextColor = "White";
             this.BorderBrush = "White";
-            this.Button1Bg = Colors.BlackmodeContrastColor;
+            this.Button1Bg = Colors.DarkmodeContrastColor;
             this.Button1Fg = "White";
             this.Button2Bg = "White";
             this.Button2Fg = "White";
-            this.Button2FgMouseOver = Colors.BlackmodeContrastColor;
+            this.Button2FgMouseOver = Colors.DarkmodeContrastColor;
             this.ProgressColor = "LawnGreen";
         }
 
         private void Lightmode()
         {
-            this.BaseColor = "Transparent";
+            this.BaseColor = Colors.LightmodeBaseColor;
             this.ContrastColor = "Transparent";
             this.TextColor = "Black";
-            this.BorderBrush = "#6497e8";
-            this.Button1Bg = "#6497e8";
+            this.BorderBrush = Colors.LightmodeContrastColor;
+            this.Button1Bg = Colors.LightmodeContrastColor;
             this.Button1Fg = "White";
-            this.Button2Bg = "#6497e8";
-            this.Button2Fg = "#6497e8";
+            this.Button2Bg = Colors.LightmodeContrastColor;
+            this.Button2Fg = Colors.LightmodeContrastColor;
             this.Button2FgMouseOver = "White";
             this.ProgressColor = "Green";
         }

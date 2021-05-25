@@ -11,8 +11,6 @@ namespace CfStreamUploader.Presentation.ViewModels
     {
         #region fields
 
-        private bool isDarkmode;
-
         private string blockAndAllowIp = "allow";
         private string blockAndAllowCountry = "allow";
         private string blockAndAllowAll = "allow";
@@ -74,15 +72,17 @@ namespace CfStreamUploader.Presentation.ViewModels
             this.ConfigManager.ReadConfig();
 
             this.IpTextBox = this.ConfigManager.Config.AccessRules.Ip.PrintIps();
-            if (!this.ConfigManager.Config.AccessRules.Ip.IsBlocked())
-                this.BlockAndAllowAll = "block";
+            if (this.ConfigManager.Config.AccessRules.Ip.IsBlocked())
+                this.BlockAndAllowIp = "block";
 
             this.CountryTextBox = this.ConfigManager.Config.AccessRules.Country.PrintCounties();
-            if (!this.ConfigManager.Config.AccessRules.Country.IsBlocked())
+            if (this.ConfigManager.Config.AccessRules.Country.IsBlocked())
                 this.BlockAndAllowCountry = "block";
 
-            this.ConfigManager.Config.IsDarkmode = this.isDarkmode;
-            if (this.isDarkmode)
+            if (this.ConfigManager.Config.AccessRules.Any.IsBlocked())
+                this.BlockAndAllowAll = "block";
+
+            if (this.ConfigManager.Config.IsDarkmode)
                 this.Darkmode();
             else
                 this.Lightmode();
@@ -96,13 +96,13 @@ namespace CfStreamUploader.Presentation.ViewModels
         {
             if (this.ConfigManager.Config.AccessRules.Any.IsBlocked())
             {
-                this.BlockAndAllowAll = "block";
-                this.ConfigManager.Config.AccessRules.Any.Block();
+                this.BlockAndAllowAll = "allow";
+                this.ConfigManager.Config.AccessRules.Any.Allow();
             }
             else
             {
-                this.BlockAndAllowAll = "allow";
-                this.ConfigManager.Config.AccessRules.Any.Allow();
+                this.BlockAndAllowAll = "block";
+                this.ConfigManager.Config.AccessRules.Any.Block();
             }
         }
 
@@ -110,13 +110,13 @@ namespace CfStreamUploader.Presentation.ViewModels
         {
             if (this.ConfigManager.Config.AccessRules.Country.IsBlocked())
             {
-                this.BlockAndAllowCountry = "block";
-                this.ConfigManager.Config.AccessRules.Country.Block();
+                this.BlockAndAllowCountry = "allow";
+                this.ConfigManager.Config.AccessRules.Country.Allow();
             }
             else
             {
-                this.BlockAndAllowCountry = "allow";
-                this.ConfigManager.Config.AccessRules.Country.Allow();
+                this.BlockAndAllowCountry = "block";
+                this.ConfigManager.Config.AccessRules.Country.Block();
             }
         }
 
@@ -124,13 +124,13 @@ namespace CfStreamUploader.Presentation.ViewModels
         {
             if (this.ConfigManager.Config.AccessRules.Ip.IsBlocked())
             {
-                this.BlockAndAllowIp = "block";
-                this.ConfigManager.Config.AccessRules.Ip.Block();
+                this.BlockAndAllowIp = "allow";
+                this.ConfigManager.Config.AccessRules.Ip.Allow();
             }
             else
             {
-                this.BlockAndAllowIp = "allow";
-                this.ConfigManager.Config.AccessRules.Ip.Allow();
+                this.BlockAndAllowIp = "block";
+                this.ConfigManager.Config.AccessRules.Ip.Block();
             }
         }
 
@@ -182,18 +182,17 @@ namespace CfStreamUploader.Presentation.ViewModels
 
         private void Darkmode()
         {
-            // this.BaseColor = "#1b2867";
-            this.BaseColor = Colors.BlackmodeBaseColor;
+            this.BaseColor = Colors.DarkmodeBaseColor;
             this.TextColor = "White";
-            this.Button1Bg = Colors.BlackmodeContrastColor;
+            this.Button1Bg = Colors.DarkmodeContrastColor;
             this.Button1Fg = "White";
         }
 
         private void Lightmode()
         {
-            this.BaseColor = "Transparent";
+            this.BaseColor = Colors.LightmodeBaseColor;
             this.TextColor = "Black";
-            this.Button1Bg = "#6497e8";
+            this.Button1Bg = Colors.LightmodeContrastColor;
             this.Button1Fg = "White";
         }
 

@@ -43,7 +43,7 @@ namespace CfStreamUploader.Core.Models
 
         public bool IsBlocked()
         {
-            return this.Action == "allow";
+            return this.Action == "block";
         }
 
         public string PrintRestriction()
@@ -91,7 +91,7 @@ namespace CfStreamUploader.Core.Models
 
         public bool IsBlocked()
         {
-            return this.Action == "allow";
+            return this.Action == "block";
         }
 
         public void SetIpList(List<string> ipList)
@@ -154,17 +154,17 @@ namespace CfStreamUploader.Core.Models
 
         public bool IsBlocked()
         {
-            return this.Action == "allow";
+            return this.Action == "block";
         }
 
         public string PrintRestriction()
         {
-            return $"{this.Action} {string.Join(",", this.Countries.ToArray())}";
+            return $"{this.Action} {string.Join(", ", this.Countries.ToArray())}";
         }
 
         public string PrintCounties()
         {
-            return $"{string.Join(",", this.Countries.ToArray())}";
+            return $"{string.Join(", ", this.Countries.ToArray())}";
         }
 
         #endregion
