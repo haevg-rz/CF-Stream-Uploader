@@ -136,7 +136,7 @@ namespace CfStreamUploader.Presentation.ViewModels
 
         private void SaveButton()
         {
-            var ipString = this.IpTextBox.Trim();
+            var ipString = this.IpTextBox.Trim(); //TODO " abc" --> "abc" : "a bc" -- "a bc"
             this.ConfigManager.Config.AccessRules.Ip.SetIpList(ipString.Split(",").ToList());
 
             var countryString = this.CountryTextBox.Trim();
