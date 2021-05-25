@@ -75,8 +75,14 @@ namespace CfStreamUploader.Presentation.ViewModels
             this.AllowAllCommand = new RelayCommand(this.AllowAll);
 
             this.ConfigManager.ReadConfig();
+
             this.IpTextBox = this.ConfigManager.Config.Restrictions.RestrictionIp.PrintIps();
+            if (!this.ConfigManager.Config.Restrictions.RestrictionIp.IsBlocked())
+                this.BlockAndAllowAll = "block";
+
             this.CountryTextBox = this.ConfigManager.Config.Restrictions.RestrictionCountry.PrintCounties();
+            if (!this.ConfigManager.Config.Restrictions.RestrictionCountry.IsBlocked())
+                this.BlockAndAllowCountry = "block";
 
             this.ConfigManager.Config.IsDarkmode = this.isDarkmode;
             if (this.isDarkmode)
@@ -91,7 +97,7 @@ namespace CfStreamUploader.Presentation.ViewModels
 
         private void AllowAll()
         {
-            if (this.ConfigManager.Config.Restrictions.RestrictionAny.Action == "allow")
+            if (this.ConfigManager.Config.Restrictions.RestrictionAny.IsBlocked())
             {
                 this.BlockAndAllowAll = "block";
                 this.ConfigManager.Config.Restrictions.RestrictionAny.Block();
@@ -105,7 +111,7 @@ namespace CfStreamUploader.Presentation.ViewModels
 
         private void AllowCountries()
         {
-            if (this.ConfigManager.Config.Restrictions.RestrictionCountry.Action == "allow")
+            if (this.ConfigManager.Config.Restrictions.RestrictionCountry.IsBlocked())
             {
                 this.BlockAndAllowCountry = "block";
                 this.ConfigManager.Config.Restrictions.RestrictionCountry.Block();
@@ -119,7 +125,7 @@ namespace CfStreamUploader.Presentation.ViewModels
 
         private void AllowIps()
         {
-            if (this.ConfigManager.Config.Restrictions.RestrictionIp.Action == "allow")
+            if (this.ConfigManager.Config.Restrictions.RestrictionIp.IsBlocked())
             {
                 this.BlockAndAllowIp = "block";
                 this.ConfigManager.Config.Restrictions.RestrictionIp.Block();

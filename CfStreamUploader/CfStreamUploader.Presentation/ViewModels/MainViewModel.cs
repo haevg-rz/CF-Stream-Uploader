@@ -95,7 +95,7 @@ namespace CfStreamUploader.Presentation.ViewModels
             this.RestrictionCountry =
                 this.Core.ConfigManager.Config.Restrictions.RestrictionCountry.GetRestrictionCountry();
             this.RestrictionAny = this.Core.ConfigManager.Config.Restrictions.RestrictionAny.GetRestrictionAny();
-            this.RestrictionIP = this.Core.ConfigManager.Config.Restrictions.RestrictionIp.GetRestrictionIp();
+            this.RestrictionIP = this.Core.ConfigManager.Config.Restrictions.RestrictionIp.PrintRestrictionAndIp();
 
             this.isDarkmode = this.Core.ConfigManager.Config.IsDarkmode;
             if (this.isDarkmode)
@@ -224,7 +224,7 @@ namespace CfStreamUploader.Presentation.ViewModels
             this.Core.ConfigManager.ReadConfig();
             this.RestrictionCountry = this.Core.ConfigManager.Config.Restrictions.RestrictionCountry.GetRestrictionCountry();
             this.RestrictionAny = this.Core.ConfigManager.Config.Restrictions.RestrictionAny.GetRestrictionAny();
-            this.RestrictionIP = this.Core.ConfigManager.Config.Restrictions.RestrictionIp.GetRestrictionIp();
+            this.RestrictionIP = this.Core.ConfigManager.Config.Restrictions.RestrictionIp.PrintRestrictionAndIp();
         }
 
         #endregion

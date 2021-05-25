@@ -29,7 +29,7 @@ namespace CfStreamUploader.Core.Models
 
     public class RestrictionAny
     {
-        [JsonPropertyName("action")] public string Action { get; private set; } = "allow";
+        [JsonPropertyName("action")] public string Action { get; set; } = "allow";
         [JsonPropertyName("type")] public string Type { get; } = "any";
 
         public void Allow()
@@ -42,6 +42,11 @@ namespace CfStreamUploader.Core.Models
             this.Action = "block";
         }
 
+        public bool IsBlocked()
+        {
+            return this.Action == "allow";
+        }
+
         public string GetRestrictionAny()
         {
             return $"{this.Action} {this.Type}";
@@ -50,9 +55,9 @@ namespace CfStreamUploader.Core.Models
 
     public class RestrictionIp
     {
-        [JsonPropertyName("action")] public string Action { get; private set; }
+        [JsonPropertyName("action")] public string Action { get; set; }
         [JsonPropertyName("type")] public string Type { get; }
-        [JsonPropertyName("ip")] public List<string> Ip { get; private set; }
+        [JsonPropertyName("ip")] public List<string> Ip { get; set; }
 
         public RestrictionIp()
         {
@@ -86,20 +91,21 @@ namespace CfStreamUploader.Core.Models
             this.Action = "block";
         }
 
+        public bool IsBlocked()
+        {
+            return this.Action == "allow";
+        }
+
         public void SetIpList(List<string> ipList)
         {
             this.Ip = ipList;
         }
 
-        public void Delete(string ip)
-        {
-            this.Ip.Remove(ip);
-        }
-
-        public string GetRestrictionIp()
+        public string PrintRestrictionAndIp()
         {
             return $"{this.Action} {string.Join(",", this.Ip.ToArray())}";
         }
+
         public string PrintIps()
         {
             return $"{string.Join(",", this.Ip.ToArray())}";
@@ -108,10 +114,10 @@ namespace CfStreamUploader.Core.Models
 
     public class RestrictionCountry
     {
-        [JsonPropertyName("action")] public string Action { get; private set; }
+        [JsonPropertyName("action")] public string Action { get; set; }
         [JsonPropertyName("type")] public string Type { get; }
-        [JsonPropertyName("country")] public List<string> Country { get ; private set; }
-        
+        [JsonPropertyName("country")] public List<string> Country { get; set; }
+
         public RestrictionCountry()
         {
             this.Action = "allow";
@@ -138,11 +144,6 @@ namespace CfStreamUploader.Core.Models
             this.Country = country;
         }
 
-        public void Remove(string country)
-        {
-            this.Country.Remove(country);
-        }
-
         public void Allow()
         {
             this.Action = "allow";
@@ -153,16 +154,21 @@ namespace CfStreamUploader.Core.Models
             this.Action = "block";
         }
 
+        public bool IsBlocked()
+        {
+            return this.Action == "allow";
+        }
+
         public string GetRestrictionCountry()
         {
             return $"{this.Action} {string.Join(",", this.Country.ToArray())}";
         }
+
         public string PrintCounties()
         {
             return $"{string.Join(",", this.Country.ToArray())}";
         }
 
         #endregion
-
     }
 }
