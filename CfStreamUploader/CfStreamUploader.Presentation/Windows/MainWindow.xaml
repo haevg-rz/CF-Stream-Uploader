@@ -88,13 +88,15 @@
 
                     <TextBlock Style="{StaticResource RestrictionTextBlockStyle}" Text="Set Restriction" />
 
-                    <Button Style="{StaticResource EditButtonStyle}" Content="edit" Grid.Row="0" Grid.Column="1" Command="{Binding EditRestrictionsCommand}" />
+                    <Button Style="{StaticResource EditButtonStyle}" Content="edit" Grid.Row="0" Grid.Column="1"
+                            Command="{Binding EditRestrictionsCommand}" />
 
                     <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="0" Margin="5">
 
                         <CheckBox Content="{Binding RestrictionAny}" Style="{StaticResource RestrictionCheckBoxStyle}" />
                         <CheckBox Content="{Binding RestrictionIP}" Style="{StaticResource RestrictionCheckBoxStyle}" />
-                        <CheckBox Content="{Binding RestrictionCountry}" Style="{StaticResource RestrictionCheckBoxStyle}" />
+                        <CheckBox Content="{Binding RestrictionCountry}"
+                                  Style="{StaticResource RestrictionCheckBoxStyle}" />
 
                     </StackPanel>
 
