@@ -1,5 +1,4 @@
-﻿using CfStreamUploader.Core.Models;
-using CfStreamUploader.Presentation.ViewModels;
+﻿using CfStreamUploader.Presentation.ViewModels;
 
 namespace CfStreamUploader.Presentation.Windows
 {

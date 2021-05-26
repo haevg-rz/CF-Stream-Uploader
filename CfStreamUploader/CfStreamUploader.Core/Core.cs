@@ -1,6 +1,4 @@
-﻿using CfStreamUploader.Core.Models;
-
-namespace CfStreamUploader.Core
+﻿namespace CfStreamUploader.Core
 {
     public class Core
     {

@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
-using CfStreamUploader.Core;
+﻿using CfStreamUploader.Core;
 using CfStreamUploader.Presentation.Resources.Colors;
 using CfStreamUploader.Presentation.Windows;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Windows;
@@ -112,6 +112,7 @@ namespace CfStreamUploader.Presentation.ViewModels
             };
             Process.Start(psi);
         }
+
         private void AllowAll()
         {
             if (this.ConfigManager.Config.AccessRules.Any.IsBlocked())
@@ -156,15 +157,17 @@ namespace CfStreamUploader.Presentation.ViewModels
 
         private void SaveButton()
         {
-            var ipStrings = this.IpTextBox.Replace(" ","").Split(",").ToList();
+            var ipStrings = this.IpTextBox.Replace(" ", "").Split(",").ToList();
             if (!this.IsValidId(ipStrings))
             {
-                MessageBox.Show("Make shure your IpAdresses are valid","Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Make shure your IpAdresses are valid", "Warning", MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
                 return;
             }
+
             this.ConfigManager.Config.AccessRules.Ip.SetIpList(ipStrings);
 
-            var countryString = this.CountryTextBox.Replace(" ","");
+            var countryString = this.CountryTextBox.Replace(" ", "");
             this.ConfigManager.Config.AccessRules.Country.SetCountryList(countryString.Split(",").ToList());
 
             this.ConfigManager.UpdateConfig(this.ConfigManager.Config);
@@ -180,6 +183,7 @@ namespace CfStreamUploader.Presentation.ViewModels
                 if (!result)
                     return false;
             }
+
             return true;
         }
 

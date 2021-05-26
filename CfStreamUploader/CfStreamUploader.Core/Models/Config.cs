@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace CfStreamUploader.Core.Models
 {
@@ -7,7 +6,7 @@ namespace CfStreamUploader.Core.Models
     {
         #region props
 
-        [JsonPropertyName("userSettings")]public UserSettings UserSettings { get; set; }
+        [JsonPropertyName("userSettings")] public UserSettings UserSettings { get; set; }
         [JsonPropertyName("accessRules")] public AccessRules AccessRules { get; set; }
         [JsonPropertyName("isDarkmode")] public bool IsDarkmode { get; set; }
 

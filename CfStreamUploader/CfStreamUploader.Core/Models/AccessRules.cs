@@ -5,7 +5,7 @@ namespace CfStreamUploader.Core.Models
 {
     public class AccessRules
     {
-        [JsonPropertyName("any")]public Any Any { get; }
+        [JsonPropertyName("any")] public Any Any { get; }
         [JsonPropertyName("ip")] public Ip Ip { get; }
         [JsonPropertyName("country")] public Country Country { get; }
 
@@ -14,13 +14,6 @@ namespace CfStreamUploader.Core.Models
             this.Any = new Any();
             this.Ip = new Ip();
             this.Country = new Country();
-        }
-
-        public AccessRules(AccessRules accessRules)
-        {
-            this.Any = accessRules.Any;
-            this.Ip = accessRules.Ip;
-            this.Country = accessRules.Country;
         }
     }
 
@@ -64,20 +57,6 @@ namespace CfStreamUploader.Core.Models
             this.Type = "ip.src";
             this.Ips = new List<string>();
         }
-        
-        public Ip(Ip ip)
-        {
-            this.Action = ip.Action;
-            this.Type = ip.Type;
-            this.Ips = ip.Ips;
-        }
-        
-        public Ip(string action, string type, List<string> ips)
-        {
-            this.Action = action;
-            this.Type = type;
-            this.Ips = ips;
-        }
 
         public void Allow()
         {
@@ -101,12 +80,12 @@ namespace CfStreamUploader.Core.Models
 
         public string PrintRestriction()
         {
-            return $"{this.Action} {string.Join(",", this.Ips.ToArray())}";
+            return $"{this.Action} {string.Join(", ", this.Ips.ToArray())}";
         }
 
         public string PrintIps()
         {
-            return $"{string.Join(",", this.Ips.ToArray())}";
+            return $"{string.Join(", ", this.Ips.ToArray())}";
         }
     }
 
@@ -121,20 +100,6 @@ namespace CfStreamUploader.Core.Models
             this.Action = "allow";
             this.Type = "ip.geoip.country";
             this.Countries = new List<string>();
-        }
-        
-        public Country(Country country)
-        {
-            this.Action = country.Action;
-            this.Type = country.Type;
-            this.Countries = country.Countries;
-        }
-        
-        public Country(string action, string type, List<string> countries)
-        {
-            this.Action = action;
-            this.Type = type;
-            this.Countries = countries;
         }
 
         public void SetCountryList(List<string> country)

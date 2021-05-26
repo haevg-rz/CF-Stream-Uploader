@@ -4,7 +4,7 @@ namespace CfStreamUploader.Core.Models
 {
     public class UserSettings
     {
-        [JsonPropertyName("cfToken")]public string CfToken { get; set; }
+        [JsonPropertyName("cfToken")] public string CfToken { get; set; }
         [JsonPropertyName("cfAccount")] public string CfAccount { get; set; }
         [JsonPropertyName("keyId")] public string KeyId { get; set; }
         [JsonPropertyName("privateKey")] public string PrivateKey { get; set; }

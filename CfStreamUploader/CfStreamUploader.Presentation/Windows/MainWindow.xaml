@@ -4,7 +4,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:dd="urn:gong-wpf-dragdrop"
-        xmlns:viewModels="clr-namespace:CfStreamUploader.Presentation.ViewModels"
         mc:Ignorable="d"
         Title="CF Stream Uploader" Height="670" Width="1000"
         WindowStyle="SingleBorderWindow"
@@ -95,7 +94,8 @@
                     <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="0" Margin="5">
 
                         <CheckBox Content="{Binding RestrictionIP}" Style="{StaticResource RestrictionCheckBoxStyle}" />
-                        <CheckBox Content="{Binding RestrictionCountry}" Style="{StaticResource RestrictionCheckBoxStyle}" />
+                        <CheckBox Content="{Binding RestrictionCountry}"
+                                  Style="{StaticResource RestrictionCheckBoxStyle}" />
                         <CheckBox Content="{Binding RestrictionAny}" Style="{StaticResource RestrictionCheckBoxStyle}" />
 
                     </StackPanel>
