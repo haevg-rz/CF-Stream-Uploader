@@ -11,14 +11,14 @@ using System.Windows;
 
 namespace CfStreamUploader.Presentation.ViewModels
 {
-    public class EditViewModel : ViewModelBase
+    public class EditRestrictionViewModel : ViewModelBase
     {
         #region fields
 
         private string currentCodesUrl = "https://en.wikipedia.org/wiki/ISO_3166-1#Current_codes";
 
-        private string ipActionAction = "allow";
-        private string countryActionAction = "allow";
+        private string ipAction = "allow";
+        private string countryAction = "allow";
         private string anyAction = "allow";
 
         private string ipTextBox = string.Empty;
@@ -37,14 +37,14 @@ namespace CfStreamUploader.Presentation.ViewModels
 
         public string IpAction
         {
-            get => this.ipActionAction;
-            set => this.Set(ref this.ipActionAction, value);
+            get => this.ipAction;
+            set => this.Set(ref this.ipAction, value);
         }
 
         public string CountryAction
         {
-            get => this.countryActionAction;
-            set => this.Set(ref this.countryActionAction, value);
+            get => this.countryAction;
+            set => this.Set(ref this.countryAction, value);
         }
 
         public string AnyAction
@@ -69,13 +69,13 @@ namespace CfStreamUploader.Presentation.ViewModels
 
         #region constructor
 
-        public EditViewModel()
+        public EditRestrictionViewModel()
         {
             this.OpenCurrentCodeWebpageCommand = new RelayCommand(this.OpenCurrentCodeWebpage);
             this.SaveButtonCommand = new RelayCommand(this.SaveButton);
-            this.AllowIpsCommand = new RelayCommand(this.AllowIps);
-            this.AllowCountriesCommand = new RelayCommand(this.AllowCountries);
-            this.AllowAllCommand = new RelayCommand(this.AllowAll);
+            this.AllowIpsCommand = new RelayCommand(this.SetIpAction);
+            this.AllowCountriesCommand = new RelayCommand(this.SetCountryAction);
+            this.AllowAllCommand = new RelayCommand(this.SetAnyAction);
 
             this.ConfigManager.ReadConfig();
 
@@ -113,7 +113,7 @@ namespace CfStreamUploader.Presentation.ViewModels
             Process.Start(psi);
         }
 
-        private void AllowAll()
+        private void SetAnyAction()
         {
             if (this.ConfigManager.Config.AccessRules.Any.IsBlocked())
             {
@@ -127,7 +127,7 @@ namespace CfStreamUploader.Presentation.ViewModels
             }
         }
 
-        private void AllowCountries()
+        private void SetCountryAction()
         {
             if (this.ConfigManager.Config.AccessRules.Country.IsBlocked())
             {
@@ -141,7 +141,7 @@ namespace CfStreamUploader.Presentation.ViewModels
             }
         }
 
-        private void AllowIps()
+        private void SetIpAction()
         {
             if (this.ConfigManager.Config.AccessRules.Ip.IsBlocked())
             {

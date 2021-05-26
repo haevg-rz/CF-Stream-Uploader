@@ -24,13 +24,5 @@ namespace CfStreamUploader.Core.Models
             this.KeyId = keyId;
             this.PrivateKey = privateKey;
         }
-
-        public UserSettings(UserSettings userSettings)
-        {
-            this.CfToken = userSettings.CfToken;
-            this.CfAccount = userSettings.CfAccount;
-            this.KeyId = userSettings.KeyId;
-            this.PrivateKey = userSettings.PrivateKey;
-        }
     }
 }

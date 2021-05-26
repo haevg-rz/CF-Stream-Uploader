@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="CF Stream Uploader" Height="670" Width="1000"
         WindowStyle="SingleBorderWindow"
-        DataContext="{StaticResource ViewModel}"
+        DataContext="{StaticResource MainViewModel}"
         WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
@@ -74,7 +74,7 @@
 
                 </StackPanel>
 
-                <Grid Grid.Column="1" Margin="5">
+                <Grid Grid.Column="1" Margin="5" Width="230">
 
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="100" />

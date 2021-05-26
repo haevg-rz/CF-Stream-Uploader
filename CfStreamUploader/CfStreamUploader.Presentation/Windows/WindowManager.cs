@@ -4,20 +4,20 @@ namespace CfStreamUploader.Presentation.Windows
 {
     public static class WindowManager
     {
-        public static EditWindow EditWindow { get; set; }
+        public static EditRestrictionWindow EditRestrictionWindow { get; set; }
 
-        public static void OpenEditWindow()
+        public static void OpenEditRestrictionWindow()
         {
-            EditWindow = new EditWindow
+            EditRestrictionWindow = new EditRestrictionWindow()
             {
-                DataContext = new EditViewModel()
+                DataContext = new EditRestrictionViewModel()
             };
-            EditWindow.ShowDialog();
+            EditRestrictionWindow.ShowDialog();
         }
 
         public static void CloseEditWindow()
         {
-            EditWindow.Close();
+            EditRestrictionWindow.Close();
         }
     }
 }

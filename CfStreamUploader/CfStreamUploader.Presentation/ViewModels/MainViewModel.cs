@@ -92,10 +92,7 @@ namespace CfStreamUploader.Presentation.ViewModels
             this.CopyVideoUrlCommand = new RelayCommand(this.CopyVideoUrl);
             this.EditRestrictionsCommand = new RelayCommand(this.EditRestrictions);
 
-            this.RestrictionCountry =
-                this.Core.ConfigManager.Config.AccessRules.Country.PrintRestriction();
-            this.RestrictionAny = this.Core.ConfigManager.Config.AccessRules.Any.PrintRestriction();
-            this.RestrictionIP = this.Core.ConfigManager.Config.AccessRules.Ip.PrintRestriction();
+            this.SetRestrictions();
 
             this.isDarkmode = this.Core.ConfigManager.Config.IsDarkmode;
             if (this.isDarkmode)
@@ -219,10 +216,15 @@ namespace CfStreamUploader.Presentation.ViewModels
 
         private void EditRestrictions()
         {
-            WindowManager.OpenEditWindow();
+            WindowManager.OpenEditRestrictionWindow();
 
             this.Core.ConfigManager.ReadConfig();
 
+            this.SetRestrictions();
+        }
+
+        private void SetRestrictions()
+        {
             this.RestrictionCountry = this.Core.ConfigManager.Config.AccessRules.Country.PrintRestriction();
             this.RestrictionAny = this.Core.ConfigManager.Config.AccessRules.Any.PrintRestriction();
             this.RestrictionIP = this.Core.ConfigManager.Config.AccessRules.Ip.PrintRestriction();

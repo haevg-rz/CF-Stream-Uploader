@@ -5,8 +5,8 @@
              StartupUri="Windows/MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
-            <local:MainViewModel x:Key="ViewModel"/>
-            <local:EditViewModel x:Key="EditViewModel"/>
+            <local:MainViewModel x:Key="MainViewModel"/>
+            <local:EditRestrictionViewModel x:Key="EditRestrictionViewModel"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
