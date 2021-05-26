@@ -1,9 +1,13 @@
-﻿using CfStreamUploader.Core;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
+using CfStreamUploader.Core;
 using CfStreamUploader.Presentation.Resources.Colors;
 using CfStreamUploader.Presentation.Windows;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using System.Linq;
+using System.Net;
+using System.Windows;
 
 namespace CfStreamUploader.Presentation.ViewModels
 {
@@ -11,9 +15,11 @@ namespace CfStreamUploader.Presentation.ViewModels
     {
         #region fields
 
-        private string blockAndAllowIp = "allow";
-        private string blockAndAllowCountry = "allow";
-        private string blockAndAllowAll = "allow";
+        private string currentCodesUrl = "https://en.wikipedia.org/wiki/ISO_3166-1#Current_codes";
+
+        private string ipActionAction = "allow";
+        private string countryActionAction = "allow";
+        private string anyAction = "allow";
 
         private string ipTextBox = string.Empty;
         private string countryTextBox = string.Empty;
@@ -22,28 +28,29 @@ namespace CfStreamUploader.Presentation.ViewModels
 
         #region props
 
+        public RelayCommand OpenCurrentCodeWebpageCommand { get; set; }
         public RelayCommand SaveButtonCommand { get; set; }
         public RelayCommand AllowIpsCommand { get; set; }
         public RelayCommand AllowCountriesCommand { get; set; }
         public RelayCommand AllowAllCommand { get; set; }
         public ConfigManager ConfigManager { get; set; } = new ConfigManager();
 
-        public string BlockAndAllowIp
+        public string IpAction
         {
-            get => this.blockAndAllowIp;
-            set => this.Set(ref this.blockAndAllowIp, value);
+            get => this.ipActionAction;
+            set => this.Set(ref this.ipActionAction, value);
         }
 
-        public string BlockAndAllowCountry
+        public string CountryAction
         {
-            get => this.blockAndAllowCountry;
-            set => this.Set(ref this.blockAndAllowCountry, value);
+            get => this.countryActionAction;
+            set => this.Set(ref this.countryActionAction, value);
         }
 
-        public string BlockAndAllowAll
+        public string AnyAction
         {
-            get => this.blockAndAllowAll;
-            set => this.Set(ref this.blockAndAllowAll, value);
+            get => this.anyAction;
+            set => this.Set(ref this.anyAction, value);
         }
 
         public string IpTextBox
@@ -64,6 +71,7 @@ namespace CfStreamUploader.Presentation.ViewModels
 
         public EditViewModel()
         {
+            this.OpenCurrentCodeWebpageCommand = new RelayCommand(this.OpenCurrentCodeWebpage);
             this.SaveButtonCommand = new RelayCommand(this.SaveButton);
             this.AllowIpsCommand = new RelayCommand(this.AllowIps);
             this.AllowCountriesCommand = new RelayCommand(this.AllowCountries);
@@ -73,14 +81,14 @@ namespace CfStreamUploader.Presentation.ViewModels
 
             this.IpTextBox = this.ConfigManager.Config.AccessRules.Ip.PrintIps();
             if (this.ConfigManager.Config.AccessRules.Ip.IsBlocked())
-                this.BlockAndAllowIp = "block";
+                this.IpAction = "block";
 
             this.CountryTextBox = this.ConfigManager.Config.AccessRules.Country.PrintCounties();
             if (this.ConfigManager.Config.AccessRules.Country.IsBlocked())
-                this.BlockAndAllowCountry = "block";
+                this.CountryAction = "block";
 
             if (this.ConfigManager.Config.AccessRules.Any.IsBlocked())
-                this.BlockAndAllowAll = "block";
+                this.AnyAction = "block";
 
             if (this.ConfigManager.Config.IsDarkmode)
                 this.Darkmode();
@@ -92,16 +100,28 @@ namespace CfStreamUploader.Presentation.ViewModels
 
         #region private
 
+        private void OpenCurrentCodeWebpage()
+        {
+            var psi = new ProcessStartInfo()
+            {
+                FileName = "cmd",
+                WindowStyle = ProcessWindowStyle.Hidden,
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                Arguments = $"/c start {this.currentCodesUrl}"
+            };
+            Process.Start(psi);
+        }
         private void AllowAll()
         {
             if (this.ConfigManager.Config.AccessRules.Any.IsBlocked())
             {
-                this.BlockAndAllowAll = "allow";
+                this.AnyAction = "allow";
                 this.ConfigManager.Config.AccessRules.Any.Allow();
             }
             else
             {
-                this.BlockAndAllowAll = "block";
+                this.AnyAction = "block";
                 this.ConfigManager.Config.AccessRules.Any.Block();
             }
         }
@@ -110,12 +130,12 @@ namespace CfStreamUploader.Presentation.ViewModels
         {
             if (this.ConfigManager.Config.AccessRules.Country.IsBlocked())
             {
-                this.BlockAndAllowCountry = "allow";
+                this.CountryAction = "allow";
                 this.ConfigManager.Config.AccessRules.Country.Allow();
             }
             else
             {
-                this.BlockAndAllowCountry = "block";
+                this.CountryAction = "block";
                 this.ConfigManager.Config.AccessRules.Country.Block();
             }
         }
@@ -124,27 +144,43 @@ namespace CfStreamUploader.Presentation.ViewModels
         {
             if (this.ConfigManager.Config.AccessRules.Ip.IsBlocked())
             {
-                this.BlockAndAllowIp = "allow";
+                this.IpAction = "allow";
                 this.ConfigManager.Config.AccessRules.Ip.Allow();
             }
             else
             {
-                this.BlockAndAllowIp = "block";
+                this.IpAction = "block";
                 this.ConfigManager.Config.AccessRules.Ip.Block();
             }
         }
 
         private void SaveButton()
         {
-            var ipString = this.IpTextBox.Trim(); //TODO " abc" --> "abc" : "a bc" -- "a bc"
-            this.ConfigManager.Config.AccessRules.Ip.SetIpList(ipString.Split(",").ToList());
+            var ipStrings = this.IpTextBox.Replace(" ","").Split(",").ToList();
+            if (!this.IsValidId(ipStrings))
+            {
+                MessageBox.Show("Make shure your IpAdresses are valid","Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+            this.ConfigManager.Config.AccessRules.Ip.SetIpList(ipStrings);
 
-            var countryString = this.CountryTextBox.Trim();
+            var countryString = this.CountryTextBox.Replace(" ","");
             this.ConfigManager.Config.AccessRules.Country.SetCountryList(countryString.Split(",").ToList());
 
             this.ConfigManager.UpdateConfig(this.ConfigManager.Config);
 
             WindowManager.CloseEditWindow();
+        }
+
+        private bool IsValidId(List<string> ipStrings)
+        {
+            foreach (var ipString in ipStrings)
+            {
+                var result = IPAddress.TryParse(ipString, out var ipAdress);
+                if (!result)
+                    return false;
+            }
+            return true;
         }
 
         #endregion
