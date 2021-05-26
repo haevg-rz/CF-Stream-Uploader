@@ -1,0 +1,101 @@
+﻿<Window x:Class="CfStreamUploader.Presentation.Windows.EditRestrictionWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Edit restrictions" Height="280" Width="470"
+        DataContext="{StaticResource EditRestrictionViewModel}"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Resources/Styles/AllStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid Background="{Binding BaseColor}">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <!-- Enter IP -->
+        <TextBlock HorizontalAlignment="Left" Style="{DynamicResource EditTextBlockStyle}" Text="Enter IpAdress" />
+        <Button Command="{Binding AllowIpsCommand}" Content="{Binding IpAction}" Grid.Row="0" Grid.Column="1"
+                Style="{DynamicResource ToggleAllowBlockButtonStyle}" />
+
+        <Grid Grid.Row="0" Grid.Column="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBox Text="{Binding IpTextBox}" Margin="10" BorderThickness="1" Height="20" />
+        </Grid>
+
+        <!-- Enter IP -->
+
+        <!-- Select Country -->
+        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Style="{DynamicResource EditTextBlockStyle}"
+                   Grid.Row="1" Grid.Column="0" Text="Select country" />
+        <Button Command="{Binding AllowCountriesCommand}" Content="{Binding CountryAction}" Grid.Column="1"
+                Grid.Row="1" Style="{DynamicResource ToggleAllowBlockButtonStyle}" />
+
+        <Grid Grid.Row="1" Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <TextBox Text="{Binding CountryTextBox}" Grid.Row="0" Grid.Column="0" Margin="10" BorderThickness="1"
+                     Height="20" />
+
+            <TextBlock Grid.Column="0" Grid.Row="1" Margin="10,0,5,5">
+                <Hyperlink Command="{Binding OpenCurrentCodeWebpageCommand}">Get officially assign code elements</Hyperlink>
+            </TextBlock>
+
+        </Grid>
+
+        <!-- Select Country -->
+
+        <!-- Set Acces limit -->
+        <TextBlock Style="{DynamicResource EditTextBlockStyle}" HorizontalAlignment="Left" Grid.Row="2" Grid.Column="0"
+                   Text=" Set access limit" />
+        <Grid Grid.Column="2" Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <TextBox VerticalAlignment="Center" Margin="10" Height="20" />
+            <TextBlock Style="{DynamicResource AccessLimitTextBlockStyle}" VerticalAlignment="Center" Grid.Column="1"
+                       Text="Days" />
+
+        </Grid>
+        <Grid Grid.Column="2" Grid.Row="2" />
+        <!-- Set Acces limit -->
+
+        <!-- Allow All -->
+        <TextBlock Style="{DynamicResource EditTextBlockStyle}" Grid.Row="3" Grid.Column="0"
+                   Text="Default action" HorizontalAlignment="Left" />
+        <Button Command="{Binding AllowAllCommand}" Content="{Binding AnyAction}" Grid.Column="1"
+                Grid.Row="3" Style="{DynamicResource ToggleAllowBlockButtonStyle}" />
+
+        <!-- Allow All -->
+
+        <Button Style="{DynamicResource EditWondowSaveButtonStyle}" Command="{Binding SaveButtonCommand}" Grid.Row="4"
+                Grid.Column="2" Content="Save" />
+
+    </Grid>
+</Window>

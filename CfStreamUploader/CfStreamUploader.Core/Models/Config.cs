@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Text.Json.Serialization;
 
 namespace CfStreamUploader.Core.Models
 {
@@ -6,12 +6,9 @@ namespace CfStreamUploader.Core.Models
     {
         #region props
 
-        public string CfToken { get; set; }
-        public string CfAccount { get; set; }
-        public string KeyId { get; set; }
-        public string PrivateKey { get; set; }
-        public int ExpiresIn { get; set; }
-        public bool IsDarkmode { get; set; }
+        [JsonPropertyName("userSettings")] public UserSettings UserSettings { get; set; }
+        [JsonPropertyName("accessRules")] public AccessRules AccessRules { get; set; }
+        [JsonPropertyName("isDarkmode")] public bool IsDarkmode { get; set; }
 
         #endregion
 
@@ -19,31 +16,22 @@ namespace CfStreamUploader.Core.Models
 
         public Config()
         {
-            this.CfToken = string.Empty;
-            this.CfAccount = string.Empty;
-            this.KeyId = string.Empty;
-            this.PrivateKey = string.Empty;
-            this.ExpiresIn = 0;
+            this.UserSettings = new UserSettings();
+            this.AccessRules = new AccessRules();
             this.IsDarkmode = false;
         }
 
-        public Config(string cfToken, string cfAccount, string keyId, string privateKey, int expiresIn, bool isDarkmode)
+        public Config(UserSettings userSettings, AccessRules accessRules, bool isDarkmode)
         {
-            this.CfToken = cfToken;
-            this.CfAccount = cfAccount;
-            this.KeyId = keyId;
-            this.PrivateKey = privateKey;
-            this.ExpiresIn = expiresIn;
+            this.UserSettings = userSettings;
+            this.AccessRules = accessRules;
             this.IsDarkmode = isDarkmode;
         }
 
         public Config(Config config)
         {
-            this.CfToken = config.CfToken;
-            this.CfAccount = config.CfAccount;
-            this.KeyId = config.KeyId;
-            this.PrivateKey = config.PrivateKey;
-            this.ExpiresIn = config.ExpiresIn;
+            this.UserSettings = config.UserSettings;
+            this.AccessRules = config.AccessRules;
             this.IsDarkmode = config.IsDarkmode;
         }
 

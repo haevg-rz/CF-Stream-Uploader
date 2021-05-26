@@ -6,13 +6,14 @@
         xmlns:dd="urn:gong-wpf-dragdrop"
         mc:Ignorable="d"
         Title="CF Stream Uploader" Height="670" Width="1000"
-        DataContext="{StaticResource ViewModel}"
-        WindowStyle="SingleBorderWindow">
+        WindowStyle="SingleBorderWindow"
+        DataContext="{StaticResource MainViewModel}"
+        WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Resources/Styles/AllStyles.xaml" />
+                <ResourceDictionary Source="../Resources/Styles/AllStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
@@ -73,7 +74,7 @@
 
                 </StackPanel>
 
-                <Grid Grid.Column="1" Margin="5">
+                <Grid Grid.Column="1" Margin="5" Width="230">
 
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="100" />
@@ -87,21 +88,22 @@
 
                     <TextBlock Style="{StaticResource RestrictionTextBlockStyle}" Text="Set Restriction" />
 
-                    <Button Style="{StaticResource EditButtonStyle}" Content="edit" Grid.Column="1" />
+                    <Button Style="{StaticResource EditButtonStyle}" Content="edit" Grid.Row="0" Grid.Column="1"
+                            Command="{Binding EditRestrictionsCommand}" />
 
-                    <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Margin="5">
+                    <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="0" Margin="5">
 
-                        <CheckBox Content="Company Ips only" Style="{StaticResource RestrictionCheckBoxStyle}" />
-                        <CheckBox Content="No Restrictions" Style="{StaticResource RestrictionCheckBoxStyle}" />
-                        <CheckBox Content="Country Only" Style="{StaticResource RestrictionCheckBoxStyle}" />
-                        <CheckBox Content="Access 1 day" Style="{StaticResource RestrictionCheckBoxStyle}" />
+                        <CheckBox Content="{Binding RestrictionIP}" Style="{StaticResource RestrictionCheckBoxStyle}" />
+                        <CheckBox Content="{Binding RestrictionCountry}"
+                                  Style="{StaticResource RestrictionCheckBoxStyle}" />
+                        <CheckBox Content="{Binding RestrictionAny}" Style="{StaticResource RestrictionCheckBoxStyle}" />
 
                     </StackPanel>
 
                 </Grid>
             </Grid>
 
-            <Grid Grid.Row="1" Margin="10">
+            <Grid Grid.Row="1" Grid.Column="0" Margin="10">
                 <StackPanel Orientation="Horizontal">
 
                     <Image Style="{StaticResource UploadProgressImageStyle}" />
@@ -122,11 +124,11 @@
                 </StackPanel>
             </Grid>
 
-            <Grid Grid.Row="2" Margin="10">
+            <Grid Grid.Row="2" Grid.Column="0" Margin="10">
                 <TextBox Style="{DynamicResource HtmlOutputTextBoxStyle}" Text="{Binding HtmlOutput}" />
             </Grid>
 
-            <Grid Grid.Row="3" Margin="10,0,10,10">
+            <Grid Grid.Row="3" Grid.Column="0" Margin="10,0,10,10">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="170" />
                     <ColumnDefinition />
@@ -145,7 +147,7 @@
             <!-- Video Upload -->
 
             <!-- MemoryCapacity -->
-            <Grid Grid.Column="2">
+            <Grid Grid.Row="0" Grid.Column="2">
                 <ProgressBar Style="{StaticResource ProgressBarStyle}" />
                 <TextBlock Style="{StaticResource ProgressBarTextBlockStyle}" Text="...coming soon" />
             </Grid>

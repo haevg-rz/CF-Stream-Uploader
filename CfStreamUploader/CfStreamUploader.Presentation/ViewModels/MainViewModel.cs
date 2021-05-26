@@ -1,4 +1,6 @@
-﻿using GalaSoft.MvvmLight;
+﻿using CfStreamUploader.Presentation.Resources.Colors;
+using CfStreamUploader.Presentation.Windows;
+using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GongSolutions.Wpf.DragDrop;
 using Microsoft.Win32;
@@ -7,9 +9,9 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 
-namespace CfStreamUploader.Presentation
+namespace CfStreamUploader.Presentation.ViewModels
 {
-    public class ViewModel : ViewModelBase, IDropTarget
+    public class MainViewModel : ViewModelBase, IDropTarget
     {
         #region Fields
 
@@ -18,6 +20,9 @@ namespace CfStreamUploader.Presentation
         private string videoUrl = string.Empty;
         private readonly string defaultUri = "https://iframe.videodelivery.net/{0}?preload=true";
         private string dragAndDropInfo = "Drop video here";
+        private string restrictionIP = string.Empty;
+        private string restrictionCountry = string.Empty;
+        private string restrictionAny = string.Empty;
 
         private string CfStreamUploaderPath =
             $@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\CfStreamUploader\Config.json";
@@ -46,6 +51,24 @@ namespace CfStreamUploader.Presentation
             set => this.Set(ref this.dragAndDropInfo, value);
         }
 
+        public string RestrictionIP
+        {
+            get => this.restrictionIP;
+            set => this.Set(ref this.restrictionIP, value);
+        }
+
+        public string RestrictionCountry
+        {
+            get => this.restrictionCountry;
+            set => this.Set(ref this.restrictionCountry, value);
+        }
+
+        public string RestrictionAny
+        {
+            get => this.restrictionAny;
+            set => this.Set(ref this.restrictionAny, value);
+        }
+
         #endregion
 
         #region RelayCommands
@@ -54,18 +77,22 @@ namespace CfStreamUploader.Presentation
         public RelayCommand UploadViedeoCommand { get; set; }
         public RelayCommand SelectVideoCommand { get; set; }
         public RelayCommand CopyVideoUrlCommand { get; set; }
+        public RelayCommand EditRestrictionsCommand { get; set; }
 
         #endregion
 
         #region Constructor
 
-        public ViewModel()
+        public MainViewModel()
         {
             this.SetDarkmodeCommand = new RelayCommand(this.SetDarkmode);
             this.UploadViedeoCommand = new RelayCommand(this.UploadVideoAsync);
             this.CopyToClipbordCommad = new RelayCommand(this.CopyToClipbord);
             this.SelectVideoCommand = new RelayCommand(this.SelectVideo);
             this.CopyVideoUrlCommand = new RelayCommand(this.CopyVideoUrl);
+            this.EditRestrictionsCommand = new RelayCommand(this.EditRestrictions);
+
+            this.SetRestrictions();
 
             this.isDarkmode = this.Core.ConfigManager.Config.IsDarkmode;
             if (this.isDarkmode)
@@ -76,7 +103,38 @@ namespace CfStreamUploader.Presentation
 
         #endregion
 
-        #region Methods
+        #region public
+
+        public void DragOver(IDropInfo dropInfo)
+        {
+            var dragFileList = ((DataObject) dropInfo.Data).GetFileDropList().Cast<string>();
+            dropInfo.Effects = dragFileList.Any(item =>
+            {
+                var extension = Path.GetExtension(item);
+                return extension != null && extension.Equals(".mp4");
+            })
+                ? DragDropEffects.Copy
+                : DragDropEffects.None;
+        }
+
+        public void Drop(IDropInfo dropInfo)
+        {
+            var dragFileList = ((DataObject) dropInfo.Data).GetFileDropList().Cast<string>();
+            dropInfo.Effects = dragFileList.Any(item =>
+            {
+                var extension = Path.GetExtension(item);
+                return extension != null && extension.Equals(".mp4");
+            })
+                ? DragDropEffects.Copy
+                : DragDropEffects.None;
+
+            this.Core.VideoUploader.VideoPath = ((DataObject) dropInfo.Data).GetFileDropList().Cast<string>().First();
+            this.VideoTitel = this.Core.VideoUploader.VideoPath.Split("\\").Last();
+        }
+
+        #endregion
+
+        #region private
 
         private async void UploadVideoAsync()
         {
@@ -106,8 +164,8 @@ namespace CfStreamUploader.Presentation
 
         private bool IsConfigSolid()
         {
-            if (this.Core.ConfigManager.Config.CfToken != string.Empty &&
-                this.Core.ConfigManager.Config.CfAccount != string.Empty) return true;
+            if (this.Core.ConfigManager.Config.UserSettings.CfToken != string.Empty &&
+                this.Core.ConfigManager.Config.UserSettings.CfAccount != string.Empty) return true;
 
             var openConfig = MessageBox.Show(
                 "There are missing attribute in the config.\nYou can open your config here",
@@ -147,33 +205,6 @@ namespace CfStreamUploader.Presentation
             }
         }
 
-        public void DragOver(IDropInfo dropInfo)
-        {
-            var dragFileList = ((DataObject) dropInfo.Data).GetFileDropList().Cast<string>();
-            dropInfo.Effects = dragFileList.Any(item =>
-            {
-                var extension = Path.GetExtension(item);
-                return extension != null && extension.Equals(".mp4");
-            })
-                ? DragDropEffects.Copy
-                : DragDropEffects.None;
-        }
-
-        public void Drop(IDropInfo dropInfo)
-        {
-            var dragFileList = ((DataObject) dropInfo.Data).GetFileDropList().Cast<string>();
-            dropInfo.Effects = dragFileList.Any(item =>
-            {
-                var extension = Path.GetExtension(item);
-                return extension != null && extension.Equals(".mp4");
-            })
-                ? DragDropEffects.Copy
-                : DragDropEffects.None;
-
-            this.Core.VideoUploader.VideoPath = ((DataObject) dropInfo.Data).GetFileDropList().Cast<string>().First();
-            this.VideoTitel = this.Core.VideoUploader.VideoPath.Split("\\").Last();
-        }
-
         private void UpdateConfig()
         {
             this.Core.ConfigManager.Config.IsDarkmode = this.isDarkmode;
@@ -181,6 +212,22 @@ namespace CfStreamUploader.Presentation
             var config = this.Core.ConfigManager.Config;
             config.IsDarkmode = this.isDarkmode;
             this.Core.ConfigManager.UpdateConfig(config);
+        }
+
+        private void EditRestrictions()
+        {
+            WindowManager.OpenEditRestrictionWindow();
+
+            this.Core.ConfigManager.ReadConfig();
+
+            this.SetRestrictions();
+        }
+
+        private void SetRestrictions()
+        {
+            this.RestrictionCountry = this.Core.ConfigManager.Config.AccessRules.Country.PrintRestriction();
+            this.RestrictionAny = this.Core.ConfigManager.Config.AccessRules.Any.PrintRestriction();
+            this.RestrictionIP = this.Core.ConfigManager.Config.AccessRules.Ip.PrintRestriction();
         }
 
         #endregion
@@ -291,28 +338,28 @@ namespace CfStreamUploader.Presentation
 
         private void Darkmode()
         {
-            this.BaseColor = "#1b2867";
-            this.ContrastColor = "#223075";
+            this.BaseColor = Colors.DarkmodeBaseColor;
+            this.ContrastColor = Colors.DarkmodeContrastColor;
             this.TextColor = "White";
             this.BorderBrush = "White";
-            this.Button1Bg = "#223075";
+            this.Button1Bg = Colors.DarkmodeContrastColor;
             this.Button1Fg = "White";
             this.Button2Bg = "White";
             this.Button2Fg = "White";
-            this.Button2FgMouseOver = "#223075";
+            this.Button2FgMouseOver = Colors.DarkmodeContrastColor;
             this.ProgressColor = "LawnGreen";
         }
 
         private void Lightmode()
         {
-            this.BaseColor = "Transparent";
+            this.BaseColor = Colors.LightmodeBaseColor;
             this.ContrastColor = "Transparent";
             this.TextColor = "Black";
-            this.BorderBrush = "#6497e8";
-            this.Button1Bg = "#6497e8";
+            this.BorderBrush = Colors.LightmodeContrastColor;
+            this.Button1Bg = Colors.LightmodeContrastColor;
             this.Button1Fg = "White";
-            this.Button2Bg = "#6497e8";
-            this.Button2Fg = "#6497e8";
+            this.Button2Bg = Colors.LightmodeContrastColor;
+            this.Button2Fg = Colors.LightmodeContrastColor;
             this.Button2FgMouseOver = "White";
             this.ProgressColor = "Green";
         }
