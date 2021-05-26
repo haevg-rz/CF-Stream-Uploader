@@ -15,14 +15,14 @@ The CF-Stream-Uploader is an UI to upload your videos :video_camera: in your [cl
 - The CF-Stream-Uploader displays your video-storage-capacity for an easy overview :part_alternation_mark:
 - The CF-Stream-Uploader saves your HTML-Codes on your pc :computer:
 - ...
-- More fearures are in progress :hourglass:
+- More fearures are in progress :hourglass: :building_construction:
 
 ### :airplane: Roadmap 
 
 Here are our milestones:
 - [M1](https://github.com/haevg-rz/CF-Stream-Uploader/milestone/1) The user can upload a given video and gets generated HTML Code to embedded in websites. :heavy_check_mark:
-- [M2](https://github.com/haevg-rz/CF-Stream-Uploader/milestone/2) The user can apply video restrictions and the complete process is visualised.
-- [M3](https://github.com/haevg-rz/CF-Stream-Uploader/milestone/3) The user can manage history and settings and can view remaining video runtime capacity.
+- [M2](https://github.com/haevg-rz/CF-Stream-Uploader/milestone/2) The user can apply video restrictions and the complete process is visualised :building_construction:
+- [M3](https://github.com/haevg-rz/CF-Stream-Uploader/milestone/3) The user can manage history and settings and can view remaining video runtime capacity
 
 ### :1234: MockUp 
 
@@ -53,18 +53,56 @@ There are two options to select a video:
 - If you try to upload a video with an empty config you will get an error.
 - Make sure that you *save* the config before you try the upload again :)
 
-
+## :pencil: Set restrictions
+![image](https://user-images.githubusercontent.com/62097375/119627444-8084bd80-be0c-11eb-9464-5be9746a719e.png)
+### :black_nib: Enter IP
+- You can enter your IpAdresses in the textbox
+- Each adress seperated with a comma
+- The IpAdesses will have a simple validation check
+- You can switch between "allow" or "block" for your entered IpAdresses
+### :black_nib: Select country
+- You can enter your Countries in the textbox
+- Each coutry eperated with a comma 
+- You have a list of supported countries in the link below
+- You can switch between "allow" and "block" for your entered countries
+### :black_nib: Set Access limit
+- ...comming :building_construction:
+### :black_nib: Set global restrictions
+- You can swap between "allow" and "block"
+- You can set the restriction for all users
+- Example: "all block" and "DE allow" --> the video will only accessible in Germany
 ## :clipboard: Config 
 
 The JSON config file has the following format:
 
 ```
 {
-  "CfToken": "exampleToken",
-  "CfAccount": "exampleVideoId",
-  "KeyId": "exampleKeyId",
-  "PrivateKey": "examplePrivateKey",
-  "ExpiresIn": 0,
+  "UserSettings": {
+    "CfToken": "exampleCfToken",
+    "CfAccount": "exampleCfAccount",
+    "KeyId": "exampleKeyId",
+    "PrivateKey": "examplePrivateKey"
+  },
+  "AccessRules": {
+    "Any": {
+      "Action": "block",
+      "Type": "any"
+    },
+    "Ip": {
+      "Action": "allow",
+      "Type": "ip.src",
+      "Ips": [
+        "127.0.0.1"
+      ]
+    },
+    "Country": {
+      "Action": "block",
+      "Type": "ip.geoip.country",
+      "Countries": [
+        "DE"
+      ]
+    }
+  },
   "IsDarkmode": false
 }
 ```
