@@ -54,22 +54,28 @@ There are two options to select a video:
 - Make sure that you *save* the config before you try the upload again :)
 
 ## :pencil: Set restrictions
-![image](https://user-images.githubusercontent.com/62097375/119627444-8084bd80-be0c-11eb-9464-5be9746a719e.png)
+![image](https://user-images.githubusercontent.com/62097375/119634127-b331b480-be12-11eb-91d7-01a1055a4172.png)
+### :bangbang: These Rule actions are available
+- "allow" - View is considered valid
+- "block" - View is considered invalid and a 401 or 403 is returned
 ### :black_nib: Enter IP
 - You can enter your IpAdresses in the textbox
 - Each adress seperated with a comma
+- Match specific IPv4 or IPV6 addresses or CIDRs
+- It is recommended to include both IPv4 and IPv6 variants in a rule if possible
 - The IpAdesses will have a simple validation check
 - You can switch between "allow" or "block" for your entered IpAdresses
 ### :black_nib: Select country
 - You can enter your Countries in the textbox
-- Each coutry eperated with a comma 
+- Each coutry seperated with a comma 
+- Match specific 2-letter country codes in [ISO 3166-1 Alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1#Current_codes) format
 - You have a list of supported countries in the link below
 - You can switch between "allow" and "block" for your entered countries
 ### :black_nib: Set Access limit
 - ...comming :building_construction:
-### :black_nib: Set global restrictions
+### :black_nib: Default action
+- May be used as a wildcard to apply a default action after other rules
 - You can swap between "allow" and "block"
-- You can set the restriction for all users
 - Example: "all block" and "DE allow" --> the video will only accessible in Germany
 ## :clipboard: Config 
 
