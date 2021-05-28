@@ -21,7 +21,6 @@ namespace CfStreamUploader.Core.Test
         #region props
 
         private ConfigManager ConfigManager { get; } = new ConfigManager();
-        private Samples Samples { get; } = new Samples();
 
         #endregion
 
@@ -34,7 +33,7 @@ namespace CfStreamUploader.Core.Test
 
             this.SetUp();
 
-            var config = new Config(this.Samples.ConfigSample);
+            var config = new Config(Samples.ConfigSample);
 
             var jsonString = JsonConvert.SerializeObject(config, Formatting.Indented);
             File.WriteAllText(Path.Combine(this.solutionDir, configPath), jsonString);
@@ -49,7 +48,7 @@ namespace CfStreamUploader.Core.Test
 
             #region Assert
 
-            Equals(this.Samples.ConfigSample, this.ConfigManager.Config);
+            Equals(Samples.ConfigSample, this.ConfigManager.Config);
             this.TearDown();
 
             #endregion
@@ -72,7 +71,7 @@ namespace CfStreamUploader.Core.Test
 
             #region Assert
 
-            Equals(this.Samples.DefaultConfigSample, this.ConfigManager.Config);
+            Equals(Samples.DefaultConfigSample, this.ConfigManager.Config);
             this.TearDown();
 
             #endregion
@@ -89,7 +88,7 @@ namespace CfStreamUploader.Core.Test
 
             #region Act
 
-            this.ConfigManager.UpdateConfig(this.Samples.DefaultConfigSample);
+            this.ConfigManager.UpdateConfig(Samples.DefaultConfigSample);
 
             #endregion
 

@@ -8,7 +8,6 @@ namespace CfStreamUploader.Core.Test
         #region props
 
         public VideoUploader VideoUploader { get; } = new VideoUploader();
-        private Samples Samples { get; } = new Samples();
 
         #endregion
 
@@ -27,7 +26,7 @@ namespace CfStreamUploader.Core.Test
 
             #region Act
 
-            var result = this.VideoUploader.GetCmdScript(this.Samples.ConfigSample);
+            var result = this.VideoUploader.GetCmdScript(Samples.ConfigSample);
 
             #endregion
 
