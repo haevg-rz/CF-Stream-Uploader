@@ -19,7 +19,6 @@ namespace CfStreamUploader.Core.Test
         #region props
 
         private HtmlLayout HtmlLayout { get; } = new HtmlLayout();
-        private Samples Samples { get; } = new Samples();
 
         #endregion
 
@@ -42,7 +41,7 @@ namespace CfStreamUploader.Core.Test
 
             #region Assert
 
-            Equals(result, this.Samples.defaultHtmlLayoutSample);
+            Assert.Equal(result, Samples.defaultHtmlLayoutSample);
             this.TearDown();
 
             #endregion
@@ -54,7 +53,7 @@ namespace CfStreamUploader.Core.Test
             #region Assign
 
             this.SetUp();
-            File.WriteAllText(Path.Combine(this.solutionDir, this.htmlLayoutFile), this.Samples.htmlLayoutSample);
+            File.WriteAllText(Path.Combine(this.solutionDir, this.htmlLayoutFile), Samples.htmlLayoutSample);
 
             #endregion
 
@@ -66,7 +65,7 @@ namespace CfStreamUploader.Core.Test
 
             #region Assert
 
-            Equals(result, this.Samples.htmlLayoutSample);
+            Assert.Equal(result, Samples.htmlLayoutSample);
             this.TearDown();
 
             #endregion
