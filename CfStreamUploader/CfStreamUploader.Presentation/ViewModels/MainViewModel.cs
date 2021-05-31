@@ -7,7 +7,11 @@ using Microsoft.Win32;
 using System;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows;
+using CfStreamUploader.Core.Models;
+
+[assembly: InternalsVisibleTo("CfStreamUploader.Presentation.Test")]
 
 namespace CfStreamUploader.Presentation.ViewModels
 {
@@ -162,7 +166,7 @@ namespace CfStreamUploader.Presentation.ViewModels
             }
         }
 
-        private bool IsConfigSolid()
+        internal bool IsConfigSolid()
         {
             if (this.Core.ConfigManager.Config.UserSettings.CfToken != string.Empty &&
                 this.Core.ConfigManager.Config.UserSettings.CfAccount != string.Empty) return true;
@@ -223,7 +227,7 @@ namespace CfStreamUploader.Presentation.ViewModels
             this.SetRestrictions();
         }
 
-        private void SetRestrictions()
+        internal void SetRestrictions()
         {
             this.RestrictionCountry = this.Core.ConfigManager.Config.AccessRules.Country.PrintRestriction();
             this.RestrictionAny = this.Core.ConfigManager.Config.AccessRules.Any.PrintRestriction();
@@ -234,7 +238,7 @@ namespace CfStreamUploader.Presentation.ViewModels
 
         #region ColorChange
 
-        private bool isDarkmode = false;
+        internal bool isDarkmode = false;
         private string themeText = "Lightmode";
 
         private string baseColor = "Transparent";

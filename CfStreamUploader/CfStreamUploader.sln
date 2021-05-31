@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CfStreamUploader.Core", "Cf
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{995B7DD5-3398-45AE-8BA9-8BBE72020B37}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CfStreamUploader.Core.Test", "CfStreamUploader.Core.Test\CfStreamUploader.Core.Test.csproj", "{0C72E96E-328A-4FB3-AFB1-E8EFEBDADEF7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CfStreamUploader.Core.Test", "CfStreamUploader.Core.Test\CfStreamUploader.Core.Test.csproj", "{0C72E96E-328A-4FB3-AFB1-E8EFEBDADEF7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CfStreamUploader.Presentation.Test", "CfStreamUploader.Presentation.Test\CfStreamUploader.Presentation.Test.csproj", "{F7A61590-6A83-4712-9FEA-4FA320113867}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,12 +31,17 @@ Global
 		{0C72E96E-328A-4FB3-AFB1-E8EFEBDADEF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C72E96E-328A-4FB3-AFB1-E8EFEBDADEF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C72E96E-328A-4FB3-AFB1-E8EFEBDADEF7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7A61590-6A83-4712-9FEA-4FA320113867}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7A61590-6A83-4712-9FEA-4FA320113867}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7A61590-6A83-4712-9FEA-4FA320113867}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7A61590-6A83-4712-9FEA-4FA320113867}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{0C72E96E-328A-4FB3-AFB1-E8EFEBDADEF7} = {995B7DD5-3398-45AE-8BA9-8BBE72020B37}
+		{F7A61590-6A83-4712-9FEA-4FA320113867} = {995B7DD5-3398-45AE-8BA9-8BBE72020B37}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {34AE4A11-83E7-48FC-8ABE-99058F1229EB}
