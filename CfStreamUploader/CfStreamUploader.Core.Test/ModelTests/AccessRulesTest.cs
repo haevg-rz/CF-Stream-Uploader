@@ -24,8 +24,8 @@ namespace CfStreamUploader.Core.Test.ModelTests
 
             #endregion
 
-            Equals(any.Action, "block");
-            Equals(isBlockes, true);
+            Assert.Equal(any.Action, "block");
+            Assert.Equal(isBlockes, true);
 
             #region Assert
 
@@ -41,17 +41,17 @@ namespace CfStreamUploader.Core.Test.ModelTests
 
             #endregion
 
+            #region Act
+
             any.Allow();
             var isBlockes = any.IsBlocked();
 
-            #region Act
-
             #endregion
 
-            Equals(any.Action, "allow");
-            Equals(isBlockes, false);
-
             #region Assert
+
+            Assert.Equal(any.Action, "allow");
+            Assert.Equal(isBlockes, false);
 
             #endregion
         }
@@ -65,15 +65,15 @@ namespace CfStreamUploader.Core.Test.ModelTests
 
             #endregion
 
-            var result = any.PrintRestriction();
-
             #region Act
+
+            var result = any.PrintRestriction();
 
             #endregion
 
-            Equals(result, "allow any");
-
             #region Assert
+
+            Assert.Equal(result, "allow any");
 
             #endregion
         }
@@ -91,17 +91,17 @@ namespace CfStreamUploader.Core.Test.ModelTests
 
             #endregion
 
+            #region Act
+
             ip.Block();
             var isBlockes = ip.IsBlocked();
 
-            #region Act
-
             #endregion
 
-            Equals(ip.Action, "block");
-            Equals(isBlockes, true);
-
             #region Assert
+
+            Assert.Equal(ip.Action, "block");
+            Assert.Equal(isBlockes, true);
 
             #endregion
         }
@@ -115,17 +115,17 @@ namespace CfStreamUploader.Core.Test.ModelTests
 
             #endregion
 
+            #region Act
+
             ip.Allow();
             var isBlockes = ip.IsBlocked();
 
-            #region Act
-
             #endregion
 
-            Equals(ip.Action, "allow");
-            Equals(isBlockes, false);
-
             #region Assert
+
+            Assert.Equal(ip.Action, "allow");
+            Assert.Equal(isBlockes, false);
 
             #endregion
         }
@@ -142,17 +142,17 @@ namespace CfStreamUploader.Core.Test.ModelTests
 
             #endregion
 
+            #region Act
+
             var printedRestriction = ip.PrintRestriction();
             var printedIps = ip.PrintIps();
-
-            #region Act
 
             #endregion
 
             #region Assert
 
-            Equals(printedRestriction, "allow MyIp1, MyIp2");
-            Equals(printedIps, "MyIp1, MyIp2");
+            Assert.Equal(printedRestriction, "allow MyIp1, MyIp2");
+            Assert.Equal(printedIps, "MyIp1, MyIp2");
 
             #endregion
         }
@@ -167,15 +167,15 @@ namespace CfStreamUploader.Core.Test.ModelTests
 
             #endregion
 
-            ip.SetIpList(ipList);
-
             #region Act
+
+            ip.SetIpList(ipList);
 
             #endregion
 
             #region Assert
 
-            Equals(ip.Ips, ipList);
+            Assert.Equal(ip.Ips, ipList);
 
             #endregion
         }
@@ -193,17 +193,17 @@ namespace CfStreamUploader.Core.Test.ModelTests
 
             #endregion
 
+            #region Act
+
             country.Block();
             var isBlockes = country.IsBlocked();
 
-            #region Act
-
             #endregion
 
-            Equals(country.Action, "block");
-            Equals(isBlockes, true);
-
             #region Assert
+
+            Assert.Equal(country.Action, "block");
+            Assert.Equal(isBlockes, true);
 
             #endregion
         }
@@ -217,17 +217,17 @@ namespace CfStreamUploader.Core.Test.ModelTests
 
             #endregion
 
+            #region Act
+
             country.Allow();
             var isBlockes = country.IsBlocked();
 
-            #region Act
-
             #endregion
 
-            Equals(country.Action, "allow");
-            Equals(isBlockes, false);
-
             #region Assert
+
+            Assert.Equal(country.Action, "allow");
+            Assert.Equal(isBlockes, false);
 
             #endregion
         }
@@ -244,17 +244,17 @@ namespace CfStreamUploader.Core.Test.ModelTests
 
             #endregion
 
+            #region Act
+
             var printedRestriction = country.PrintRestriction();
             var printedIps = country.PrintCounties();
 
-            #region Act
-
             #endregion
 
-            Equals(printedRestriction, "allow DE, ES");
-            Equals(printedIps, "DE, ES");
-
             #region Assert
+
+            Assert.Equal(printedRestriction, "allow DE, ES");
+            Assert.Equal(printedIps, "DE, ES");
 
             #endregion
         }
@@ -269,15 +269,15 @@ namespace CfStreamUploader.Core.Test.ModelTests
 
             #endregion
 
-            ip.SetCountryList(countryList);
-
             #region Act
+
+            ip.SetCountryList(countryList);
 
             #endregion
 
             #region Assert
 
-            Equals(ip.Countries, countryList);
+            Assert.Equal(ip.Countries, countryList);
 
             #endregion
 

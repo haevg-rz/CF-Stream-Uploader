@@ -32,7 +32,7 @@ namespace CfStreamUploader.Core.Test
 
             #region Assert
 
-            Equals(expectedResult, result);
+            Assert.Equal(expectedResult, result);
 
             #endregion
         }

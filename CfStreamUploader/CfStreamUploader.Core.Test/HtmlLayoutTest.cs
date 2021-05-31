@@ -41,7 +41,7 @@ namespace CfStreamUploader.Core.Test
 
             #region Assert
 
-            Equals(result, Samples.defaultHtmlLayoutSample);
+            Assert.Equal(result, Samples.defaultHtmlLayoutSample);
             this.TearDown();
 
             #endregion
@@ -65,7 +65,7 @@ namespace CfStreamUploader.Core.Test
 
             #region Assert
 
-            Equals(result, Samples.htmlLayoutSample);
+            Assert.Equal(result, Samples.htmlLayoutSample);
             this.TearDown();
 
             #endregion

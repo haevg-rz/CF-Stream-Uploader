@@ -21,11 +21,21 @@ namespace CfStreamUploader.Core.Test.ModelTests
 
             #endregion
 
-            Equals(config.AccessRules, new AccessRules());
-            Equals(config.UserSettings, new UserSettings());
-            Equals(config.IsDarkmode, false);
-
             #region Assert
+
+            Assert.Equal(config.AccessRules.Ip.Type, Samples.DefaultConfigSample.AccessRules.Ip.Type);
+            Assert.Equal(config.AccessRules.Ip.Action, Samples.DefaultConfigSample.AccessRules.Ip.Action);
+            Assert.Equal(config.AccessRules.Country.Type, Samples.DefaultConfigSample.AccessRules.Country.Type);
+            Assert.Equal(config.AccessRules.Country.Action, Samples.DefaultConfigSample.AccessRules.Country.Action);
+            Assert.Equal(config.AccessRules.Any.Type, Samples.DefaultConfigSample.AccessRules.Any.Type);
+            Assert.Equal(config.AccessRules.Any.Action, Samples.DefaultConfigSample.AccessRules.Any.Action);
+
+            Assert.Equal(config.UserSettings.KeyId, Samples.DefaultConfigSample.UserSettings.KeyId);
+            Assert.Equal(config.UserSettings.PrivateKey, Samples.DefaultConfigSample.UserSettings.PrivateKey);
+            Assert.Equal(config.UserSettings.CfToken, Samples.DefaultConfigSample.UserSettings.CfToken);
+            Assert.Equal(config.UserSettings.CfAccount, Samples.DefaultConfigSample.UserSettings.CfAccount);
+
+            Assert.Equal(config.IsDarkmode, false);
 
             #endregion
         }
@@ -44,9 +54,21 @@ namespace CfStreamUploader.Core.Test.ModelTests
 
             #endregion
 
-            Equals(config, Samples.ConfigSample);
-
             #region Assert
+
+            Assert.Equal(config.AccessRules.Ip.Type, Samples.ConfigSample.AccessRules.Ip.Type);
+            Assert.Equal(config.AccessRules.Ip.Action, Samples.ConfigSample.AccessRules.Ip.Action);
+            Assert.Equal(config.AccessRules.Country.Type, Samples.ConfigSample.AccessRules.Country.Type);
+            Assert.Equal(config.AccessRules.Country.Action, Samples.ConfigSample.AccessRules.Country.Action);
+            Assert.Equal(config.AccessRules.Any.Type, Samples.ConfigSample.AccessRules.Any.Type);
+            Assert.Equal(config.AccessRules.Any.Action, Samples.ConfigSample.AccessRules.Any.Action);
+
+            Assert.Equal(config.UserSettings.KeyId, Samples.ConfigSample.UserSettings.KeyId);
+            Assert.Equal(config.UserSettings.PrivateKey, Samples.ConfigSample.UserSettings.PrivateKey);
+            Assert.Equal(config.UserSettings.CfToken, Samples.ConfigSample.UserSettings.CfToken);
+            Assert.Equal(config.UserSettings.CfAccount, Samples.ConfigSample.UserSettings.CfAccount);
+
+            Assert.Equal(config.IsDarkmode, false);
 
             #endregion
         }
@@ -64,9 +86,21 @@ namespace CfStreamUploader.Core.Test.ModelTests
 
             #endregion
 
-            Equals(config, Samples.ConfigSample);
-
             #region Assert
+
+            Assert.Equal(config.AccessRules.Ip.Type, Samples.ConfigSample.AccessRules.Ip.Type);
+            Assert.Equal(config.AccessRules.Ip.Action, Samples.ConfigSample.AccessRules.Ip.Action);
+            Assert.Equal(config.AccessRules.Country.Type, Samples.ConfigSample.AccessRules.Country.Type);
+            Assert.Equal(config.AccessRules.Country.Action, Samples.ConfigSample.AccessRules.Country.Action);
+            Assert.Equal(config.AccessRules.Any.Type, Samples.ConfigSample.AccessRules.Any.Type);
+            Assert.Equal(config.AccessRules.Any.Action, Samples.ConfigSample.AccessRules.Any.Action);
+
+            Assert.Equal(config.UserSettings.KeyId, Samples.ConfigSample.UserSettings.KeyId);
+            Assert.Equal(config.UserSettings.PrivateKey, Samples.ConfigSample.UserSettings.PrivateKey);
+            Assert.Equal(config.UserSettings.CfToken, Samples.ConfigSample.UserSettings.CfToken);
+            Assert.Equal(config.UserSettings.CfAccount, Samples.ConfigSample.UserSettings.CfAccount);
+
+            Assert.Equal(config.IsDarkmode, false);
 
             #endregion
         }

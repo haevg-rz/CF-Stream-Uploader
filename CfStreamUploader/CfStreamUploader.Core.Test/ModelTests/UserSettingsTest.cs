@@ -6,12 +6,14 @@ namespace CfStreamUploader.Core.Test.ModelTests
 {
     public class UserSettingsTest
     {
+        #region tests
+
         [Fact]
         public void DefaultConstructorUserSettingsTest()
         {
             #region Assign
 
-            var userSetting = new UserSettings();
+            var userSettings = new UserSettings();
 
             #endregion
 
@@ -21,7 +23,10 @@ namespace CfStreamUploader.Core.Test.ModelTests
 
             #region Assert
 
-            Equals(userSetting, Samples.ConfigSample.UserSettings);
+            Assert.Equal(userSettings.KeyId, Samples.DefaultConfigSample.UserSettings.KeyId);
+            Assert.Equal(userSettings.PrivateKey, Samples.DefaultConfigSample.UserSettings.PrivateKey);
+            Assert.Equal(userSettings.CfAccount, Samples.DefaultConfigSample.UserSettings.CfAccount);
+            Assert.Equal(userSettings.CfToken, Samples.DefaultConfigSample.UserSettings.CfToken);
 
             #endregion
         }
@@ -43,9 +48,14 @@ namespace CfStreamUploader.Core.Test.ModelTests
 
             #region Assert
 
-            Equals(userSettings, Samples.ConfigSample.UserSettings);
+            Assert.Equal(userSettings.KeyId, Samples.ConfigSample.UserSettings.KeyId);
+            Assert.Equal(userSettings.PrivateKey, Samples.ConfigSample.UserSettings.PrivateKey);
+            Assert.Equal(userSettings.CfAccount, Samples.ConfigSample.UserSettings.CfAccount);
+            Assert.Equal(userSettings.CfToken, Samples.ConfigSample.UserSettings.CfToken);
 
             #endregion
         }
+
+        #endregion
     }
 }
