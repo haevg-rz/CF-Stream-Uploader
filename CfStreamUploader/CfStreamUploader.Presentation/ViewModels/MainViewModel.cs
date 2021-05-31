@@ -96,7 +96,7 @@ namespace CfStreamUploader.Presentation.ViewModels
             this.CopyVideoUrlCommand = new RelayCommand(this.CopyVideoUrl);
             this.EditRestrictionsCommand = new RelayCommand(this.EditRestrictions);
 
-            this.SetRestrictions(this.Core.ConfigManager.Config);
+            this.SetRestrictions();
 
             this.isDarkmode = this.Core.ConfigManager.Config.IsDarkmode;
             if (this.isDarkmode)
@@ -149,7 +149,7 @@ namespace CfStreamUploader.Presentation.ViewModels
                 return;
             }
 
-            if (!this.IsConfigSolid(this.Core.ConfigManager.Config)) return;
+            if (!this.IsConfigSolid()) return;
 
             var result = await this.Core.VideoUploader.UploadVideoAsync(this.Core.ConfigManager.Config);
 
@@ -166,10 +166,10 @@ namespace CfStreamUploader.Presentation.ViewModels
             }
         }
 
-        internal bool IsConfigSolid(Config config)
+        internal bool IsConfigSolid()
         {
-            if (config.UserSettings.CfToken != string.Empty &&
-                config.UserSettings.CfAccount != string.Empty) return true;
+            if (this.Core.ConfigManager.Config.UserSettings.CfToken != string.Empty &&
+                this.Core.ConfigManager.Config.UserSettings.CfAccount != string.Empty) return true;
 
             var openConfig = MessageBox.Show(
                 "There are missing attribute in the config.\nYou can open your config here",
@@ -224,14 +224,14 @@ namespace CfStreamUploader.Presentation.ViewModels
 
             this.Core.ConfigManager.ReadConfig();
 
-            this.SetRestrictions(Core.ConfigManager.Config);
+            this.SetRestrictions();
         }
 
-        internal void SetRestrictions(Config config)
+        internal void SetRestrictions()
         {
-            this.RestrictionCountry = config.AccessRules.Country.PrintRestriction();
-            this.RestrictionAny = config.AccessRules.Any.PrintRestriction();
-            this.RestrictionIP = config.AccessRules.Ip.PrintRestriction();
+            this.RestrictionCountry = this.Core.ConfigManager.Config.AccessRules.Country.PrintRestriction();
+            this.RestrictionAny = this.Core.ConfigManager.Config.AccessRules.Any.PrintRestriction();
+            this.RestrictionIP = this.Core.ConfigManager.Config.AccessRules.Ip.PrintRestriction();
         }
 
         #endregion

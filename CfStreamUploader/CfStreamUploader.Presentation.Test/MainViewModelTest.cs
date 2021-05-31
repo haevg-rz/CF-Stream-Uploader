@@ -7,7 +7,7 @@ namespace CfStreamUploader.Presentation.Test
     {
         #region Prop
 
-        private MainViewModel MainViewModel { get; set; } = new MainViewModel();
+        private MainViewModel MainViewModel { get; } = new MainViewModel();
 
         #endregion
 
@@ -17,11 +17,13 @@ namespace CfStreamUploader.Presentation.Test
             #region Assign
 
             var config = TestSamples.Samples.ConfigSample;
+            this.MainViewModel.Core.ConfigManager.Config = config;
+
             #endregion
 
             #region Act
 
-            var result = this.MainViewModel.IsConfigSolid(config);
+            var result = this.MainViewModel.IsConfigSolid();
 
             #endregion
 
@@ -38,12 +40,13 @@ namespace CfStreamUploader.Presentation.Test
             #region Assign
 
             var config = TestSamples.Samples.AccesRulesConfigSample;
+            this.MainViewModel.Core.ConfigManager.Config = config;
 
             #endregion
 
             #region Act
 
-            this.MainViewModel.SetRestrictions(config);
+            this.MainViewModel.SetRestrictions();
 
             #endregion
 
