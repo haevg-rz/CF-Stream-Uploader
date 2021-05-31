@@ -7,7 +7,11 @@ using Microsoft.Win32;
 using System;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows;
+using CfStreamUploader.Core.Models;
+
+[assembly: InternalsVisibleTo("CfStreamUploader.Presentation.Test")]
 
 namespace CfStreamUploader.Presentation.ViewModels
 {
@@ -92,7 +96,7 @@ namespace CfStreamUploader.Presentation.ViewModels
             this.CopyVideoUrlCommand = new RelayCommand(this.CopyVideoUrl);
             this.EditRestrictionsCommand = new RelayCommand(this.EditRestrictions);
 
-            this.SetRestrictions();
+            this.SetRestrictions(this.Core.ConfigManager.Config);
 
             this.isDarkmode = this.Core.ConfigManager.Config.IsDarkmode;
             if (this.isDarkmode)
@@ -145,7 +149,7 @@ namespace CfStreamUploader.Presentation.ViewModels
                 return;
             }
 
-            if (!this.IsConfigSolid()) return;
+            if (!this.IsConfigSolid(this.Core.ConfigManager.Config)) return;
 
             var result = await this.Core.VideoUploader.UploadVideoAsync(this.Core.ConfigManager.Config);
 
@@ -162,10 +166,10 @@ namespace CfStreamUploader.Presentation.ViewModels
             }
         }
 
-        private bool IsConfigSolid()
+        internal bool IsConfigSolid(Config config)
         {
-            if (this.Core.ConfigManager.Config.UserSettings.CfToken != string.Empty &&
-                this.Core.ConfigManager.Config.UserSettings.CfAccount != string.Empty) return true;
+            if (config.UserSettings.CfToken != string.Empty &&
+                config.UserSettings.CfAccount != string.Empty) return true;
 
             var openConfig = MessageBox.Show(
                 "There are missing attribute in the config.\nYou can open your config here",
@@ -220,21 +224,21 @@ namespace CfStreamUploader.Presentation.ViewModels
 
             this.Core.ConfigManager.ReadConfig();
 
-            this.SetRestrictions();
+            this.SetRestrictions(Core.ConfigManager.Config);
         }
 
-        private void SetRestrictions()
+        internal void SetRestrictions(Config config)
         {
-            this.RestrictionCountry = this.Core.ConfigManager.Config.AccessRules.Country.PrintRestriction();
-            this.RestrictionAny = this.Core.ConfigManager.Config.AccessRules.Any.PrintRestriction();
-            this.RestrictionIP = this.Core.ConfigManager.Config.AccessRules.Ip.PrintRestriction();
+            this.RestrictionCountry = config.AccessRules.Country.PrintRestriction();
+            this.RestrictionAny = config.AccessRules.Any.PrintRestriction();
+            this.RestrictionIP = config.AccessRules.Ip.PrintRestriction();
         }
 
         #endregion
 
         #region ColorChange
 
-        private bool isDarkmode = false;
+        internal bool isDarkmode = false;
         private string themeText = "Lightmode";
 
         private string baseColor = "Transparent";

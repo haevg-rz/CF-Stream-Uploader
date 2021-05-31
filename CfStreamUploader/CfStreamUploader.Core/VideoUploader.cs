@@ -69,7 +69,10 @@ namespace CfStreamUploader.Core
             return new VideoUploadResult(true, null);
         }
 
+        #endregion
 
+        #region private
+        
         internal string GetCmdScript(Config config)
         {
             return string.Format(this.script, config.UserSettings.CfToken, this.VideoPath.Replace("\\", "/"), config.UserSettings.CfAccount);
@@ -77,9 +80,5 @@ namespace CfStreamUploader.Core
 
         #endregion
 
-        #region private
-
-
-        #endregion
     }
 }
