@@ -17,17 +17,17 @@ namespace CfStreamUploader.Core.Test.ModelTests
 
             #endregion
 
+            #region Act 
+
             any.Block();
             var isBlockes = any.IsBlocked();
 
-            #region Act
-
             #endregion
+
+            #region Assert
 
             Assert.Equal(any.Action, "block");
             Assert.Equal(isBlockes, true);
-
-            #region Assert
 
             #endregion
         }
