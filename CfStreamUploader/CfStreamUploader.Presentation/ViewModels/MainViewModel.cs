@@ -132,8 +132,8 @@ namespace CfStreamUploader.Presentation.ViewModels
                 ? DragDropEffects.Copy
                 : DragDropEffects.None;
 
-            this.Core.VideoUploader.VideoPath = ((DataObject) dropInfo.Data).GetFileDropList().Cast<string>().First();
-            this.VideoTitel = this.Core.VideoUploader.VideoPath.Split("\\").Last();
+            this.Core.VideoManager.VideoPath = ((DataObject) dropInfo.Data).GetFileDropList().Cast<string>().First();
+            this.VideoTitel = this.Core.VideoManager.VideoPath.Split("\\").Last();
         }
 
         #endregion
@@ -142,7 +142,7 @@ namespace CfStreamUploader.Presentation.ViewModels
 
         private async void UploadVideoAsync()
         {
-            if (this.Core.VideoUploader.VideoPath == string.Empty)
+            if (this.Core.VideoManager.VideoPath == string.Empty)
             {
                 MessageBox.Show("Please select a Video.", "Information", MessageBoxButton.OK,
                     MessageBoxImage.Information);
@@ -151,11 +151,11 @@ namespace CfStreamUploader.Presentation.ViewModels
 
             if (!this.IsConfigSolid()) return;
 
-            var result = await this.Core.VideoUploader.UploadVideoAsync(this.Core.ConfigManager.Config);
+            var result = await this.Core.VideoManager.UploadVideoAsync(this.Core.ConfigManager.Config);
 
             if (result.Success)
             {
-                var videoToken = this.Core.VideoUploader.GetToken(this.Core.ConfigManager.Config);
+                var videoToken = this.Core.VideoManager.SetRestrictions(this.Core.ConfigManager.Config);
 
                 this.HtmlOutput = string.Format(this.Core.HtmlLayout.GetHtmlLayout(), videoToken);
                 this.videoUrl = string.Format(this.defaultUri, videoToken);
@@ -199,8 +199,8 @@ namespace CfStreamUploader.Presentation.ViewModels
 
             if (fileDialog.FileName.Split(".").Last() == "mp4")
             {
-                this.Core.VideoUploader.VideoPath = fileDialog.FileName;
-                this.VideoTitel = this.Core.VideoUploader.VideoPath.Split("\\").Last();
+                this.Core.VideoManager.VideoPath = fileDialog.FileName;
+                this.VideoTitel = this.Core.VideoManager.VideoPath.Split("\\").Last();
             }
             else
             {
