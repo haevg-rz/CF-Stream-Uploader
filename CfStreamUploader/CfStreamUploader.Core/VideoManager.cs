@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using Jose;
 
 [assembly: InternalsVisibleTo("CfStreamUploader.Core.Test")]
 
@@ -59,7 +60,7 @@ namespace CfStreamUploader.Core
 
         public async Task<(VideoUploadResult videoUploadResult, string VideoUrl)> UploadVideoAsync(Config config)
         {
-            return (new VideoUploadResult(true, null), "3ef444818f6b481084841355d7af5f82");
+            //return (new VideoUploadResult(true, null), "3ef444818f6b481084841355d7af5f82");
 
             //Video Upload
             var cmdVideoUploadScript = this.GetCmdVideoUploadScript(config);
@@ -70,23 +71,27 @@ namespace CfStreamUploader.Core
 
             var json = JsonConvert.DeserializeObject<HttpResponse>(videoUploadResult.cmdOutput);
             var videoId = json.result.uid;
-            
+
 
             //SetSignedURLs
             var cmdSignedUrlScript = this.GetSignedUrlScript(config, videoId);
             var signedUrlResult = await this.RunCmdAsync(cmdSignedUrlScript);
 
             if (!signedUrlResult.videoUploadResult.Success)
-                return (new VideoUploadResult(false, new Exception("Making a video require signed URLs failed")), videoId);
+                return (new VideoUploadResult(false, new Exception("Making a video require signed URLs failed")),
+                    videoId);
+
+            return (new VideoUploadResult(true, null), videoId);
+        }
 
         #endregion
 
         #region private
 
-        internal string GetSignedUrlScript(Config config)
+        internal string GetSignedUrlScript(Config config, string videoId)
         {
             return string.Format(this.signedUrlScript, config.UserSettings.CfToken, config.UserSettings.CfAccount,
-                this.VideoId, "{", "}");
+                videoId, "{", "}");
         }
           
         internal string GetCmdVideoUploadScript(Config config)
@@ -112,28 +117,25 @@ namespace CfStreamUploader.Core
             if (!checkboxRestrictionIP && !checkboxRestrictionCountry && !checkboxRestrictionAny)
                 jsonStringList.Add(JsonConvert.SerializeObject(new Any()));
 
-            var accesruleJson = String.Empty;
-
-            switch (jsonStringList.Count)
+            var accesruleJson = jsonStringList.Count switch
             {
-                case 1:
-                    accesruleJson = jsonStringList[0];
-                    break;
-                case 2:
-                    accesruleJson = JsonConvert.SerializeObject(new[] { JsonConvert.DeserializeObject(jsonStringList[0]), JsonConvert.DeserializeObject(jsonStringList[1]) });
-                    break;
-                case 3:
-                    accesruleJson = JsonConvert.SerializeObject(new[] { JsonConvert.DeserializeObject(jsonStringList[0]), JsonConvert.DeserializeObject(jsonStringList[1]), JsonConvert.DeserializeObject(jsonStringList[2]) });
-                    break;
-            }
+                1 => jsonStringList[0],
+                2 => JsonConvert.SerializeObject(new[]
+                {
+                    JsonConvert.DeserializeObject(jsonStringList[0]),
+                    JsonConvert.DeserializeObject(jsonStringList[1])
+                }),
+                3 => JsonConvert.SerializeObject(new[]
+                {
+                    JsonConvert.DeserializeObject(jsonStringList[0]),
+                    JsonConvert.DeserializeObject(jsonStringList[1]),
+                    JsonConvert.DeserializeObject(jsonStringList[2])
+                }),
+                _ => String.Empty
+            };
 
             return accesruleJson;
 
-        }
-        internal string GetSignedUrlScript(Config config, string videoId)
-        {
-            return string.Format(this.signedUrlScript, config.UserSettings.CfToken, config.UserSettings.CfAccount,
-                videoId, "{", "}");
         }
 
         private async Task<(string cmdOutput, VideoUploadResult videoUploadResult)> RunCmdAsync(string cmdCommand)
