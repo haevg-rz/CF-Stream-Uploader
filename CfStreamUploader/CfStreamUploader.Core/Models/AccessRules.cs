@@ -21,8 +21,8 @@ namespace CfStreamUploader.Core.Models
 
     public class Any
     {
-        [JsonPropertyName("action")] public string Action { get; set; } = "allow";
         [JsonPropertyName("type")] public string Type { get; } = "any";
+        [JsonPropertyName("action")] public string Action { get; set; } = "allow";
 
         public void Allow()
         {
@@ -47,8 +47,8 @@ namespace CfStreamUploader.Core.Models
 
     public class Ip
     {
-        [JsonPropertyName("action")] public string Action { get; set; }
         [JsonPropertyName("type")] public string Type { get; }
+        [JsonPropertyName("action")] public string Action { get; set; }
         [JsonPropertyName("ip")] public List<string> Ips { get; set; }
 
         public Ip()
@@ -91,8 +91,8 @@ namespace CfStreamUploader.Core.Models
 
     public class Country
     {
-        [JsonPropertyName("action")] public string Action { get; set; }
         [JsonPropertyName("type")] public string Type { get; }
+        [JsonPropertyName("action")] public string Action { get; set; }
         [JsonPropertyName("country")] public List<string> Countries { get; set; }
 
         public Country()
