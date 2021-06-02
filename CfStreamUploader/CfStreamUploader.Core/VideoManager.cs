@@ -1,14 +1,8 @@
 ﻿using CfStreamUploader.Core.Models;
-using Jose;
-using Microsoft.IdentityModel.JsonWebTokens;
 using Newtonsoft.Json;
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.OpenSsl;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IdentityModel.Tokens.Jwt;
-using System.IO;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
@@ -26,30 +20,23 @@ namespace CfStreamUploader.Core
             "curl -X POST -H \"Authorization: Bearer {0}\" -F file=@{1} https://api.cloudflare.com/client/v4/accounts/{2}/stream";
 
         private readonly string signedUrlScript =
-            "curl -X POST -H \"Authorization: Bearer {0}\"  \"https://api.cloudflare.com/client/v4/accounts/{1}/stream/{2}\" -H \"Content-Type: application/json\" -d \"{3}\\\"uid\\\": \\{2}\\\", \\\"requireSignedURLs\\\": true {4}\"";
+            "curl -X POST -H \"Authorization: Bearer {0}\"  \"https://api.cloudflare.com/client/v4/accounts/{1}/stream/{2}\" -H \"Content-Type: application/json\" -d \"{3}\\\"uid\\\": \\\"{2}\\\", \\\"requireSignedURLs\\\": true {4}\"";
 
         #endregion
 
         #region props
 
-        public string VideoId { get; set; } = "d4aad179d1784a5ba0b7572b4890ae9a";  //TODO: Delete Prop
         public string VideoPath { get; set; } = string.Empty;
-        private JwtSecurityTokenHandler Handler { get; set; } = new JwtSecurityTokenHandler();
 
         #endregion
 
         #region public
 
-        public string SetRestrictions(Config config,bool checkboxRestrictionIP, bool checkboxRestrictionCountry, bool checkboxRestrictionAny)
+        public string SetRestrictions(Config config,string videoId, bool checkboxRestrictionIP, bool checkboxRestrictionCountry, bool checkboxRestrictionAny)
         {
             var bytesToDecrypt = Convert.FromBase64String(config.UserSettings.PrivateKey);
 
-            AsymmetricCipherKeyPair keyPair;
             var str = Encoding.UTF8.GetString(bytesToDecrypt);
-            using (TextReader sr = new StringReader(str))
-            {
-                keyPair = (AsymmetricCipherKeyPair)new PemReader(sr).ReadObject();
-            }
 
             var header = new Dictionary<string, object>()
             {
@@ -57,41 +44,40 @@ namespace CfStreamUploader.Core
             };
             var payload = new Dictionary<string, object>()
             {
-                {"sub", this.VideoId },
+                {"sub", videoId },
                 {"kid", config.UserSettings.KeyId },
                 {"exp", DateTime.Now.AddDays(10).ToString() },
                 {"accessRules",  this.AccesRulesManager(config, checkboxRestrictionIP, checkboxRestrictionCountry, checkboxRestrictionAny)}
             };
-            var handler = new JsonWebTokenHandler();
 
             var rsa = RSA.Create();
             rsa.ImportFromPem(str.ToCharArray());
-
-            var jwt = JWT.Encode(payload, rsa, JwsAlgorithm.RS256, header);
-            return jwt;
+          
+            return JWT.Encode(payload, rsa, JwsAlgorithm.RS256, header);
         }
 
 
-        public async Task<VideoUploadResult> UploadVideoAsync(Config config)
+        public async Task<(VideoUploadResult videoUploadResult, string VideoUrl)> UploadVideoAsync(Config config)
         {
-            //Video Upload  TODO: Create Method
-            // var cmdVideoUploadScript = this.GetCmdVideoUploadScript(config);
-            // var videoUploadResult = await this.RunCmdAsync(cmdVideoUploadScript);
-            //
-            // if (!videoUploadResult.videoUploadResult.Success)
-            //     return new VideoUploadResult(false, new Exception("Please check your Settings"));
-            //
-            // var json = JsonConvert.DeserializeObject<HttpResponse>(videoUploadResult.cmdOutput);
-            // this.VideoId = json.result.uid;
+            return (new VideoUploadResult(true, null), "3ef444818f6b481084841355d7af5f82");
 
-            //SetRestrictions TODO: Create Method
-            var cmdSignedUrlScript = this.GetSignedUrlScript(config);
-            var signedUrlResult = await this.RunCmdAsync(cmdSignedUrlScript);
-            if (!signedUrlResult.videoUploadResult.Success)
-                return new VideoUploadResult(false, new Exception("Making a video require signed URLs failed"));
+            //Video Upload
+            var cmdVideoUploadScript = this.GetCmdVideoUploadScript(config);
+            var videoUploadResult = await this.RunCmdAsync(cmdVideoUploadScript);
+
+            if (!videoUploadResult.videoUploadResult.Success)
+                return (new VideoUploadResult(false, new Exception("Please check your Settings")), String.Empty);
+
+            var json = JsonConvert.DeserializeObject<HttpResponse>(videoUploadResult.cmdOutput);
+            var videoId = json.result.uid;
             
-            return new VideoUploadResult(true, null);
-        }
+
+            //SetSignedURLs
+            var cmdSignedUrlScript = this.GetSignedUrlScript(config, videoId);
+            var signedUrlResult = await this.RunCmdAsync(cmdSignedUrlScript);
+
+            if (!signedUrlResult.videoUploadResult.Success)
+                return (new VideoUploadResult(false, new Exception("Making a video require signed URLs failed")), videoId);
 
         #endregion
 
@@ -102,12 +88,13 @@ namespace CfStreamUploader.Core
             return string.Format(this.signedUrlScript, config.UserSettings.CfToken, config.UserSettings.CfAccount,
                 this.VideoId, "{", "}");
         }
-
+          
         internal string GetCmdVideoUploadScript(Config config)
         {
             return string.Format(this.videoUploadScript, config.UserSettings.CfToken, this.VideoPath.Replace("\\", "/"),
                 config.UserSettings.CfAccount);
         }
+
 
         private string AccesRulesManager(Config config, bool checkboxRestrictionIP, bool checkboxRestrictionCountry, bool checkboxRestrictionAny)
         {
@@ -143,6 +130,11 @@ namespace CfStreamUploader.Core
             return accesruleJson;
 
         }
+        internal string GetSignedUrlScript(Config config, string videoId)
+        {
+            return string.Format(this.signedUrlScript, config.UserSettings.CfToken, config.UserSettings.CfAccount,
+                videoId, "{", "}");
+        }
 
         private async Task<(string cmdOutput, VideoUploadResult videoUploadResult)> RunCmdAsync(string cmdCommand)
         {
@@ -153,7 +145,6 @@ namespace CfStreamUploader.Core
                 {
                     myProcess.StartInfo.FileName = "cmd";
                     myProcess.StartInfo.CreateNoWindow = true;
-                    myProcess.StartInfo.UseShellExecute = false;
                     myProcess.StartInfo.RedirectStandardOutput = true;
                     myProcess.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
                     myProcess.StartInfo.Arguments = $"/c {cmdCommand}";

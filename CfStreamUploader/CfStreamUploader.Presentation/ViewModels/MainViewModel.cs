@@ -9,7 +9,6 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
-using CfStreamUploader.Core.Models;
 
 [assembly: InternalsVisibleTo("CfStreamUploader.Presentation.Test")]
 
@@ -173,16 +172,17 @@ namespace CfStreamUploader.Presentation.ViewModels
 
             var result = await this.Core.VideoManager.UploadVideoAsync(this.Core.ConfigManager.Config);
 
-            if (result.Success)
+            if (result.videoUploadResult.Success)
             {
-                var videoToken = this.Core.VideoManager.SetRestrictions(this.Core.ConfigManager.Config, this.checkboxRestrictionIP, this.checkboxRestrictionCountry, this.checkboxRestrictionAny);
+                var videoToken = this.Core.VideoManager.SetRestrictions(this.Core.ConfigManager.Config, result.VideoUrl, this.checkboxRestrictionIP, this.checkboxRestrictionCountry, this.checkboxRestrictionAny);
 
                 this.HtmlOutput = string.Format(this.Core.HtmlLayout.GetHtmlLayout(), videoToken);
                 this.videoUrl = string.Format(this.defaultUri, videoToken);
             }
             else
             {
-                MessageBox.Show(result.Exception.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(result.videoUploadResult.Exception.Message, "Error", MessageBoxButton.OK,
+                    MessageBoxImage.Error);
             }
         }
 
