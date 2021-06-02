@@ -37,7 +37,6 @@ namespace CfStreamUploader.Core
         public string SetRestrictions(Config config, string videoId, bool checkboxRestrictionIp,
             bool checkboxRestrictionCountry, bool checkboxRestrictionAny)
         {
-
             var header = new Dictionary<string, object>()
             {
                 {"kid", config.UserSettings.KeyId}
@@ -48,8 +47,9 @@ namespace CfStreamUploader.Core
                 {"kid", config.UserSettings.KeyId},
                 {"exp", DateTime.Now.AddDays(10).ToString()},
                 {
-                    "accessRules", b
-                }
+                    "accessRules", this.AccesRulesManager(config, checkboxRestrictionIp, checkboxRestrictionCountry,
+                        checkboxRestrictionAny)
+        }
             };
 
 
