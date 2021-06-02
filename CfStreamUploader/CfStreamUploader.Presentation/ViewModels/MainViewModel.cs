@@ -153,16 +153,16 @@ namespace CfStreamUploader.Presentation.ViewModels
 
             var result = await this.Core.VideoManager.UploadVideoAsync(this.Core.ConfigManager.Config);
 
-            if (result.Success)
+            if (result.videoUploadResult.Success)
             {
-                var videoToken = this.Core.VideoManager.SetRestrictions(this.Core.ConfigManager.Config);
+                var videoToken = this.Core.VideoManager.SetRestrictions(this.Core.ConfigManager.Config, result.VideoUrl);
 
                 this.HtmlOutput = string.Format(this.Core.HtmlLayout.GetHtmlLayout(), videoToken);
                 this.videoUrl = string.Format(this.defaultUri, videoToken);
             }
             else
             {
-                MessageBox.Show(result.Exception.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(result.videoUploadResult.Exception.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
