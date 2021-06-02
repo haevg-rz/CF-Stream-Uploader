@@ -26,6 +26,9 @@ namespace CfStreamUploader.Presentation.ViewModels
         private string restrictionIP = string.Empty;
         private string restrictionCountry = string.Empty;
         private string restrictionAny = string.Empty;
+        private bool checkboxRestrictionIP = false;
+        private bool checkboxRestrictionCountry = false;
+        private bool checkboxRestrictionAny = true;
 
         private string CfStreamUploaderPath =
             $@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\CfStreamUploader\Config.json";
@@ -71,6 +74,23 @@ namespace CfStreamUploader.Presentation.ViewModels
             get => this.restrictionAny;
             set => this.Set(ref this.restrictionAny, value);
         }
+
+        public bool CheckboxRestrictionIP
+        {
+            get => this.checkboxRestrictionIP;
+            set => this.Set(ref this.checkboxRestrictionIP, value);
+        }
+        public bool CheckboxRestrictionCountry
+        {
+            get => this.checkboxRestrictionCountry;
+            set => this.Set(ref this.checkboxRestrictionCountry, value);
+        }
+        public bool CheckboxRestrictionAny
+        {
+            get => this.checkboxRestrictionAny;
+            set => this.Set(ref this.checkboxRestrictionAny, value);
+        }
+
 
         #endregion
 
@@ -154,8 +174,7 @@ namespace CfStreamUploader.Presentation.ViewModels
 
             if (result.videoUploadResult.Success)
             {
-                var videoToken =
-                    this.Core.VideoManager.SetRestrictions(this.Core.ConfigManager.Config, result.VideoUrl);
+                var videoToken = this.Core.VideoManager.SetRestrictions(this.Core.ConfigManager.Config, result.VideoUrl, this.checkboxRestrictionIP, this.checkboxRestrictionCountry, this.checkboxRestrictionAny);
 
                 this.HtmlOutput = string.Format(this.Core.HtmlLayout.GetHtmlLayout(), videoToken);
                 this.videoUrl = string.Format(this.defaultUri, videoToken);

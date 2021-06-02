@@ -32,7 +32,7 @@ namespace CfStreamUploader.Core
 
         #region public
 
-        public string SetRestrictions(Config config, string videoId)
+        public string SetRestrictions(Config config,string videoId, bool checkboxRestrictionIP, bool checkboxRestrictionCountry, bool checkboxRestrictionAny)
         {
             var bytesToDecrypt = Convert.FromBase64String(config.UserSettings.PrivateKey);
 
@@ -40,23 +40,20 @@ namespace CfStreamUploader.Core
 
             var header = new Dictionary<string, object>()
             {
-                {"alg", "RS256"},
-                {"kid", config.UserSettings.KeyId}
+                {"kid", config.UserSettings.KeyId }
             };
             var payload = new Dictionary<string, object>()
             {
-                {"sub", videoId},
-                {"kid", config.UserSettings.KeyId},
-                {"exp", DateTime.Now.AddDays(10).ToString()}
-                // + accessRules
+                {"sub", videoId },
+                {"kid", config.UserSettings.KeyId },
+                {"exp", DateTime.Now.AddDays(10).ToString() },
+                {"accessRules",  this.AccesRulesManager(config, checkboxRestrictionIP, checkboxRestrictionCountry, checkboxRestrictionAny)}
             };
-            // var handler = new JsonWebTokenHandler();
 
             var rsa = RSA.Create();
             rsa.ImportFromPem(str.ToCharArray());
-
-            // var jwt = JWT.Encode(payload, rsa, JweAlgorithm.RSA_OAEP_256, JweEncryption.A256GCM, null, header);
-            return videoId;
+          
+            return JWT.Encode(payload, rsa, JwsAlgorithm.RS256, header);
         }
 
 
@@ -82,21 +79,57 @@ namespace CfStreamUploader.Core
             if (!signedUrlResult.videoUploadResult.Success)
                 return (new VideoUploadResult(false, new Exception("Making a video require signed URLs failed")), videoId);
 
-
-            return (new VideoUploadResult(true, null), videoId);
-        }
-
-
         #endregion
 
         #region private
 
+        internal string GetSignedUrlScript(Config config)
+        {
+            return string.Format(this.signedUrlScript, config.UserSettings.CfToken, config.UserSettings.CfAccount,
+                this.VideoId, "{", "}");
+        }
+          
         internal string GetCmdVideoUploadScript(Config config)
         {
             return string.Format(this.videoUploadScript, config.UserSettings.CfToken, this.VideoPath.Replace("\\", "/"),
                 config.UserSettings.CfAccount);
         }
 
+
+        private string AccesRulesManager(Config config, bool checkboxRestrictionIP, bool checkboxRestrictionCountry, bool checkboxRestrictionAny)
+        {
+            var jsonStringList = new List<string>();
+
+            if (checkboxRestrictionIP)
+                jsonStringList.Add(JsonConvert.SerializeObject(config.AccessRules.Ip, Formatting.Indented));
+
+            if (checkboxRestrictionCountry)
+                jsonStringList.Add(JsonConvert.SerializeObject(config.AccessRules.Country, Formatting.Indented));
+
+            if (checkboxRestrictionAny)
+                jsonStringList.Add(JsonConvert.SerializeObject(config.AccessRules.Any, Formatting.Indented));
+
+            if (!checkboxRestrictionIP && !checkboxRestrictionCountry && !checkboxRestrictionAny)
+                jsonStringList.Add(JsonConvert.SerializeObject(new Any()));
+
+            var accesruleJson = String.Empty;
+
+            switch (jsonStringList.Count)
+            {
+                case 1:
+                    accesruleJson = jsonStringList[0];
+                    break;
+                case 2:
+                    accesruleJson = JsonConvert.SerializeObject(new[] { JsonConvert.DeserializeObject(jsonStringList[0]), JsonConvert.DeserializeObject(jsonStringList[1]) });
+                    break;
+                case 3:
+                    accesruleJson = JsonConvert.SerializeObject(new[] { JsonConvert.DeserializeObject(jsonStringList[0]), JsonConvert.DeserializeObject(jsonStringList[1]), JsonConvert.DeserializeObject(jsonStringList[2]) });
+                    break;
+            }
+
+            return accesruleJson;
+
+        }
         internal string GetSignedUrlScript(Config config, string videoId)
         {
             return string.Format(this.signedUrlScript, config.UserSettings.CfToken, config.UserSettings.CfAccount,
