@@ -3,6 +3,8 @@ using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Text.Json;
+using JsonSerializer = Newtonsoft.Json.JsonSerializer;
 
 namespace CfStreamUploader.Core
 {

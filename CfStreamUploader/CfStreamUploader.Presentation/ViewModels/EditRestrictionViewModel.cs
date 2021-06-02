@@ -177,6 +177,7 @@ namespace CfStreamUploader.Presentation.ViewModels
 
         private bool IsValidId(List<string> ipStrings)
         {
+            return true; //TODO
             foreach (var ipString in ipStrings)
             {
                 var result = IPAddress.TryParse(ipString, out var ipAdress);

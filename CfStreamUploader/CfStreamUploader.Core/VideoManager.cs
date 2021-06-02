@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Jose;
 
@@ -33,41 +34,45 @@ namespace CfStreamUploader.Core
 
         #region public
 
-        public string SetRestrictions(Config config,string videoId, bool checkboxRestrictionIP, bool checkboxRestrictionCountry, bool checkboxRestrictionAny)
+        public string SetRestrictions(Config config, string videoId, bool checkboxRestrictionIp,
+            bool checkboxRestrictionCountry, bool checkboxRestrictionAny)
         {
-            var bytesToDecrypt = Convert.FromBase64String(config.UserSettings.PrivateKey);
-
-            var str = Encoding.UTF8.GetString(bytesToDecrypt);
 
             var header = new Dictionary<string, object>()
             {
-                {"kid", config.UserSettings.KeyId }
+                {"kid", config.UserSettings.KeyId}
             };
             var payload = new Dictionary<string, object>()
             {
-                {"sub", videoId },
-                {"kid", config.UserSettings.KeyId },
-                {"exp", DateTime.Now.AddDays(10).ToString() },
-                {"accessRules",  this.AccesRulesManager(config, checkboxRestrictionIP, checkboxRestrictionCountry, checkboxRestrictionAny)}
+                {"sub", videoId},
+                {"kid", config.UserSettings.KeyId},
+                {"exp", DateTime.Now.AddDays(10).ToString()},
+                {
+                    "accessRules", b
+                }
             };
 
+
+            var bytesToDecrypt = Convert.FromBase64String(config.UserSettings.PrivateKey);
+            var str = Encoding.UTF8.GetString(bytesToDecrypt);
             var rsa = RSA.Create();
             rsa.ImportFromPem(str.ToCharArray());
-          
-            return JWT.Encode(payload, rsa, JwsAlgorithm.RS256, header);
+
+            var a = JWT.Encode(payload, rsa, JwsAlgorithm.RS256, header);
+            return a;
         }
 
 
         public async Task<(VideoUploadResult videoUploadResult, string VideoUrl)> UploadVideoAsync(Config config)
         {
-            //return (new VideoUploadResult(true, null), "3ef444818f6b481084841355d7af5f82");
+            return (new VideoUploadResult(true, null), "3ef444818f6b481084841355d7af5f82");
 
             //Video Upload
             var cmdVideoUploadScript = this.GetCmdVideoUploadScript(config);
             var videoUploadResult = await this.RunCmdAsync(cmdVideoUploadScript);
 
             if (!videoUploadResult.videoUploadResult.Success)
-                return (new VideoUploadResult(false, new Exception("Please check your Settings")), String.Empty);
+                return (new VideoUploadResult(false, new Exception("Please check your Settings")), string.Empty);
 
             var json = JsonConvert.DeserializeObject<HttpResponse>(videoUploadResult.cmdOutput);
             var videoId = json.result.uid;
@@ -93,7 +98,7 @@ namespace CfStreamUploader.Core
             return string.Format(this.signedUrlScript, config.UserSettings.CfToken, config.UserSettings.CfAccount,
                 videoId, "{", "}");
         }
-          
+
         internal string GetCmdVideoUploadScript(Config config)
         {
             return string.Format(this.videoUploadScript, config.UserSettings.CfToken, this.VideoPath.Replace("\\", "/"),
@@ -101,21 +106,28 @@ namespace CfStreamUploader.Core
         }
 
 
-        private string AccesRulesManager(Config config, bool checkboxRestrictionIP, bool checkboxRestrictionCountry, bool checkboxRestrictionAny)
+        private string AccesRulesManager(Config config, bool checkboxRestrictionIP, bool checkboxRestrictionCountry,
+            bool checkboxRestrictionAny)
         {
             var jsonStringList = new List<string>();
 
+            var serializeOptions = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            };
+
             if (checkboxRestrictionIP)
-                jsonStringList.Add(JsonConvert.SerializeObject(config.AccessRules.Ip, Formatting.Indented));
+                jsonStringList.Add(System.Text.Json.JsonSerializer.Serialize(config.AccessRules.Ip, serializeOptions));
 
             if (checkboxRestrictionCountry)
-                jsonStringList.Add(JsonConvert.SerializeObject(config.AccessRules.Country, Formatting.Indented));
+                jsonStringList.Add(
+                    System.Text.Json.JsonSerializer.Serialize(config.AccessRules.Country, serializeOptions));
 
             if (checkboxRestrictionAny)
-                jsonStringList.Add(JsonConvert.SerializeObject(config.AccessRules.Any, Formatting.Indented));
+                jsonStringList.Add(System.Text.Json.JsonSerializer.Serialize(config.AccessRules.Any, serializeOptions));
 
             if (!checkboxRestrictionIP && !checkboxRestrictionCountry && !checkboxRestrictionAny)
-                jsonStringList.Add(JsonConvert.SerializeObject(new Any()));
+                jsonStringList.Add(System.Text.Json.JsonSerializer.Serialize(new Any(), serializeOptions));
 
             var accesruleJson = jsonStringList.Count switch
             {
@@ -131,11 +143,10 @@ namespace CfStreamUploader.Core
                     JsonConvert.DeserializeObject(jsonStringList[1]),
                     JsonConvert.DeserializeObject(jsonStringList[2])
                 }),
-                _ => String.Empty
+                _ => string.Empty
             };
 
             return accesruleJson;
-
         }
 
         private async Task<(string cmdOutput, VideoUploadResult videoUploadResult)> RunCmdAsync(string cmdCommand)

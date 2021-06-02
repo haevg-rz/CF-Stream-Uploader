@@ -168,13 +168,20 @@ namespace CfStreamUploader.Presentation.ViewModels
                 return;
             }
 
+            // if (!this.Core.ConfigManager.Config.AccessRules.Any.IsBlocked() && (!this.Core.ConfigManager.Config.AccessRules.Ip.IsBlocked() || !this.Core.ConfigManager.Config.AccessRules.Country.IsBlocked()))
+            // {
+            //     MessageBox.Show("There is no point in allowing all and a specific restiction", "Warning", MessageBoxButton.OK,
+            //         MessageBoxImage.Warning);
+            //     return;
+            // } TODO
+
             if (!this.IsConfigSolid()) return;
 
             var result = await this.Core.VideoManager.UploadVideoAsync(this.Core.ConfigManager.Config);
 
             if (result.videoUploadResult.Success)
             {
-                var videoToken = this.Core.VideoManager.SetRestrictions(this.Core.ConfigManager.Config, result.VideoUrl, this.checkboxRestrictionIP, this.checkboxRestrictionCountry, this.checkboxRestrictionAny);
+                var videoToken = this.Core.VideoManager.SetRestrictions(this.Core.ConfigManager.Config, result.VideoUrl, this.CheckboxRestrictionIP, this.CheckboxRestrictionCountry, this.CheckboxRestrictionAny);
 
                 this.HtmlOutput = string.Format(this.Core.HtmlLayout.GetHtmlLayout(), videoToken);
                 this.videoUrl = string.Format(this.defaultUri, videoToken);

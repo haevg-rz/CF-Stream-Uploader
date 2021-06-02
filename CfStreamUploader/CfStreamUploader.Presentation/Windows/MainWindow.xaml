@@ -124,7 +124,7 @@
             </Grid>
 
             <Grid Grid.Row="2" Grid.Column="0" Margin="10">
-                <TextBox Style="{DynamicResource HtmlOutputTextBoxStyle}" Text="{Binding HtmlOutput}" />
+                <TextBox Style="{DynamicResource HtmlOutputTextBoxStyle}" Text="{Binding HtmlOutput}" Width="600"/>
             </Grid>
 
             <Grid Grid.Row="3" Grid.Column="0" Margin="10,0,10,10">
