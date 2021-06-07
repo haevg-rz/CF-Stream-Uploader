@@ -1,4 +1,5 @@
 ﻿using CfStreamUploader.Core.Models;
+using Jose;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,6 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Jose;
 
 [assembly: InternalsVisibleTo("CfStreamUploader.Core.Test")]
 
@@ -37,19 +37,23 @@ namespace CfStreamUploader.Core
         public string SetRestrictions(Config config, string videoId, bool checkboxRestrictionIp,
             bool checkboxRestrictionCountry, bool checkboxRestrictionAny)
         {
+            var datetimenow = DateTime.Now;
+            long time = 10 * 365 * 24 * 60 * 60;
+
             var header = new Dictionary<string, object>()
             {
-                {"kid", config.UserSettings.KeyId}
+                {"kid", config.UserSettings.KeyId},
+                {"typ", "JWT"}
             };
             var payload = new Dictionary<string, object>()
             {
                 {"sub", videoId},
                 {"kid", config.UserSettings.KeyId},
-                {"exp", DateTime.Now.AddDays(10).ToString()},
+                {"exp", ((DateTimeOffset)datetimenow).ToUnixTimeSeconds() + time},
                 {
-                    "accessRules", this.AccesRulesManager(config, checkboxRestrictionIp, checkboxRestrictionCountry,
-                        checkboxRestrictionAny)
-        }
+                    "accessRules", new [] {JsonConvert.DeserializeObject(this.AccesRulesManager(config, checkboxRestrictionIp, checkboxRestrictionCountry,
+                        checkboxRestrictionAny))}
+                }
             };
 
 
@@ -65,7 +69,7 @@ namespace CfStreamUploader.Core
 
         public async Task<(VideoUploadResult videoUploadResult, string VideoUrl)> UploadVideoAsync(Config config)
         {
-            return (new VideoUploadResult(true, null), "3ef444818f6b481084841355d7af5f82");
+            return (new VideoUploadResult(true, null), "3aa02dd85c374958967f950b8e18e703");
 
             //Video Upload
             var cmdVideoUploadScript = this.GetCmdVideoUploadScript(config);
