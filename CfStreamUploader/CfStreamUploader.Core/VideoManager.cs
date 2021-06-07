@@ -51,19 +51,17 @@ namespace CfStreamUploader.Core
                 {"kid", config.UserSettings.KeyId},
                 {"exp", ((DateTimeOffset)datetimenow).ToUnixTimeSeconds() + time},
                 {
-                    "accessRules", new [] {JsonConvert.DeserializeObject(this.AccesRulesManager(config, checkboxRestrictionIp, checkboxRestrictionCountry,
-                        checkboxRestrictionAny))}
+                    "accessRules", this.AccesRulesManager(config, checkboxRestrictionIp, checkboxRestrictionCountry,
+                        checkboxRestrictionAny)
                 }
             };
-
 
             var bytesToDecrypt = Convert.FromBase64String(config.UserSettings.PrivateKey);
             var str = Encoding.UTF8.GetString(bytesToDecrypt);
             var rsa = RSA.Create();
             rsa.ImportFromPem(str.ToCharArray());
 
-            var a = JWT.Encode(payload, rsa, JwsAlgorithm.RS256, header);
-            return a;
+            return JWT.Encode(payload, rsa, JwsAlgorithm.RS256, header);
         }
 
 
@@ -110,7 +108,7 @@ namespace CfStreamUploader.Core
         }
 
 
-        private string AccesRulesManager(Config config, bool checkboxRestrictionIP, bool checkboxRestrictionCountry,
+        private object AccesRulesManager(Config config, bool checkboxRestrictionIP, bool checkboxRestrictionCountry,
             bool checkboxRestrictionAny)
         {
             var jsonStringList = new List<string>();
@@ -135,19 +133,9 @@ namespace CfStreamUploader.Core
 
             var accesruleJson = jsonStringList.Count switch
             {
-                1 => jsonStringList[0],
-                2 => JsonConvert.SerializeObject(new[]
-                {
-                    JsonConvert.DeserializeObject(jsonStringList[0]),
-                    JsonConvert.DeserializeObject(jsonStringList[1])
-                }),
-                3 => JsonConvert.SerializeObject(new[]
-                {
-                    JsonConvert.DeserializeObject(jsonStringList[0]),
-                    JsonConvert.DeserializeObject(jsonStringList[1]),
-                    JsonConvert.DeserializeObject(jsonStringList[2])
-                }),
-                _ => string.Empty
+                1 => new[] { JsonConvert.DeserializeObject(jsonStringList[0])},
+                2 => new[] { JsonConvert.DeserializeObject(jsonStringList[0]), JsonConvert.DeserializeObject(jsonStringList[1]) } ,
+                3 => new[] { JsonConvert.DeserializeObject(jsonStringList[0]), JsonConvert.DeserializeObject(jsonStringList[1]), JsonConvert.DeserializeObject(jsonStringList[2]) },
             };
 
             return accesruleJson;
