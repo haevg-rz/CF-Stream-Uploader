@@ -3,6 +3,7 @@ using CfStreamUploader.Presentation.Resources.Colors;
 using CfStreamUploader.Presentation.Windows;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -23,6 +24,7 @@ namespace CfStreamUploader.Presentation.ViewModels
 
         private string ipTextBox = string.Empty;
         private string countryTextBox = string.Empty;
+        private string expiresInTextBox = string.Empty;
 
         #endregion
 
@@ -65,6 +67,12 @@ namespace CfStreamUploader.Presentation.ViewModels
             set => this.Set(ref this.countryTextBox, value);
         }
 
+        public string ExpiresInTextBox
+        {
+            get => this.expiresInTextBox;
+            set => this.Set(ref this.expiresInTextBox, value);
+        }
+
         #endregion
 
         #region constructor
@@ -89,6 +97,8 @@ namespace CfStreamUploader.Presentation.ViewModels
 
             if (this.ConfigManager.Config.AccessRules.Any.IsBlocked())
                 this.AnyAction = "block";
+
+            this.expiresInTextBox = ConfigManager.Config.AccessRules.ExpiresIn.ToString();
 
             if (this.ConfigManager.Config.IsDarkmode)
                 this.Darkmode();
@@ -169,6 +179,14 @@ namespace CfStreamUploader.Presentation.ViewModels
 
             var countryString = this.CountryTextBox.Replace(" ", "");
             this.ConfigManager.Config.AccessRules.Country.SetCountryList(countryString.Split(",").ToList());
+
+            if (!ExpiresInTextBox.All(char.IsDigit))
+            {
+                MessageBox.Show("Make shure your AccesLimit is a Number", "Warning", MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+                return;
+            }
+            this.ConfigManager.Config.AccessRules.ExpiresIn = Convert.ToInt32(this.ExpiresInTextBox);
 
             this.ConfigManager.UpdateConfig(this.ConfigManager.Config);
 
