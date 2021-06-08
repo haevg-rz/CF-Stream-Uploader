@@ -4,7 +4,7 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
-    <ApplicationIcon>cloud_computing_upload.ico</ApplicationIcon>
+    <ApplicationIcon>folder_movie.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
