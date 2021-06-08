@@ -8,6 +8,7 @@ namespace CfStreamUploader.Core.Models
         [JsonPropertyName("any")] public Any Any { get; }
         [JsonPropertyName("ip")] public Ip Ip { get; }
         [JsonPropertyName("country")] public Country Country { get; }
+        [JsonPropertyName("exp")] public int ExpiresIn { get; set; }
 
         public AccessRules()
         {

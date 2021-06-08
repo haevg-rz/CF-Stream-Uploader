@@ -39,7 +39,7 @@ namespace CfStreamUploader.Core
             bool checkboxRestrictionCountry, bool checkboxRestrictionAny)
         {
             var datetimenow = DateTime.Now;
-            long time = 10 * 365 * 24 * 60 * 60;
+            long time = config.AccessRules.ExpiresIn * 24 * 60 * 60; //ExpiresIn in seconds
 
             var header = new Dictionary<string, object>()
             {
