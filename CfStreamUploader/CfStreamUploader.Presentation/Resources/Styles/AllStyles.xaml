@@ -7,6 +7,5 @@
         <ResourceDictionary Source="TextBoxStyles.xaml" />
         <ResourceDictionary Source="ProgressBarStyles.xaml" />
         <ResourceDictionary Source="CheckBoxStyles.xaml" />
-        <ResourceDictionary Source="LoadingAnimationStyle.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

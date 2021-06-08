@@ -300,7 +300,6 @@ namespace CfStreamUploader.Presentation.ViewModels
 
             var videoUploadResult = await this.Core.VideoManager.UploadVideoAsync(this.Core.ConfigManager.Config);
 
-            await Task.Delay(TimeSpan.FromSeconds(5));
             this.VideoUploadPogresBarStepp1();
 
             if (videoUploadResult.videoUploadResult.Success)
@@ -312,21 +311,20 @@ namespace CfStreamUploader.Presentation.ViewModels
 
                     if (signedUrlResult.Success)
                     {
-                        await Task.Delay(TimeSpan.FromSeconds(5));
                         this.VideoUploadPogresBarStepp2();
 
                         var videoToken = this.Core.VideoManager.SetRestrictions(this.Core.ConfigManager.Config,
                             videoUploadResult.VideoUrl, this.CheckboxRestrictionIP, this.CheckboxRestrictionCountry,
                             this.CheckboxRestrictionAny, this.CheckboxRestrictionExpireIn);
 
-                        await Task.Delay(TimeSpan.FromSeconds(5));
                         this.VideoUploadPogresBarStepp3();
 
                         this.HtmlOutput = string.Format(this.Core.HtmlLayout.GetHtmlLayout(), videoToken);
                         this.videoUrl = string.Format(this.defaultUri, videoToken);
 
-                        await Task.Delay(TimeSpan.FromSeconds(5));
                         this.VideoUploadPogresBarStepp4();
+
+                        await Task.Delay(TimeSpan.FromSeconds(3));
                         this.VideoUploadPogressBarFinish();
 
                         return;
