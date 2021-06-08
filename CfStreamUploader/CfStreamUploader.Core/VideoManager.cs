@@ -36,11 +36,8 @@ namespace CfStreamUploader.Core
         #region public
 
         public string SetRestrictions(Config config, string videoId, bool checkboxRestrictionIp,
-            bool checkboxRestrictionCountry, bool checkboxRestrictionAny)
+            bool checkboxRestrictionCountry, bool checkboxRestrictionAny, bool checkboxRestrictionExpireIn)
         {
-            var datetimenow = DateTime.Now;
-            long time = config.AccessRules.ExpiresIn * 24 * 60 * 60; //ExpiresIn in seconds
-
             var header = new Dictionary<string, object>()
             {
                 {"kid", config.UserSettings.KeyId},
@@ -50,7 +47,7 @@ namespace CfStreamUploader.Core
             {
                 {"sub", videoId},
                 {"kid", config.UserSettings.KeyId},
-                {"exp", ((DateTimeOffset)datetimenow).ToUnixTimeSeconds() + time},
+                {"exp", this.GetExpireDate(checkboxRestrictionExpireIn, config)},
                 {
                     "accessRules", this.AccesRulesManager(config, checkboxRestrictionIp, checkboxRestrictionCountry,
                         checkboxRestrictionAny)
@@ -68,8 +65,6 @@ namespace CfStreamUploader.Core
 
         public async Task<(VideoUploadResult videoUploadResult, string VideoUrl)> UploadVideoAsync(Config config)
         {
-            return (new VideoUploadResult(true, null), "3aa02dd85c374958967f950b8e18e703"); //TODO
-
             var cmdVideoUploadScript = this.GetCmdVideoUploadScript(config);
             var videoUploadResult = await this.RunCmdAsync(cmdVideoUploadScript);
 
@@ -82,15 +77,13 @@ namespace CfStreamUploader.Core
 
         public async Task<VideoUploadResult> SetSignedUrl(Config config, string videoId)
         {
-            return (new VideoUploadResult(true, null)); //TODO
-
             var cmdSignedUrlScript = this.GetSignedUrlScript(config, videoId);
             var signedUrlResult = await this.RunCmdAsync(cmdSignedUrlScript);
 
             if (!signedUrlResult.videoUploadResult.Success)
-                return (new VideoUploadResult(false, new Exception("Making a video require signed URLs failed")));
+                return new VideoUploadResult(false, new Exception("Making a video require signed URLs failed"));
 
-            return (new VideoUploadResult(true, null));
+            return new VideoUploadResult(true, null);
         }
 
         #endregion
@@ -105,7 +98,8 @@ namespace CfStreamUploader.Core
 
         internal string GetCmdVideoUploadScript(Config config)
         {
-            return string.Format(this.videoUploadScript, config.UserSettings.CfToken, this.VideoPath.Replace("\\", "/"),
+            return string.Format(this.videoUploadScript, config.UserSettings.CfToken,
+                this.VideoPath.Replace("\\", "/"),
                 config.UserSettings.CfAccount);
         }
 
@@ -121,23 +115,34 @@ namespace CfStreamUploader.Core
             };
 
             if (checkboxRestrictionIP)
-                jsonStringList.Add(System.Text.Json.JsonSerializer.Serialize(config.AccessRules.Ip, serializeOptions));
+                jsonStringList.Add(
+                    System.Text.Json.JsonSerializer.Serialize(config.AccessRules.Ip, serializeOptions));
 
             if (checkboxRestrictionCountry)
                 jsonStringList.Add(
                     System.Text.Json.JsonSerializer.Serialize(config.AccessRules.Country, serializeOptions));
 
             if (checkboxRestrictionAny)
-                jsonStringList.Add(System.Text.Json.JsonSerializer.Serialize(config.AccessRules.Any, serializeOptions));
+                jsonStringList.Add(
+                    System.Text.Json.JsonSerializer.Serialize(config.AccessRules.Any, serializeOptions));
 
             if (!checkboxRestrictionIP && !checkboxRestrictionCountry && !checkboxRestrictionAny)
                 jsonStringList.Add(System.Text.Json.JsonSerializer.Serialize(new Any(), serializeOptions));
 
             var accesruleJson = jsonStringList.Count switch
             {
-                1 => new[] { JsonConvert.DeserializeObject(jsonStringList[0])},
-                2 => new[] { JsonConvert.DeserializeObject(jsonStringList[0]), JsonConvert.DeserializeObject(jsonStringList[1]) } ,
-                3 => new[] { JsonConvert.DeserializeObject(jsonStringList[0]), JsonConvert.DeserializeObject(jsonStringList[1]), JsonConvert.DeserializeObject(jsonStringList[2]) },
+                1 => new[] {JsonConvert.DeserializeObject(jsonStringList[0])},
+                2 => new[]
+                {
+                    JsonConvert.DeserializeObject(jsonStringList[0]),
+                    JsonConvert.DeserializeObject(jsonStringList[1])
+                },
+                3 => new[]
+                {
+                    JsonConvert.DeserializeObject(jsonStringList[0]),
+                    JsonConvert.DeserializeObject(jsonStringList[1]),
+                    JsonConvert.DeserializeObject(jsonStringList[2])
+                },
             };
 
             return accesruleJson;
@@ -171,5 +176,22 @@ namespace CfStreamUploader.Core
         }
 
         #endregion
+
+
+        private long GetExpireDate(bool checkboxRestrictionExpireIn, Config config)
+        {
+            var now = DateTime.Now;
+
+            if (checkboxRestrictionExpireIn)
+            {
+                long seconds = config.AccessRules.ExpiresIn * 24 * 60 * 60; //ExpiresIn in seconds
+                return ((DateTimeOffset) now).ToUnixTimeSeconds() + seconds;
+            }
+            else
+            {
+                long seconds = (356 * 10) * 24 * 60 * 60; //10 Years in seconds
+                return ((DateTimeOffset) now).ToUnixTimeSeconds() + seconds;
+            }
+        }
     }
 }

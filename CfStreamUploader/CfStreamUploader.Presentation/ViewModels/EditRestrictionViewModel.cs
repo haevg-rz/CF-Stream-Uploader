@@ -98,7 +98,7 @@ namespace CfStreamUploader.Presentation.ViewModels
             if (this.ConfigManager.Config.AccessRules.Any.IsBlocked())
                 this.AnyAction = "block";
 
-            this.expiresInTextBox = ConfigManager.Config.AccessRules.ExpiresIn.ToString();
+            this.expiresInTextBox = this.ConfigManager.Config.AccessRules.ExpiresIn.ToString();
 
             if (this.ConfigManager.Config.IsDarkmode)
                 this.Darkmode();
@@ -180,12 +180,13 @@ namespace CfStreamUploader.Presentation.ViewModels
             var countryString = this.CountryTextBox.Replace(" ", "");
             this.ConfigManager.Config.AccessRules.Country.SetCountryList(countryString.Split(",").ToList());
 
-            if (!ExpiresInTextBox.All(char.IsDigit))
+            if (!this.ExpiresInTextBox.All(char.IsDigit))
             {
                 MessageBox.Show("Make shure your AccesLimit is a Number", "Warning", MessageBoxButton.OK,
                     MessageBoxImage.Warning);
                 return;
             }
+
             this.ConfigManager.Config.AccessRules.ExpiresIn = Convert.ToInt32(this.ExpiresInTextBox);
 
             this.ConfigManager.UpdateConfig(this.ConfigManager.Config);

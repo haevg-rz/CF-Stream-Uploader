@@ -9,7 +9,6 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -29,9 +28,11 @@ namespace CfStreamUploader.Presentation.ViewModels
         private string restrictionIP = string.Empty;
         private string restrictionCountry = string.Empty;
         private string restrictionAny = string.Empty;
+        private string restrictionExpireIn = string.Empty;
         private bool checkboxRestrictionIP = false;
         private bool checkboxRestrictionCountry = false;
         private bool checkboxRestrictionAny = true;
+        private bool checkboxRestrictionExpireIn = true;
         private bool setSignedUrl = true;
 
         //VideoPogressBar
@@ -53,9 +54,6 @@ namespace CfStreamUploader.Presentation.ViewModels
         private bool allProcessesAreDone;
 
         //VideoPogressBar
-
-        private string CfStreamUploaderPath =
-            $@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\CfStreamUploader\Config.json"; //TODO
 
         #endregion
 
@@ -99,6 +97,12 @@ namespace CfStreamUploader.Presentation.ViewModels
             set => this.Set(ref this.restrictionAny, value);
         }
 
+        public string RestrictionExpireIn
+        {
+            get => this.restrictionExpireIn;
+            set => this.Set(ref this.restrictionExpireIn, value);
+        }
+
         public bool CheckboxRestrictionIP
         {
             get => this.checkboxRestrictionIP;
@@ -115,6 +119,12 @@ namespace CfStreamUploader.Presentation.ViewModels
         {
             get => this.checkboxRestrictionAny;
             set => this.Set(ref this.checkboxRestrictionAny, value);
+        }
+
+        public bool CheckboxRestrictionExpireIn
+        {
+            get => this.checkboxRestrictionExpireIn;
+            set => this.Set(ref this.checkboxRestrictionExpireIn, value);
         }
 
         public bool SetSignedUrl
@@ -308,7 +318,7 @@ namespace CfStreamUploader.Presentation.ViewModels
 
                         var videoToken = this.Core.VideoManager.SetRestrictions(this.Core.ConfigManager.Config,
                             videoUploadResult.VideoUrl, this.CheckboxRestrictionIP, this.CheckboxRestrictionCountry,
-                            this.CheckboxRestrictionAny);
+                            this.CheckboxRestrictionAny, this.CheckboxRestrictionExpireIn);
 
                         await Task.Delay(TimeSpan.FromSeconds(5));
                         this.VideoUploadPogresBarStepp3();
@@ -319,7 +329,7 @@ namespace CfStreamUploader.Presentation.ViewModels
                         await Task.Delay(TimeSpan.FromSeconds(5));
                         this.VideoUploadPogresBarStepp4();
                         this.VideoUploadPogressBarFinish();
-                        
+
                         return;
                     }
                 }
@@ -331,7 +341,6 @@ namespace CfStreamUploader.Presentation.ViewModels
                 this.VideoUploadPogresBarStepp4();
                 this.LoadingAnimation2IsVisible = false;
                 this.VideoUploadPogressBarFinish();
-
             }
             else
             {
@@ -406,6 +415,8 @@ namespace CfStreamUploader.Presentation.ViewModels
             this.RestrictionCountry = this.Core.ConfigManager.Config.AccessRules.Country.PrintRestriction();
             this.RestrictionAny = this.Core.ConfigManager.Config.AccessRules.Any.PrintRestriction();
             this.RestrictionIP = this.Core.ConfigManager.Config.AccessRules.Ip.PrintRestriction();
+            this.RestrictionExpireIn =
+                string.Format($"expiry date in {this.Core.ConfigManager.Config.AccessRules.ExpiresIn} days");
         }
 
         //VideoPogressBar
