@@ -5,9 +5,11 @@ using GalaSoft.MvvmLight.Command;
 using GongSolutions.Wpf.DragDrop;
 using Microsoft.Win32;
 using System;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows;
 
 [assembly: InternalsVisibleTo("CfStreamUploader.Presentation.Test")]
@@ -30,8 +32,28 @@ namespace CfStreamUploader.Presentation.ViewModels
         private bool checkboxRestrictionCountry = false;
         private bool checkboxRestrictionAny = true;
 
+        //VideoPogressBar
+        private bool checkImage1IsVisible; 
+        private bool checkImage2IsVisible; 
+        private bool checkImage3IsVisible; 
+        private bool checkImage4IsVisible;
+        private bool checkImage5IsVisible;
+
+        private bool loadingAnimation1IsVisible;
+        private bool loadingAnimation2IsVisible;
+        private bool loadingAnimation3IsVisible;
+        private bool loadingAnimation4IsVisible;
+
+        private bool uloadingisDone;
+        private bool setPrivateIsDone;
+        private bool addRestrictionIsDone;
+        private bool generateHtmlIsDone;
+        private bool allProcessesAreDone;
+
+        //VideoPogressBar
+
         private string CfStreamUploaderPath =
-            $@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\CfStreamUploader\Config.json";
+            $@"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\CfStreamUploader\Config.json"; //TODO
 
         #endregion
 
@@ -90,6 +112,82 @@ namespace CfStreamUploader.Presentation.ViewModels
             get => this.checkboxRestrictionAny;
             set => this.Set(ref this.checkboxRestrictionAny, value);
         }
+
+        //VideoPogressBar
+        public bool CheckImage1IsVisible
+        {
+            get => this.checkImage1IsVisible;
+            set => this.Set(ref this.checkImage1IsVisible, value);
+        }
+
+        public bool CheckImage2IsVisible
+        {
+            get => this.checkImage2IsVisible;
+            set => this.Set(ref this.checkImage2IsVisible, value);
+        }
+        public bool CheckImage3IsVisible
+        {
+            get => this.checkImage3IsVisible;
+            set => this.Set(ref this.checkImage3IsVisible, value);
+        }
+        public bool CheckImage4IsVisible
+        {
+            get => this.checkImage4IsVisible;
+            set => this.Set(ref this.checkImage4IsVisible, value);
+        }      
+        public bool CheckImage5IsVisible
+        {
+            get => this.checkImage5IsVisible;
+            set => this.Set(ref this.checkImage5IsVisible, value);
+        }
+        public bool LoadingAnimation1IsVisible
+        {
+            get => this.loadingAnimation1IsVisible;
+            set => this.Set(ref this.loadingAnimation1IsVisible, value);
+        }   
+        public bool LoadingAnimation2IsVisible
+        {
+            get => this.loadingAnimation2IsVisible;
+            set => this.Set(ref this.loadingAnimation2IsVisible, value);
+        }      
+        public bool LoadingAnimation3IsVisible
+        {
+            get => this.loadingAnimation3IsVisible;
+            set => this.Set(ref this.loadingAnimation3IsVisible, value);
+        }   
+        public bool LoadingAnimation4IsVisible
+        {
+            get => this.loadingAnimation4IsVisible;
+            set => this.Set(ref this.loadingAnimation4IsVisible, value);
+        }
+
+        public bool UloadingisDone
+        {
+            get => this.uloadingisDone;
+            set => this.Set(ref this.uloadingisDone, value);
+        } 
+        public bool SetPrivateIsDone
+        {
+            get => this.setPrivateIsDone;
+            set => this.Set(ref this.setPrivateIsDone, value);
+        }
+
+        public bool AddRestrictionIsDone
+        {
+            get => this.addRestrictionIsDone;
+            set => this.Set(ref this.addRestrictionIsDone, value);
+        }   
+        public bool GenerateHtmlIsDone
+        {
+            get => this.generateHtmlIsDone;
+            set => this.Set(ref this.generateHtmlIsDone, value);
+        } 
+        public bool AllProcessesAreDone
+        {
+            get => this.allProcessesAreDone;
+            set => this.Set(ref this.allProcessesAreDone, value);
+        }
+        //VideoPogressBar
 
 
         #endregion
@@ -167,28 +265,41 @@ namespace CfStreamUploader.Presentation.ViewModels
                     MessageBoxImage.Information);
                 return;
             }
-
-            // if (!this.Core.ConfigManager.Config.AccessRules.Any.IsBlocked() && (!this.Core.ConfigManager.Config.AccessRules.Ip.IsBlocked() || !this.Core.ConfigManager.Config.AccessRules.Country.IsBlocked()))
-            // {
-            //     MessageBox.Show("There is no point in allowing all and a specific restiction", "Warning", MessageBoxButton.OK,
-            //         MessageBoxImage.Warning);
-            //     return;
-            // } TODO
+            this.VideoUploadPogresBarSetUpStart();
 
             if (!this.IsConfigSolid()) return;
 
-            var result = await this.Core.VideoManager.UploadVideoAsync(this.Core.ConfigManager.Config);
+            var videoUploadResult = await this.Core.VideoManager.UploadVideoAsync(this.Core.ConfigManager.Config);
 
-            if (result.videoUploadResult.Success)
+            await Task.Delay(TimeSpan.FromSeconds(5));
+            this.VideoUploadPogresBarStepp1();
+
+            if (videoUploadResult.videoUploadResult.Success)
             {
-                var videoToken = this.Core.VideoManager.SetRestrictions(this.Core.ConfigManager.Config, result.VideoUrl, this.CheckboxRestrictionIP, this.CheckboxRestrictionCountry, this.CheckboxRestrictionAny);
+                var signedUrlResult = await this.Core.VideoManager.SetSignedUrl(this.Core.ConfigManager.Config, videoUploadResult.VideoUrl);
 
-                this.HtmlOutput = string.Format(this.Core.HtmlLayout.GetHtmlLayout(), videoToken);
-                this.videoUrl = string.Format(this.defaultUri, videoToken);
+                if (signedUrlResult.Success)
+                {
+                    await Task.Delay(TimeSpan.FromSeconds(5));
+                    this.VideoUploadPogresBarStepp2();
+
+                    var videoToken = this.Core.VideoManager.SetRestrictions(this.Core.ConfigManager.Config, videoUploadResult.VideoUrl, this.CheckboxRestrictionIP, this.CheckboxRestrictionCountry, this.CheckboxRestrictionAny);
+
+                    await Task.Delay(TimeSpan.FromSeconds(5));
+                    this.VideoUploadPogresBarStepp3();
+
+                    this.HtmlOutput = string.Format(this.Core.HtmlLayout.GetHtmlLayout(), videoToken);
+                    this.videoUrl = string.Format(this.defaultUri, videoToken);
+
+                    await Task.Delay(TimeSpan.FromSeconds(5));
+                    this.VideoUploadPogresBarStepp4();
+                    await Task.Delay(TimeSpan.FromSeconds(5));
+                    this.VideoUploadPogressBarFinish();
+                }
             }
             else
             {
-                MessageBox.Show(result.videoUploadResult.Exception.Message, "Error", MessageBoxButton.OK,
+                MessageBox.Show(videoUploadResult.videoUploadResult.Exception.Message, "Error", MessageBoxButton.OK,
                     MessageBoxImage.Error);
             }
         }
@@ -260,6 +371,60 @@ namespace CfStreamUploader.Presentation.ViewModels
             this.RestrictionAny = this.Core.ConfigManager.Config.AccessRules.Any.PrintRestriction();
             this.RestrictionIP = this.Core.ConfigManager.Config.AccessRules.Ip.PrintRestriction();
         }
+
+        //VideoPogressBar
+        private void VideoUploadPogresBarSetUpStart()
+        {
+            this.CheckImage1IsVisible = false;
+            this.CheckImage2IsVisible = false;
+            this.CheckImage3IsVisible = false;
+            this.CheckImage4IsVisible = false;
+            this.CheckImage5IsVisible = false;
+            this.LoadingAnimation1IsVisible = true;
+            this.LoadingAnimation2IsVisible = false;
+            this.LoadingAnimation3IsVisible = false;
+            this.LoadingAnimation4IsVisible = false;
+            this.UloadingisDone = false;
+            this.SetPrivateIsDone = false;
+            this.AddRestrictionIsDone = false;
+            this.GenerateHtmlIsDone = false;
+            this.AllProcessesAreDone = false;
+        }
+        private void VideoUploadPogresBarStepp1()
+        {
+            this.LoadingAnimation1IsVisible = false;
+            this.CheckImage1IsVisible = true;
+            this.LoadingAnimation2IsVisible = true;
+            this.UloadingisDone = true;
+        }
+        private void VideoUploadPogresBarStepp2()
+        {
+            this.LoadingAnimation2IsVisible = false;
+            this.CheckImage2IsVisible = true;
+            this.LoadingAnimation3IsVisible = true;
+            this.SetPrivateIsDone = true;
+        }
+        private void VideoUploadPogresBarStepp3()
+        {
+            this.LoadingAnimation3IsVisible = false;
+            this.CheckImage3IsVisible = true;
+            this.LoadingAnimation4IsVisible = true;
+            this.AddRestrictionIsDone = true;
+        }
+        private void VideoUploadPogresBarStepp4()
+        {
+            this.LoadingAnimation4IsVisible = false;
+            this.CheckImage4IsVisible = true;
+            this.GenerateHtmlIsDone = true;
+        }
+
+        private void VideoUploadPogressBarFinish()
+        {
+            this.CheckImage5IsVisible = true;
+            this.AllProcessesAreDone = true;
+        }
+        //VideoPogressBar
+
 
         #endregion
 

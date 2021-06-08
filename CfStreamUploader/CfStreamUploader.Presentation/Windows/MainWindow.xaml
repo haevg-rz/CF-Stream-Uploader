@@ -4,6 +4,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:dd="urn:gong-wpf-dragdrop"
+        xmlns:converter="clr-namespace:CfStreamUploader.Presentation.Converter"
         mc:Ignorable="d"
         Title="CF Stream Uploader" Height="670" Width="1000"
         WindowStyle="SingleBorderWindow"
@@ -15,6 +16,8 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../Resources/Styles/AllStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <converter:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <converter:BooleanToColorConverter x:Key="BooleanToColorConverter" />
         </ResourceDictionary>
     </Window.Resources>
 
@@ -93,9 +96,13 @@
 
                     <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="0" Margin="5">
 
-                        <CheckBox IsChecked="{Binding CheckboxRestrictionIP}" Content="{Binding RestrictionIP}" Style="{StaticResource RestrictionCheckBoxStyle}" />
-                        <CheckBox IsChecked="{Binding CheckboxRestrictionCountry}" Content="{Binding RestrictionCountry}" Style="{StaticResource RestrictionCheckBoxStyle}" />
-                        <CheckBox IsChecked="{Binding CheckboxRestrictionAny}" Content="{Binding RestrictionAny}" Style="{StaticResource RestrictionCheckBoxStyle}" />
+                        <CheckBox IsChecked="{Binding CheckboxRestrictionIP}" Content="{Binding RestrictionIP}"
+                                  Style="{StaticResource RestrictionCheckBoxStyle}" />
+                        <CheckBox IsChecked="{Binding CheckboxRestrictionCountry}"
+                                  Content="{Binding RestrictionCountry}"
+                                  Style="{StaticResource RestrictionCheckBoxStyle}" />
+                        <CheckBox IsChecked="{Binding CheckboxRestrictionAny}" Content="{Binding RestrictionAny}"
+                                  Style="{StaticResource RestrictionCheckBoxStyle}" />
 
                     </StackPanel>
 
@@ -105,26 +112,60 @@
             <Grid Grid.Row="1" Grid.Column="0" Margin="10">
                 <StackPanel Orientation="Horizontal">
 
-                    <Image Style="{StaticResource UploadProgressImageStyle}" />
-                    <TextBlock Style="{StaticResource UploadProgressTextBlockStyle}" Text="Uploading" />
+                    <Image Style="{StaticResource UploadProgressImageStyle}"
+                           Visibility="{Binding CheckImage1IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                    <Image Style="{DynamicResource LoadingAnimationImageStyle}"
+                           Visibility="{Binding LoadingAnimation1IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <Image.RenderTransform>
+                            <RotateTransform Angle="0" />
+                        </Image.RenderTransform>
+                    </Image>
+                    <TextBlock Style="{StaticResource UploadProgressTextBlockStyle}" Text="Uploading"
+                               Foreground="{Binding UloadingisDone, Converter={StaticResource BooleanToColorConverter}}" />
 
-                    <Image Style="{StaticResource UploadProgressImageStyle}" />
-                    <TextBlock Style="{StaticResource UploadProgressTextBlockStyle}" Text="Set-Private" />
+                    <Image Style="{StaticResource UploadProgressImageStyle}"
+                           Visibility="{Binding CheckImage2IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                    <Image Style="{DynamicResource LoadingAnimationImageStyle}"
+                           Visibility="{Binding LoadingAnimation2IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <Image.RenderTransform>
+                            <RotateTransform Angle="0" />
+                        </Image.RenderTransform>
+                    </Image>
+                    <TextBlock Style="{StaticResource UploadProgressTextBlockStyle}" Text="Set-Private"
+                               Foreground="{Binding SetPrivateIsDone, Converter={StaticResource BooleanToColorConverter}}" />
 
-                    <Image Style="{StaticResource UploadProgressImageStyle}" />
-                    <TextBlock Style="{StaticResource UploadProgressTextBlockStyle}" Text="Add Restrictions" />
+                    <Image Style="{StaticResource UploadProgressImageStyle}"
+                           Visibility="{Binding CheckImage3IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                    <Image Style="{DynamicResource LoadingAnimationImageStyle}"
+                           Visibility="{Binding LoadingAnimation3IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <Image.RenderTransform>
+                            <RotateTransform Angle="0" />
+                        </Image.RenderTransform>
+                    </Image>
+                    <TextBlock Style="{StaticResource UploadProgressTextBlockStyle}" Text="Add Restrictions"
+                               Foreground="{Binding AddRestrictionIsDone, Converter={StaticResource BooleanToColorConverter}}" />
 
-                    <Image Style="{StaticResource UploadProgressImageStyle}" />
-                    <TextBlock Style="{StaticResource UploadProgressTextBlockStyle}" Text="Generate HTML" />
+                    <Image Style="{StaticResource UploadProgressImageStyle}"
+                           Visibility="{Binding CheckImage4IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                    <Image Style="{DynamicResource LoadingAnimationImageStyle}"
+                           Visibility="{Binding LoadingAnimation4IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <Image.RenderTransform>
+                            <RotateTransform Angle="0" />
+                        </Image.RenderTransform>
+                    </Image>
+                    <TextBlock Style="{StaticResource UploadProgressTextBlockStyle}" Text="Generate HTML"
+                               Foreground="{Binding GenerateHtmlIsDone, Converter={StaticResource BooleanToColorConverter}}" />
 
-                    <Image Style="{StaticResource UploadProgressImageStyle}" />
-                    <TextBlock Style="{StaticResource UploadProgressTextBlockStyle}" Text="Finished" />
+                    <Image Style="{StaticResource UploadProgressImageStyle}"
+                           Visibility="{Binding CheckImage5IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                    <TextBlock Style="{StaticResource UploadProgressTextBlockStyle}" Text="Finished"
+                               Foreground="{Binding AllProcessesAreDone, Converter={StaticResource BooleanToColorConverter}}" />
 
                 </StackPanel>
             </Grid>
 
             <Grid Grid.Row="2" Grid.Column="0" Margin="10">
-                <TextBox Style="{DynamicResource HtmlOutputTextBoxStyle}" Text="{Binding HtmlOutput}" Width="600"/>
+                <TextBox Style="{DynamicResource HtmlOutputTextBoxStyle}" Text="{Binding HtmlOutput}" Width="600" />
             </Grid>
 
             <Grid Grid.Row="3" Grid.Column="0" Margin="10,0,10,10">
@@ -157,7 +198,6 @@
                 <StackPanel>
                     <Button Style="{StaticResource SettingButtonStyle}" Content="Open history" />
                     <Button Style="{StaticResource SettingButtonStyle}" Content="Open settings" />
-                    <Button Style="{StaticResource SettingButtonStyle}" Content="Manage uploaded videos" />
                 </StackPanel>
             </Grid>
             <!-- SettingButtons -->

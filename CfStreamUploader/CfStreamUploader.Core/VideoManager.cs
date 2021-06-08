@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using Jose;
 
@@ -67,7 +68,6 @@ namespace CfStreamUploader.Core
         {
             return (new VideoUploadResult(true, null), "3ef444818f6b481084841355d7af5f82");
 
-            //Video Upload
             var cmdVideoUploadScript = this.GetCmdVideoUploadScript(config);
             var videoUploadResult = await this.RunCmdAsync(cmdVideoUploadScript);
 
@@ -75,18 +75,20 @@ namespace CfStreamUploader.Core
                 return (new VideoUploadResult(false, new Exception("Please check your Settings")), string.Empty);
 
             var json = JsonConvert.DeserializeObject<HttpResponse>(videoUploadResult.cmdOutput);
-            var videoId = json.result.uid;
+            return (new VideoUploadResult(true, null), json.result.uid);
+        }
 
+        public async Task<VideoUploadResult> SetSignedUrl(Config config, string videoId)
+        {
+            return (new VideoUploadResult(true, null));
 
-            //SetSignedURLs
             var cmdSignedUrlScript = this.GetSignedUrlScript(config, videoId);
             var signedUrlResult = await this.RunCmdAsync(cmdSignedUrlScript);
 
             if (!signedUrlResult.videoUploadResult.Success)
-                return (new VideoUploadResult(false, new Exception("Making a video require signed URLs failed")),
-                    videoId);
+                return (new VideoUploadResult(false, new Exception("Making a video require signed URLs failed")));
 
-            return (new VideoUploadResult(true, null), videoId);
+            return (new VideoUploadResult(true, null));
         }
 
         #endregion
