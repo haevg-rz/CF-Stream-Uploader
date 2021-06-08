@@ -182,7 +182,7 @@ namespace CfStreamUploader.Presentation.ViewModels
 
             if (!this.ExpiresInTextBox.All(char.IsDigit))
             {
-                MessageBox.Show("Make shure your AccesLimit is a Number", "Warning", MessageBoxButton.OK,
+                MessageBox.Show("The expiry  time is not a solid number", "Warning", MessageBoxButton.OK,
                     MessageBoxImage.Warning);
                 return;
             }

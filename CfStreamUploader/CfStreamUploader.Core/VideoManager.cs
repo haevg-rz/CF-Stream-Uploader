@@ -48,7 +48,7 @@ namespace CfStreamUploader.Core
                 {"kid", config.UserSettings.KeyId},
                 {"exp", this.GetExpireDate(checkboxRestrictionExpireIn, config)},
                 {
-                    "accessRules", this.AccesRulesManager(config, checkboxRestrictionIp, checkboxRestrictionCountry,
+                    "accessRules", this.GetAccesRules(config, checkboxRestrictionIp, checkboxRestrictionCountry,
                         checkboxRestrictionAny)
                 }
             };
@@ -102,51 +102,6 @@ namespace CfStreamUploader.Core
                 config.UserSettings.CfAccount);
         }
 
-
-        private object AccesRulesManager(Config config, bool checkboxRestrictionIP, bool checkboxRestrictionCountry,
-            bool checkboxRestrictionAny)
-        {
-            var jsonStringList = new List<string>();
-
-            var serializeOptions = new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            };
-
-            if (checkboxRestrictionIP)
-                jsonStringList.Add(
-                    System.Text.Json.JsonSerializer.Serialize(config.AccessRules.Ip, serializeOptions));
-
-            if (checkboxRestrictionCountry)
-                jsonStringList.Add(
-                    System.Text.Json.JsonSerializer.Serialize(config.AccessRules.Country, serializeOptions));
-
-            if (checkboxRestrictionAny)
-                jsonStringList.Add(
-                    System.Text.Json.JsonSerializer.Serialize(config.AccessRules.Any, serializeOptions));
-
-            if (!checkboxRestrictionIP && !checkboxRestrictionCountry && !checkboxRestrictionAny)
-                jsonStringList.Add(System.Text.Json.JsonSerializer.Serialize(new Any(), serializeOptions));
-
-            var accesruleJson = jsonStringList.Count switch
-            {
-                1 => new[] {JsonConvert.DeserializeObject(jsonStringList[0])},
-                2 => new[]
-                {
-                    JsonConvert.DeserializeObject(jsonStringList[0]),
-                    JsonConvert.DeserializeObject(jsonStringList[1])
-                },
-                3 => new[]
-                {
-                    JsonConvert.DeserializeObject(jsonStringList[0]),
-                    JsonConvert.DeserializeObject(jsonStringList[1]),
-                    JsonConvert.DeserializeObject(jsonStringList[2])
-                },
-            };
-
-            return accesruleJson;
-        }
-
         private async Task<(string cmdOutput, VideoUploadResult videoUploadResult)> RunCmdAsync(string cmdCommand)
         {
             var output = string.Empty;
@@ -173,10 +128,7 @@ namespace CfStreamUploader.Core
 
             return (output, new VideoUploadResult(true, null));
         }
-
-        #endregion
-
-
+        
         private long GetExpireDate(bool checkboxRestrictionExpireIn, Config config)
         {
             var now = DateTime.Now;
@@ -192,5 +144,49 @@ namespace CfStreamUploader.Core
                 return ((DateTimeOffset) now).ToUnixTimeSeconds() + seconds;
             }
         }
+        private object GetAccesRules(Config config, bool checkboxRestrictionIP, bool checkboxRestrictionCountry,
+            bool checkboxRestrictionAny)
+        {
+            var jsonStringList = new List<string>();
+
+            var serializeOptions = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            };
+
+            if (checkboxRestrictionIP)
+                jsonStringList.Add(
+                    System.Text.Json.JsonSerializer.Serialize(config.AccessRules.Ip, serializeOptions));
+
+            if (checkboxRestrictionCountry)
+                jsonStringList.Add(
+                    System.Text.Json.JsonSerializer.Serialize(config.AccessRules.Country, serializeOptions));
+
+            if (checkboxRestrictionAny)
+                jsonStringList.Add(
+                    System.Text.Json.JsonSerializer.Serialize(config.AccessRules.Any, serializeOptions));
+
+            if (!checkboxRestrictionIP && !checkboxRestrictionCountry && !checkboxRestrictionAny)
+                jsonStringList.Add(System.Text.Json.JsonSerializer.Serialize(new Any(), serializeOptions));
+
+            var accesruleJson = jsonStringList.Count switch
+            {
+                1 => new[] { JsonConvert.DeserializeObject(jsonStringList[0]) },
+                2 => new[]
+                {
+                    JsonConvert.DeserializeObject(jsonStringList[0]),
+                    JsonConvert.DeserializeObject(jsonStringList[1])
+                },
+                3 => new[]
+                {
+                    JsonConvert.DeserializeObject(jsonStringList[0]),
+                    JsonConvert.DeserializeObject(jsonStringList[1]),
+                    JsonConvert.DeserializeObject(jsonStringList[2])
+                },
+            };
+
+            return accesruleJson;
+        }
+        #endregion
     }
 }

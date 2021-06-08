@@ -13,7 +13,7 @@ namespace CfStreamUploader.Presentation.Converter
             {
                 return "Green";
             }
-            return "#6497e8";
+            return "#6497e8"; //Blue
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

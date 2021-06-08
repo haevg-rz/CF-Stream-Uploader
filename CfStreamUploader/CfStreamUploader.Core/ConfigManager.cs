@@ -101,6 +101,9 @@ namespace CfStreamUploader.Core
 
             if (this.Config.AccessRules.Ip.Ips.Count == 0)
                 this.Config.AccessRules.Ip.Ips.Add("127.0.0.1");
+
+            if (this.Config.AccessRules.ExpiresIn == 0)
+                this.Config.AccessRules.ExpiresIn = 365;
         }
 
         #endregion

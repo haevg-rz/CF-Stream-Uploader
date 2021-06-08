@@ -17,7 +17,6 @@
 
     <Style TargetType="TextBlock" x:Key="UploadProgressTextBlockStyle">
         <Setter Property="Margin" Value="5" />
-        <!-- <Setter Property="Foreground" Value="{Binding ProgressColor}" /> -->
     </Style>
 
     <Style TargetType="TextBlock" x:Key="RestrictionTextBlockStyle">

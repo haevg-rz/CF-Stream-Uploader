@@ -5,7 +5,6 @@ using GalaSoft.MvvmLight.Command;
 using GongSolutions.Wpf.DragDrop;
 using Microsoft.Win32;
 using System;
-using System.Data;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -29,10 +28,10 @@ namespace CfStreamUploader.Presentation.ViewModels
         private string restrictionCountry = string.Empty;
         private string restrictionAny = string.Empty;
         private string restrictionExpireIn = string.Empty;
-        private bool checkboxRestrictionIP = false;
-        private bool checkboxRestrictionCountry = false;
+        private bool checkboxRestrictionIP;
+        private bool checkboxRestrictionCountry;
         private bool checkboxRestrictionAny = true;
-        private bool checkboxRestrictionExpireIn = true;
+        private bool checkboxRestrictionExpireIn;
         private bool setSignedUrl = true;
 
         //VideoPogressBar
