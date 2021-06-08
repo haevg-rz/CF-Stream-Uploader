@@ -5,19 +5,18 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-    
-trigger:
-- master
 
-pool:
-  vmImage: 'windows-latest'
+jobs:
+  build:
 
-variables:
-  buildConfiguration: 'Release'
+    runs-on: windows-latest
 
-steps:
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'build'
-    arguments: '--configuration $(buildConfiguration)'
-  displayName: 'dotnet build $(buildConfiguration)'
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '5.0.x'
+    - name: Build with dotnet
+      run: dotnet build CfStreamUploader/CfStreamUploader.sln --configuration Release
+   
