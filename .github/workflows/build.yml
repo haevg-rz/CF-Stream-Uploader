@@ -5,28 +5,30 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '5.0.x'
+    - name: Build with dotnet
+      run: dotnet build CfStreamUploader/CfStreamUploader.sln --configuration Release
+   
+  test:
+  
+    runs-on: windows-latest
     
-trigger:
-- master
-
-pool:
-  vmImage: 'windows-latest'
-
-variables:
-  buildConfiguration: 'Release'
-
-steps:
-- task: DotNetCoreCLI@2
-  displayName: 'dotnet build'
-  inputs:
-    command: 'build'
-    configuration: $(buildConfiguration)
-  
-- task: DotNetCoreCLI@2
-  displayName: 'dotnet test'
-  inputs:
-    command: 'test'
-    arguments: '--configuration $(buildConfiguration) --collect:"XPlat Code Coverage" /p:CoverletOutputFormat=cobertura /p:CoverletOutput=$(Build.SourcesDirectory)/TestResults/Coverage/'
-    publishTestResults: true
-    projects: 'MyTestLibrary' # update with your test project directory
-  
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+       dotnet-version: '5.0.x'
+    - name: Test with dotnet
+      run: dotnet test CfStreamUploader/CfStreamUploader.sln --configuration Release
