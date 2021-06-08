@@ -107,7 +107,8 @@ The JSON config file has the following format:
       "Countries": [
         "DE"
       ]
-    }
+    },
+      "ExpiresIn": 365
   },
   "IsDarkmode": false
 }

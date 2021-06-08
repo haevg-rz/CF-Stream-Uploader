@@ -7,7 +7,7 @@ namespace CfStreamUploader.Core.Test
     {
         #region props
 
-        public VideoUploader VideoUploader { get; } = new VideoUploader();
+        public VideoManager VideoManager { get; } = new VideoManager();
 
         #endregion
 
@@ -20,13 +20,13 @@ namespace CfStreamUploader.Core.Test
 
             const string expectedResult =
                 "curl -X POST -H \"Authorization: Bearer TestCfToken\" -F file=@TestVideoPath https://api.cloudflare.com/client/v4/accounts/TestCfAccount/stream";
-            this.VideoUploader.VideoPath = "TestVideoPath";
+            this.VideoManager.VideoPath = "TestVideoPath";
 
             #endregion
 
             #region Act
 
-            var result = this.VideoUploader.GetCmdScript(Samples.ConfigSample);
+            var result = this.VideoManager.GetCmdVideoUploadScript(Samples.ConfigSample);
 
             #endregion
 

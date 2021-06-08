@@ -7,4 +7,22 @@
         <Setter Property="Margin" Value="5,5,0,5" />
     </Style>
 
+    <Storyboard  x:Key="ImageRotationStoryboard" TargetProperty="RenderTransform.(RotateTransform.Angle)">
+        <DoubleAnimation From="0" To="360" BeginTime="0:0:0" Duration="0:0:1.5" RepeatBehavior="Forever"/>
+    </Storyboard>
+    <Style TargetType="Image" x:Key="LoadingAnimationImageStyle">
+        <Setter Property="Margin" Value="10"/>
+        <Setter Property="Source" Value="../Images/gear.png"/>
+        <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+        <Setter Property="Width" Value="10"/>
+        <Setter Property="Height" Value="10"/>
+        <Style.Triggers>
+            <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                <EventTrigger.Actions>
+                    <BeginStoryboard Storyboard="{StaticResource ImageRotationStoryboard}" />
+                </EventTrigger.Actions>
+            </EventTrigger>
+        </Style.Triggers>
+    </Style>
+    
 </ResourceDictionary>
