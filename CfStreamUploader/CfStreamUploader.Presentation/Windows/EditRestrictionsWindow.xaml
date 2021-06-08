@@ -61,7 +61,7 @@
             <TextBox Text="{Binding CountryTextBox}" Grid.Row="0" Grid.Column="0" Style="{DynamicResource EditWindowTextBoxStyle}"/>
 
             <TextBlock Grid.Column="0" Grid.Row="1" Margin="10,0,5,5">
-                <Hyperlink Command="{Binding OpenCurrentCodeWebpageCommand}">Get officially assign code elements</Hyperlink>
+                <Hyperlink Command="{Binding OpenCurrentCodeWebpageCommand}">Officially assigned code elements</Hyperlink>
             </TextBlock>
 
         </Grid>

@@ -9,6 +9,7 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -31,11 +32,12 @@ namespace CfStreamUploader.Presentation.ViewModels
         private bool checkboxRestrictionIP = false;
         private bool checkboxRestrictionCountry = false;
         private bool checkboxRestrictionAny = true;
+        private bool setSignedUrl = true;
 
         //VideoPogressBar
-        private bool checkImage1IsVisible; 
-        private bool checkImage2IsVisible; 
-        private bool checkImage3IsVisible; 
+        private bool checkImage1IsVisible;
+        private bool checkImage2IsVisible;
+        private bool checkImage3IsVisible;
         private bool checkImage4IsVisible;
         private bool checkImage5IsVisible;
 
@@ -102,15 +104,23 @@ namespace CfStreamUploader.Presentation.ViewModels
             get => this.checkboxRestrictionIP;
             set => this.Set(ref this.checkboxRestrictionIP, value);
         }
+
         public bool CheckboxRestrictionCountry
         {
             get => this.checkboxRestrictionCountry;
             set => this.Set(ref this.checkboxRestrictionCountry, value);
         }
+
         public bool CheckboxRestrictionAny
         {
             get => this.checkboxRestrictionAny;
             set => this.Set(ref this.checkboxRestrictionAny, value);
+        }
+
+        public bool SetSignedUrl
+        {
+            get => this.setSignedUrl;
+            set => this.Set(ref this.setSignedUrl, value);
         }
 
         //VideoPogressBar
@@ -125,36 +135,43 @@ namespace CfStreamUploader.Presentation.ViewModels
             get => this.checkImage2IsVisible;
             set => this.Set(ref this.checkImage2IsVisible, value);
         }
+
         public bool CheckImage3IsVisible
         {
             get => this.checkImage3IsVisible;
             set => this.Set(ref this.checkImage3IsVisible, value);
         }
+
         public bool CheckImage4IsVisible
         {
             get => this.checkImage4IsVisible;
             set => this.Set(ref this.checkImage4IsVisible, value);
-        }      
+        }
+
         public bool CheckImage5IsVisible
         {
             get => this.checkImage5IsVisible;
             set => this.Set(ref this.checkImage5IsVisible, value);
         }
+
         public bool LoadingAnimation1IsVisible
         {
             get => this.loadingAnimation1IsVisible;
             set => this.Set(ref this.loadingAnimation1IsVisible, value);
-        }   
+        }
+
         public bool LoadingAnimation2IsVisible
         {
             get => this.loadingAnimation2IsVisible;
             set => this.Set(ref this.loadingAnimation2IsVisible, value);
-        }      
+        }
+
         public bool LoadingAnimation3IsVisible
         {
             get => this.loadingAnimation3IsVisible;
             set => this.Set(ref this.loadingAnimation3IsVisible, value);
-        }   
+        }
+
         public bool LoadingAnimation4IsVisible
         {
             get => this.loadingAnimation4IsVisible;
@@ -165,7 +182,8 @@ namespace CfStreamUploader.Presentation.ViewModels
         {
             get => this.uloadingisDone;
             set => this.Set(ref this.uloadingisDone, value);
-        } 
+        }
+
         public bool SetPrivateIsDone
         {
             get => this.setPrivateIsDone;
@@ -176,19 +194,20 @@ namespace CfStreamUploader.Presentation.ViewModels
         {
             get => this.addRestrictionIsDone;
             set => this.Set(ref this.addRestrictionIsDone, value);
-        }   
+        }
+
         public bool GenerateHtmlIsDone
         {
             get => this.generateHtmlIsDone;
             set => this.Set(ref this.generateHtmlIsDone, value);
-        } 
+        }
+
         public bool AllProcessesAreDone
         {
             get => this.allProcessesAreDone;
             set => this.Set(ref this.allProcessesAreDone, value);
         }
         //VideoPogressBar
-
 
         #endregion
 
@@ -265,6 +284,7 @@ namespace CfStreamUploader.Presentation.ViewModels
                     MessageBoxImage.Information);
                 return;
             }
+
             this.VideoUploadPogresBarSetUpStart();
 
             if (!this.IsConfigSolid()) return;
@@ -276,26 +296,42 @@ namespace CfStreamUploader.Presentation.ViewModels
 
             if (videoUploadResult.videoUploadResult.Success)
             {
-                var signedUrlResult = await this.Core.VideoManager.SetSignedUrl(this.Core.ConfigManager.Config, videoUploadResult.VideoUrl);
-
-                if (signedUrlResult.Success)
+                if (this.SetSignedUrl)
                 {
-                    await Task.Delay(TimeSpan.FromSeconds(5));
-                    this.VideoUploadPogresBarStepp2();
+                    var signedUrlResult = await this.Core.VideoManager.SetSignedUrl(this.Core.ConfigManager.Config,
+                        videoUploadResult.VideoUrl);
 
-                    var videoToken = this.Core.VideoManager.SetRestrictions(this.Core.ConfigManager.Config, videoUploadResult.VideoUrl, this.CheckboxRestrictionIP, this.CheckboxRestrictionCountry, this.CheckboxRestrictionAny);
+                    if (signedUrlResult.Success)
+                    {
+                        await Task.Delay(TimeSpan.FromSeconds(5));
+                        this.VideoUploadPogresBarStepp2();
 
-                    await Task.Delay(TimeSpan.FromSeconds(5));
-                    this.VideoUploadPogresBarStepp3();
+                        var videoToken = this.Core.VideoManager.SetRestrictions(this.Core.ConfigManager.Config,
+                            videoUploadResult.VideoUrl, this.CheckboxRestrictionIP, this.CheckboxRestrictionCountry,
+                            this.CheckboxRestrictionAny);
 
-                    this.HtmlOutput = string.Format(this.Core.HtmlLayout.GetHtmlLayout(), videoToken);
-                    this.videoUrl = string.Format(this.defaultUri, videoToken);
+                        await Task.Delay(TimeSpan.FromSeconds(5));
+                        this.VideoUploadPogresBarStepp3();
 
-                    await Task.Delay(TimeSpan.FromSeconds(5));
-                    this.VideoUploadPogresBarStepp4();
-                    await Task.Delay(TimeSpan.FromSeconds(5));
-                    this.VideoUploadPogressBarFinish();
+                        this.HtmlOutput = string.Format(this.Core.HtmlLayout.GetHtmlLayout(), videoToken);
+                        this.videoUrl = string.Format(this.defaultUri, videoToken);
+
+                        await Task.Delay(TimeSpan.FromSeconds(5));
+                        this.VideoUploadPogresBarStepp4();
+                        this.VideoUploadPogressBarFinish();
+                        
+                        return;
+                    }
                 }
+
+                this.HtmlOutput = string.Format(this.Core.HtmlLayout.GetHtmlLayout(), videoUploadResult.VideoUrl);
+                this.videoUrl = string.Format(this.defaultUri, videoUploadResult.VideoUrl);
+
+                await Task.Delay(TimeSpan.FromSeconds(5));
+                this.VideoUploadPogresBarStepp4();
+                this.LoadingAnimation2IsVisible = false;
+                this.VideoUploadPogressBarFinish();
+
             }
             else
             {
@@ -390,6 +426,7 @@ namespace CfStreamUploader.Presentation.ViewModels
             this.GenerateHtmlIsDone = false;
             this.AllProcessesAreDone = false;
         }
+
         private void VideoUploadPogresBarStepp1()
         {
             this.LoadingAnimation1IsVisible = false;
@@ -397,6 +434,7 @@ namespace CfStreamUploader.Presentation.ViewModels
             this.LoadingAnimation2IsVisible = true;
             this.UloadingisDone = true;
         }
+
         private void VideoUploadPogresBarStepp2()
         {
             this.LoadingAnimation2IsVisible = false;
@@ -404,6 +442,7 @@ namespace CfStreamUploader.Presentation.ViewModels
             this.LoadingAnimation3IsVisible = true;
             this.SetPrivateIsDone = true;
         }
+
         private void VideoUploadPogresBarStepp3()
         {
             this.LoadingAnimation3IsVisible = false;
@@ -411,6 +450,7 @@ namespace CfStreamUploader.Presentation.ViewModels
             this.LoadingAnimation4IsVisible = true;
             this.AddRestrictionIsDone = true;
         }
+
         private void VideoUploadPogresBarStepp4()
         {
             this.LoadingAnimation4IsVisible = false;
@@ -424,7 +464,6 @@ namespace CfStreamUploader.Presentation.ViewModels
             this.AllProcessesAreDone = true;
         }
         //VideoPogressBar
-
 
         #endregion
 

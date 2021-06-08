@@ -68,7 +68,7 @@ namespace CfStreamUploader.Core
 
         public async Task<(VideoUploadResult videoUploadResult, string VideoUrl)> UploadVideoAsync(Config config)
         {
-            return (new VideoUploadResult(true, null), "3aa02dd85c374958967f950b8e18e703");
+            return (new VideoUploadResult(true, null), "3aa02dd85c374958967f950b8e18e703"); //TODO
 
             var cmdVideoUploadScript = this.GetCmdVideoUploadScript(config);
             var videoUploadResult = await this.RunCmdAsync(cmdVideoUploadScript);
@@ -82,7 +82,7 @@ namespace CfStreamUploader.Core
 
         public async Task<VideoUploadResult> SetSignedUrl(Config config, string videoId)
         {
-            return (new VideoUploadResult(true, null));
+            return (new VideoUploadResult(true, null)); //TODO
 
             var cmdSignedUrlScript = this.GetSignedUrlScript(config, videoId);
             var signedUrlResult = await this.RunCmdAsync(cmdSignedUrlScript);

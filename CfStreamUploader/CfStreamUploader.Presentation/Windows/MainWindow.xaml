@@ -103,8 +103,10 @@
                                   Style="{StaticResource RestrictionCheckBoxStyle}" />
                         <CheckBox IsChecked="{Binding CheckboxRestrictionAny}" Content="{Binding RestrictionAny}"
                                   Style="{StaticResource RestrictionCheckBoxStyle}" />
+                        <CheckBox Style="{DynamicResource SetSignedUrlCheckBoxStyle}" Content="Set signed URL" IsChecked="{Binding SetSignedUrl}"/>
 
                     </StackPanel>
+
 
                 </Grid>
             </Grid>

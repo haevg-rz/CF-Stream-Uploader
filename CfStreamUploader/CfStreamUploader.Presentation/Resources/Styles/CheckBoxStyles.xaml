@@ -10,10 +10,10 @@
                 <ControlTemplate TargetType="{x:Type CheckBox}">
                     <BulletDecorator Background="Transparent" Cursor="Hand">
                         <BulletDecorator.Bullet>
-                            <Grid Height="16" Width="16">
+                            <Grid Height="14" Width="14">
                                 <Border Name="RadioOuter" BorderBrush="{Binding Button2Fg}"
-                                        CornerRadius="8" BorderThickness="1" />
-                                <Border CornerRadius="6" Margin="3" Name="RadioMark"
+                                        CornerRadius="1" BorderThickness="1" />
+                                <Border CornerRadius="1" Margin="3" Name="RadioMark"
                                         Background="{Binding Button2Fg}" Visibility="Hidden" />
                             </Grid>
                         </BulletDecorator.Bullet>
@@ -32,6 +32,15 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+
+    <Style TargetType="CheckBox" x:Key="SetSignedUrlCheckBoxStyle">
+        <Setter Property="Margin" Value="5,30,5,5" />
+        <Setter Property="VerticalAlignment" Value="Bottom" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{Binding TextColor}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderBrush" Value="{Binding Button2Fg}" />
     </Style>
 
 </ResourceDictionary>
