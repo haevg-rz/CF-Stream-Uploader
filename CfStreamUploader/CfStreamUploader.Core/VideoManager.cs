@@ -1,4 +1,5 @@
 ﻿using CfStreamUploader.Core.Models;
+using Jose;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,6 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Jose;
 
 [assembly: InternalsVisibleTo("CfStreamUploader.Core.Test")]
 
@@ -38,35 +38,37 @@ namespace CfStreamUploader.Core
         public string SetRestrictions(Config config, string videoId, bool checkboxRestrictionIp,
             bool checkboxRestrictionCountry, bool checkboxRestrictionAny)
         {
+            var datetimenow = DateTime.Now;
+            long time = 10 * 365 * 24 * 60 * 60;
+
             var header = new Dictionary<string, object>()
             {
-                {"kid", config.UserSettings.KeyId}
+                {"kid", config.UserSettings.KeyId},
+                {"typ", "JWT"}
             };
             var payload = new Dictionary<string, object>()
             {
                 {"sub", videoId},
                 {"kid", config.UserSettings.KeyId},
-                {"exp", DateTime.Now.AddDays(10).ToString()},
+                {"exp", ((DateTimeOffset)datetimenow).ToUnixTimeSeconds() + time},
                 {
                     "accessRules", this.AccesRulesManager(config, checkboxRestrictionIp, checkboxRestrictionCountry,
                         checkboxRestrictionAny)
-        }
+                }
             };
-
 
             var bytesToDecrypt = Convert.FromBase64String(config.UserSettings.PrivateKey);
             var str = Encoding.UTF8.GetString(bytesToDecrypt);
             var rsa = RSA.Create();
             rsa.ImportFromPem(str.ToCharArray());
 
-            var a = JWT.Encode(payload, rsa, JwsAlgorithm.RS256, header);
-            return a;
+            return JWT.Encode(payload, rsa, JwsAlgorithm.RS256, header);
         }
 
 
         public async Task<(VideoUploadResult videoUploadResult, string VideoUrl)> UploadVideoAsync(Config config)
         {
-            return (new VideoUploadResult(true, null), "3ef444818f6b481084841355d7af5f82");
+            return (new VideoUploadResult(true, null), "3aa02dd85c374958967f950b8e18e703");
 
             var cmdVideoUploadScript = this.GetCmdVideoUploadScript(config);
             var videoUploadResult = await this.RunCmdAsync(cmdVideoUploadScript);
@@ -108,7 +110,7 @@ namespace CfStreamUploader.Core
         }
 
 
-        private string AccesRulesManager(Config config, bool checkboxRestrictionIP, bool checkboxRestrictionCountry,
+        private object AccesRulesManager(Config config, bool checkboxRestrictionIP, bool checkboxRestrictionCountry,
             bool checkboxRestrictionAny)
         {
             var jsonStringList = new List<string>();
@@ -133,19 +135,9 @@ namespace CfStreamUploader.Core
 
             var accesruleJson = jsonStringList.Count switch
             {
-                1 => jsonStringList[0],
-                2 => JsonConvert.SerializeObject(new[]
-                {
-                    JsonConvert.DeserializeObject(jsonStringList[0]),
-                    JsonConvert.DeserializeObject(jsonStringList[1])
-                }),
-                3 => JsonConvert.SerializeObject(new[]
-                {
-                    JsonConvert.DeserializeObject(jsonStringList[0]),
-                    JsonConvert.DeserializeObject(jsonStringList[1]),
-                    JsonConvert.DeserializeObject(jsonStringList[2])
-                }),
-                _ => string.Empty
+                1 => new[] { JsonConvert.DeserializeObject(jsonStringList[0])},
+                2 => new[] { JsonConvert.DeserializeObject(jsonStringList[0]), JsonConvert.DeserializeObject(jsonStringList[1]) } ,
+                3 => new[] { JsonConvert.DeserializeObject(jsonStringList[0]), JsonConvert.DeserializeObject(jsonStringList[1]), JsonConvert.DeserializeObject(jsonStringList[2]) },
             };
 
             return accesruleJson;
