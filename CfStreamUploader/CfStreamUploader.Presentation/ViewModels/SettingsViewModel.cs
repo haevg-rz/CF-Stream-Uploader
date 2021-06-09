@@ -8,21 +8,29 @@ namespace CfStreamUploader.Presentation.ViewModels
 {
     public class SettingsViewModel : ViewModelBase
     {
+        #region fields
+
         private string cfToken;
         private string cfAccount;
         private string keyId;
         private string privateKey;
+
+        #endregion
+
+        #region props
 
         public string CfToken
         {
             get => this.cfToken;
             set => this.Set(ref this.cfToken, value);
         }
+
         public string CfAccount
         {
             get => this.cfAccount;
             set => this.Set(ref this.cfAccount, value);
-        } 
+        }
+
         public string KeyId
         {
             get => this.keyId;
@@ -34,11 +42,14 @@ namespace CfStreamUploader.Presentation.ViewModels
             get => this.privateKey;
             set => this.Set(ref this.privateKey, value);
         }
-        
-        
+
         public ConfigManager ConfigManager { get; } = new ConfigManager();
         public RelayCommand SaveCommand { get; set; }
         public RelayCommand UndoCommand { get; set; }
+
+        #endregion
+
+        #region constructors
 
         public SettingsViewModel()
         {
@@ -56,6 +67,10 @@ namespace CfStreamUploader.Presentation.ViewModels
                 this.Lightmode();
         }
 
+        #endregion
+
+        #region methods
+
         private void Undo()
         {
             this.CfAccount = this.ConfigManager.Config.UserSettings.CfAccount;
@@ -66,7 +81,7 @@ namespace CfStreamUploader.Presentation.ViewModels
 
         private void Save()
         {
-            SetNewConfig();
+            this.SetNewConfig();
             this.ConfigManager.UpdateConfig(this.ConfigManager.Config);
 
             WindowManager.CloseSettingsWindow();
@@ -79,6 +94,8 @@ namespace CfStreamUploader.Presentation.ViewModels
             this.ConfigManager.Config.UserSettings.KeyId = this.KeyId;
             this.ConfigManager.Config.UserSettings.PrivateKey = this.PrivateKey;
         }
+
+        #endregion
 
         #region colorChange
 
