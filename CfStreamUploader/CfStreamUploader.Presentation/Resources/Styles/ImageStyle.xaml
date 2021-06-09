@@ -3,8 +3,10 @@
 
     <Style TargetType="Image" x:Key="UploadProgressImageStyle">
         <Setter Property="Source" Value="../Images/check.png" />
-        <Setter Property="Height" Value="10" />
+        <Setter Property="Height" Value="14" />
+        <Setter Property="Width" Value="14"/>
         <Setter Property="Margin" Value="5,5,0,5" />
+        <Setter Property="HorizontalAlignment" Value="Center"/>
     </Style>
 
     <Storyboard  x:Key="ImageRotationStoryboard" TargetProperty="RenderTransform.(RotateTransform.Angle)">
@@ -12,10 +14,12 @@
     </Storyboard>
     <Style TargetType="Image" x:Key="LoadingAnimationImageStyle">
         <Setter Property="Margin" Value="10"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="Source" Value="../Images/gear.png"/>
         <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
-        <Setter Property="Width" Value="10"/>
-        <Setter Property="Height" Value="10"/>
+        <Setter Property="Width" Value="14"/>
+        <Setter Property="Height" Value="14"/>
         <Style.Triggers>
             <EventTrigger RoutedEvent="FrameworkElement.Loaded">
                 <EventTrigger.Actions>

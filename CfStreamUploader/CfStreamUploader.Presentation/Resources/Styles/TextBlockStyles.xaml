@@ -17,6 +17,7 @@
 
     <Style TargetType="TextBlock" x:Key="UploadProgressTextBlockStyle">
         <Setter Property="Margin" Value="5" />
+        <Setter Property="VerticalAlignment" Value="Center"/>
     </Style>
 
     <Style TargetType="TextBlock" x:Key="RestrictionTextBlockStyle">
