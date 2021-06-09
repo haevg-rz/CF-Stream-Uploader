@@ -29,7 +29,7 @@
     </Style>
 
     <Style TargetType="TextBox" x:Key="SettingsWindowTextBox">
-        <Setter Property="Margin" Value="5"/>
+        <Setter Property="Margin" Value="5,5,10,5"/>
         <Setter Property="Foreground" Value="{Binding TextColor}"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="Height" Value="30"/>

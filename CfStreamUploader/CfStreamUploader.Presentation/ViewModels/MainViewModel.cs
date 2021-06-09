@@ -303,7 +303,14 @@ namespace CfStreamUploader.Presentation.ViewModels
 
             this.VideoUploadPogresBarSetUpStart();
 
-            if (!this.IsConfigSolid()) return;
+            if (!this.IsConfigSolid())
+            {
+                var messageBoxResult = MessageBox.Show("Please check your settings", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                if(messageBoxResult == MessageBoxResult.Yes)
+                    this.OpenSettings();
+
+                return;
+            }
 
             var videoUploadResult = await this.Core.VideoManager.UploadVideoAsync(this.Core.ConfigManager.Config);
 
@@ -353,17 +360,8 @@ namespace CfStreamUploader.Presentation.ViewModels
 
         internal bool IsConfigSolid()
         {
-            if (this.Core.ConfigManager.Config.UserSettings.CfToken != string.Empty &&
-                this.Core.ConfigManager.Config.UserSettings.CfAccount != string.Empty) return true;
-
-            var openConfig = MessageBox.Show(
-                "There are missing attribute in the config.\nYou can open your config here",
-                "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-
-            if (openConfig != MessageBoxResult.Yes) return false;
-
-            this.Core.ConfigManager.OpenConfig();
-            return false;
+            return this.Core.ConfigManager.Config.UserSettings.CfToken != string.Empty &&
+                   this.Core.ConfigManager.Config.UserSettings.CfAccount != string.Empty;
         }
 
         private void CopyToClipbord()

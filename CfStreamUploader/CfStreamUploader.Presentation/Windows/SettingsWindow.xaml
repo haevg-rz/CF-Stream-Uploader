@@ -9,6 +9,7 @@
         Title="Your Settings" Height="300" Width="600"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen">
+
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -16,7 +17,9 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-    <Grid Background="{Binding BaseColor}" Margin="5">
+
+    <Grid Background="{Binding BaseColor}">
+
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="100"/>
             <ColumnDefinition/>
@@ -41,7 +44,17 @@
         <TextBlock Text="PrivateKey" Grid.Row="3" Grid.Column="0" Style="{DynamicResource SettingsWindowTextBlockStyle}"/>
         <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding PrivateKey}" Style="{DynamicResource SettingsWindowTextBox}"/>
 
-        <Button Content="Save" Grid.Row="4" Grid.Column="1" Command="{Binding SaveCommand}" Style="{DynamicResource SaveButtonStyle}"/>
+        <Grid Grid.Row="4" Grid.Column="1">
 
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Button Content="Undo changes" Grid.Column="0"  Command="{Binding UndoCommand}" Style="{DynamicResource SaveButtonStyle}"/>
+            <Button Content="Save" Grid.Column="1"  Command="{Binding SaveCommand}" Style="{DynamicResource SaveButtonStyle}"/>
+
+        </Grid>
     </Grid>
 </Window>

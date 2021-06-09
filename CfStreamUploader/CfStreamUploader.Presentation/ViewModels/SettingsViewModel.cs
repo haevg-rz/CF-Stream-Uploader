@@ -38,10 +38,12 @@ namespace CfStreamUploader.Presentation.ViewModels
         
         public ConfigManager ConfigManager { get; } = new ConfigManager();
         public RelayCommand SaveCommand { get; set; }
+        public RelayCommand UndoCommand { get; set; }
 
         public SettingsViewModel()
         {
             this.SaveCommand = new RelayCommand(this.Save);
+            this.UndoCommand = new RelayCommand(this.Undo);
 
             this.CfAccount = this.ConfigManager.Config.UserSettings.CfAccount;
             this.CfToken = this.ConfigManager.Config.UserSettings.CfToken;
@@ -52,6 +54,14 @@ namespace CfStreamUploader.Presentation.ViewModels
                 this.Darkmode();
             else
                 this.Lightmode();
+        }
+
+        private void Undo()
+        {
+            this.CfAccount = this.ConfigManager.Config.UserSettings.CfAccount;
+            this.CfToken = this.ConfigManager.Config.UserSettings.CfToken;
+            this.KeyId = this.ConfigManager.Config.UserSettings.KeyId;
+            this.PrivateKey = this.ConfigManager.Config.UserSettings.PrivateKey;
         }
 
         private void Save()
