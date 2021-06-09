@@ -231,7 +231,8 @@ namespace CfStreamUploader.Presentation.ViewModels
         public RelayCommand UploadViedeoCommand { get; set; }
         public RelayCommand SelectVideoCommand { get; set; }
         public RelayCommand CopyVideoUrlCommand { get; set; }
-        public RelayCommand EditRestrictionsCommand { get; set; }
+        public RelayCommand OpenEditRestrictionsCommand { get; set; }
+        public RelayCommand OpenSettingsCommand { get; set; }
 
         #endregion
 
@@ -244,7 +245,8 @@ namespace CfStreamUploader.Presentation.ViewModels
             this.CopyToClipbordCommad = new RelayCommand(this.CopyToClipbord);
             this.SelectVideoCommand = new RelayCommand(this.SelectVideo);
             this.CopyVideoUrlCommand = new RelayCommand(this.CopyVideoUrl);
-            this.EditRestrictionsCommand = new RelayCommand(this.EditRestrictions);
+            this.OpenEditRestrictionsCommand = new RelayCommand(this.OpenEditRestrictions);
+            this.OpenSettingsCommand = new RelayCommand(this.OpenSettings);
 
             this.SetRestrictions();
 
@@ -254,7 +256,7 @@ namespace CfStreamUploader.Presentation.ViewModels
             else
                 this.Lightmode();
         }
-
+        
         #endregion
 
         #region public
@@ -401,13 +403,19 @@ namespace CfStreamUploader.Presentation.ViewModels
             this.Core.ConfigManager.UpdateConfig(config);
         }
 
-        private void EditRestrictions()
+        private void OpenEditRestrictions()
         {
             WindowManager.OpenEditRestrictionWindow();
 
             this.Core.ConfigManager.ReadConfig();
 
             this.SetRestrictions();
+        }
+
+        private void OpenSettings()
+        {
+            WindowManager.OpenSettingsWindow();
+            this.Core.ConfigManager.ReadConfig();
         }
 
         internal void SetRestrictions()
