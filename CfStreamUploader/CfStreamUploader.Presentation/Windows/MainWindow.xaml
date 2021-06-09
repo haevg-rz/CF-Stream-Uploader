@@ -9,6 +9,7 @@
         Title="CF Stream Uploader" Height="670" Width="1000"
         WindowStyle="SingleBorderWindow"
         DataContext="{StaticResource MainViewModel}"
+        ResizeMode="CanMinimize"
         WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
@@ -172,43 +173,32 @@
             </Grid>
 
             <Grid Grid.Row="2" Grid.Column="0" Margin="10">
-                <TextBox Style="{DynamicResource HtmlOutputTextBoxStyle}" Text="{Binding HtmlOutput}" Width="600" />
-            </Grid>
-
-            <Grid Grid.Row="3" Grid.Column="0" Margin="10,0,10,10">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="170" />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
                 <StackPanel>
+                    <TextBox Style="{DynamicResource HtmlOutputTextBoxStyle}" Text="{Binding HtmlOutput}"
+                             VerticalScrollBarVisibility="Visible" />
                     <Button Style="{StaticResource CopyToClipboardButtonStyle}" Content="Copy to clipboard"
                             Command="{Binding CopyToClipbordCommad}" />
+                    <TextBox Style="{DynamicResource UrlOutputTextBoxStyle}" Text="{Binding VideoUrl}"/>
                     <Button Style="{StaticResource CopyToClipboardButtonStyle}" Content="Copy video-url"
                             Command="{Binding CopyVideoUrlCommand}" />
                 </StackPanel>
-
-                <TextBlock Grid.Column="1" Style="{StaticResource WikiLinkTextBlockStyle}">
-                    <Hyperlink>How to use this HTML Code?</Hyperlink>
-                </TextBlock>
             </Grid>
             <!-- Video Upload -->
 
-            <!-- MemoryCapacity -->
-            <Grid Grid.Row="0" Grid.Column="2">
-                <ProgressBar Style="{StaticResource ProgressBarStyle}" />
-                <TextBlock Style="{StaticResource ProgressBarTextBlockStyle}" Text="...coming soon" />
-            </Grid>
-            <!-- MemoryCapacity -->
-
             <!-- SettingButtons -->
-            <Grid Grid.Row="2" Grid.Column="2" Margin="10">
+            <Grid Grid.Row="0" Grid.Column="2" Margin="10,140,10,10">
                 <StackPanel>
                     <Button Style="{StaticResource SettingButtonStyle}" Content="Open history" />
                     <Button Style="{StaticResource SettingButtonStyle}" Content="Open settings" />
                 </StackPanel>
+
             </Grid>
             <!-- SettingButtons -->
-
+            <Grid Grid.Row="2" Grid.Column="2" Margin="10">
+                <TextBlock Style="{StaticResource WikiLinkTextBlockStyle}">
+                    <Hyperlink>How to use this HTML Code?</Hyperlink>
+                </TextBlock>
+            </Grid>
         </Grid>
     </Grid>
 </Window>

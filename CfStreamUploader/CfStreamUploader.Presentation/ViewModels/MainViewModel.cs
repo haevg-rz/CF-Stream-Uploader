@@ -21,7 +21,7 @@ namespace CfStreamUploader.Presentation.ViewModels
 
         private string htmlOutput = "HTML";
         private string videoTitel = "No video found";
-        private string videoUrl = string.Empty;
+        private string videoUrl = "VideoUrl";
         private readonly string defaultUri = "https://iframe.videodelivery.net/{0}?preload=true";
         private string dragAndDropInfo = "Drop video here";
         private string restrictionIP = string.Empty;
@@ -64,6 +64,11 @@ namespace CfStreamUploader.Presentation.ViewModels
         {
             get => this.htmlOutput;
             set => this.Set(ref this.htmlOutput, value);
+        }
+        public string VideoUrl
+        {
+            get => this.videoUrl;
+            set => this.Set(ref this.videoUrl, value);
         }
 
         public string VideoTitel
@@ -320,11 +325,9 @@ namespace CfStreamUploader.Presentation.ViewModels
                         this.VideoUploadPogresBarStepp3();
 
                         this.HtmlOutput = string.Format(this.Core.HtmlLayout.GetHtmlLayout(), videoToken);
-                        this.videoUrl = string.Format(this.defaultUri, videoToken);
+                        this.VideoUrl = string.Format(this.defaultUri, videoToken);
 
                         this.VideoUploadPogresBarStepp4();
-
-                        await Task.Delay(TimeSpan.FromSeconds(3));
                         this.VideoUploadPogressBarFinish();
 
                         return;
@@ -332,7 +335,7 @@ namespace CfStreamUploader.Presentation.ViewModels
                 }
 
                 this.HtmlOutput = string.Format(this.Core.HtmlLayout.GetHtmlLayout(), videoUploadResult.VideoUrl);
-                this.videoUrl = string.Format(this.defaultUri, videoUploadResult.VideoUrl);
+                this.VideoUrl = string.Format(this.defaultUri, videoUploadResult.VideoUrl);
 
                 await Task.Delay(TimeSpan.FromSeconds(5));
                 this.VideoUploadPogresBarStepp4();
