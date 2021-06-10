@@ -188,7 +188,7 @@
             <!-- SettingButtons -->
             <Grid Grid.Row="0" Grid.Column="2" Margin="10,140,10,10">
                 <StackPanel>
-                    <Button Style="{StaticResource SettingButtonStyle}" Content="Open history" />
+                    <Button Style="{StaticResource SettingButtonStyle}" Content="Open history" Command="{Binding OpenHistoryCommand}" />
                     <Button Style="{StaticResource SettingButtonStyle}" Command="{Binding OpenSettingsCommand}" Content="Open settings" />
                 </StackPanel>
 
