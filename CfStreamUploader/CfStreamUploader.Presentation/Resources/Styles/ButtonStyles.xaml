@@ -100,7 +100,8 @@
 
     <Style TargetType="Button" x:Key="CopyToClipboardButtonStyle">
         <Setter Property="Margin" Value="5" />
-        <Setter Property="Width" Value="150"/>
+        <Setter Property="Width" Value="200"/>
+        <Setter Property="Height" Value="30"></Setter>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="Padding" Value="5" />
         <Setter Property="BorderThickness" Value="0" />
@@ -233,7 +234,7 @@
         </Setter>
     </Style>
 
-    <Style TargetType="Button" x:Key="EditWondowSaveButtonStyle">
+    <Style TargetType="Button" x:Key="SaveButtonStyle">
         <Setter Property="Padding" Value="10" />
         <Setter Property="Margin" Value="5" />
         <Setter Property="BorderThickness" Value="0" />

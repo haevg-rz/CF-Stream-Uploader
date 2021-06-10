@@ -21,7 +21,7 @@ namespace CfStreamUploader.Presentation.ViewModels
 
         private string htmlOutput = "HTML";
         private string videoTitel = "No video found";
-        private string videoUrl = string.Empty;
+        private string videoUrl = "VideoUrl";
         private readonly string defaultUri = "https://iframe.videodelivery.net/{0}?preload=true";
         private string dragAndDropInfo = "Drop video here";
         private string restrictionIP = string.Empty;
@@ -64,6 +64,11 @@ namespace CfStreamUploader.Presentation.ViewModels
         {
             get => this.htmlOutput;
             set => this.Set(ref this.htmlOutput, value);
+        }
+        public string VideoUrl
+        {
+            get => this.videoUrl;
+            set => this.Set(ref this.videoUrl, value);
         }
 
         public string VideoTitel
@@ -226,7 +231,8 @@ namespace CfStreamUploader.Presentation.ViewModels
         public RelayCommand UploadViedeoCommand { get; set; }
         public RelayCommand SelectVideoCommand { get; set; }
         public RelayCommand CopyVideoUrlCommand { get; set; }
-        public RelayCommand EditRestrictionsCommand { get; set; }
+        public RelayCommand OpenEditRestrictionsCommand { get; set; }
+        public RelayCommand OpenSettingsCommand { get; set; }
         public RelayCommand OpenHistoryCommand { get; set; }
 
         #endregion
@@ -240,8 +246,9 @@ namespace CfStreamUploader.Presentation.ViewModels
             this.CopyToClipbordCommad = new RelayCommand(this.CopyToClipbord);
             this.SelectVideoCommand = new RelayCommand(this.SelectVideo);
             this.CopyVideoUrlCommand = new RelayCommand(this.CopyVideoUrl);
-            this.EditRestrictionsCommand = new RelayCommand(this.EditRestrictions);
             this.OpenHistoryCommand = new RelayCommand(this.OpenHistory);
+            this.OpenEditRestrictionsCommand = new RelayCommand(this.OpenEditRestrictions);
+            this.OpenSettingsCommand = new RelayCommand(this.OpenSettings);
 
             this.SetRestrictions();
 
@@ -251,7 +258,7 @@ namespace CfStreamUploader.Presentation.ViewModels
             else
                 this.Lightmode();
         }
-
+        
         #endregion
 
         #region public
@@ -298,7 +305,14 @@ namespace CfStreamUploader.Presentation.ViewModels
 
             this.VideoUploadPogresBarSetUpStart();
 
-            if (!this.IsConfigSolid()) return;
+            if (!this.IsConfigSolid())
+            {
+                var messageBoxResult = MessageBox.Show("Please check your settings", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                if(messageBoxResult == MessageBoxResult.Yes)
+                    this.OpenSettings();
+
+                return;
+            }
 
             var videoUploadResult = await this.Core.VideoManager.UploadVideoAsync(this.Core.ConfigManager.Config);
 
@@ -325,11 +339,9 @@ namespace CfStreamUploader.Presentation.ViewModels
                         this.VideoUploadPogresBarStepp3();
 
                         this.HtmlOutput = string.Format(this.Core.HtmlLayout.GetHtmlLayout(), videoToken);
-                        this.videoUrl = string.Format(this.defaultUri, videoToken);
+                        this.VideoUrl = string.Format(this.defaultUri, videoToken);
 
                         this.VideoUploadPogresBarStepp4();
-
-                        await Task.Delay(TimeSpan.FromSeconds(3));
                         this.VideoUploadPogressBarFinish();
 
                         return;
@@ -337,7 +349,7 @@ namespace CfStreamUploader.Presentation.ViewModels
                 }
 
                 this.HtmlOutput = string.Format(this.Core.HtmlLayout.GetHtmlLayout(), videoUploadResult.VideoUrl);
-                this.videoUrl = string.Format(this.defaultUri, videoUploadResult.VideoUrl);
+                this.VideoUrl = string.Format(this.defaultUri, videoUploadResult.VideoUrl);
 
                 await Task.Delay(TimeSpan.FromSeconds(5));
                 this.VideoUploadPogresBarStepp4();
@@ -353,17 +365,8 @@ namespace CfStreamUploader.Presentation.ViewModels
 
         internal bool IsConfigSolid()
         {
-            if (this.Core.ConfigManager.Config.UserSettings.CfToken != string.Empty &&
-                this.Core.ConfigManager.Config.UserSettings.CfAccount != string.Empty) return true;
-
-            var openConfig = MessageBox.Show(
-                "There are missing attribute in the config.\nYou can open your config here",
-                "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-
-            if (openConfig != MessageBoxResult.Yes) return false;
-
-            this.Core.ConfigManager.OpenConfig();
-            return false;
+            return this.Core.ConfigManager.Config.UserSettings.CfToken != string.Empty &&
+                   this.Core.ConfigManager.Config.UserSettings.CfAccount != string.Empty;
         }
 
         private void OpenHistory()
@@ -408,13 +411,19 @@ namespace CfStreamUploader.Presentation.ViewModels
             this.Core.ConfigManager.UpdateConfig(config);
         }
 
-        private void EditRestrictions()
+        private void OpenEditRestrictions()
         {
             WindowManager.OpenEditRestrictionWindow();
 
             this.Core.ConfigManager.ReadConfig();
 
             this.SetRestrictions();
+        }
+
+        private void OpenSettings()
+        {
+            WindowManager.OpenSettingsWindow();
+            this.Core.ConfigManager.ReadConfig();
         }
 
         internal void SetRestrictions()

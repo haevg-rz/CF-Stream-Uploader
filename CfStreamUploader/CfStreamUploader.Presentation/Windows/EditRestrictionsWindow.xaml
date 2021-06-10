@@ -95,7 +95,7 @@
 
         <!-- Allow All -->
 
-        <Button Style="{DynamicResource EditWondowSaveButtonStyle}" Command="{Binding SaveButtonCommand}" Grid.Row="4"
+        <Button Style="{DynamicResource SaveButtonStyle}" Command="{Binding SaveButtonCommand}" Grid.Row="4"
                 Grid.Column="2" Content="Save" />
 
     </Grid>

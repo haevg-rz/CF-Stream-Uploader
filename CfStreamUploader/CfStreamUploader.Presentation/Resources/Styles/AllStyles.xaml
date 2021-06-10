@@ -5,7 +5,6 @@
         <ResourceDictionary Source="ImageStyle.xaml" />
         <ResourceDictionary Source="TextBlockStyles.xaml" />
         <ResourceDictionary Source="TextBoxStyles.xaml" />
-        <ResourceDictionary Source="ProgressBarStyles.xaml" />
         <ResourceDictionary Source="CheckBoxStyles.xaml" />
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

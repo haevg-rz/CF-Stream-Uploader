@@ -17,6 +17,7 @@
 
     <Style TargetType="TextBlock" x:Key="UploadProgressTextBlockStyle">
         <Setter Property="Margin" Value="5" />
+        <Setter Property="VerticalAlignment" Value="Center"/>
     </Style>
 
     <Style TargetType="TextBlock" x:Key="RestrictionTextBlockStyle">
@@ -38,7 +39,7 @@
     <Style TargetType="TextBlock" x:Key="WikiLinkTextBlockStyle">
         <Setter Property="Margin" Value="5" />
         <Setter Property="HorizontalAlignment" Value="Right" />
-        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Bottom" />
     </Style>
 
     <Style TargetType="TextBlock" x:Key="EditTextBlockStyle">
@@ -55,6 +56,13 @@
         <Setter Property="Foreground" Value="{Binding TextColor}"/>
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Margin" Value="0,10,10,10"/>
+    </Style>
+
+    <Style TargetType="TextBlock" x:Key="SettingsWindowTextBlockStyle">
+        <Setter Property="Margin" Value="15,5,5,5"/>
+        <Setter Property="Foreground" Value="{Binding TextColor}"/>
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
     </Style>
 
 </ResourceDictionary>
