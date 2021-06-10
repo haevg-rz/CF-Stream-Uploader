@@ -34,7 +34,7 @@ namespace CfStreamUploader.Core
 
         public void WriteVideoUploadFile(string videotitle, string videoUrl, object setAccessRules, string videotoken, string htmlCode)
         {
-            this.CreateVideoUploadHistoryFolder();
+            this.CreateVideoUploadHistory();
 
             var uploadDate = DateTime.Now;
             var videoUploadData = new VideoUploadHistoryData(videotitle,uploadDate,videoUrl,setAccessRules,videotoken,htmlCode);
@@ -45,7 +45,7 @@ namespace CfStreamUploader.Core
             File.WriteAllText(Path.Combine(this.CfStreamUploaderHistoryPath, filename), jsonString);
         }
 
-        public void CreateVideoUploadHistoryFolder()
+        public void CreateVideoUploadHistory()
         {
             if (!Directory.Exists(this.CfStreamUploaderHistoryPath))
                 Directory.CreateDirectory(this.CfStreamUploaderHistoryPath);
