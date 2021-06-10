@@ -34,12 +34,12 @@ namespace CfStreamUploader.Core
             Process.Start(psi);
         }
 
-        public void WriteVideoUploadFile(string videotitle, string videoUrl, object setAccessRules, string videotoken, string htmlCode)
+        public void WriteVideoUploadFile(string videotitle, string videoUrl, object setAccessRules, string videoTokenWithRestrictions, string htmlCode)
         {
             this.CreateVideoUploadHistory();
 
             var uploadDate = DateTime.Now;
-            var videoUploadData = new VideoUploadHistoryData(videotitle,uploadDate,videoUrl,setAccessRules,videotoken,htmlCode);
+            var videoUploadData = new VideoUploadHistoryData(videotitle,uploadDate,videoUrl,setAccessRules,videoTokenWithRestrictions,htmlCode);
 
             var filename = this.CreateFileName(videotitle,uploadDate);
 
