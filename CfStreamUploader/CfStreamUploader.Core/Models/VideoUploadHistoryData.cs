@@ -15,11 +15,11 @@ namespace CfStreamUploader.Core.Models
         public string VideoToken { get; set; }
         public string HtmlCode { get; set; }
 
-        public VideoUploadHistoryData(string videoTitle,DateTime uploadDate, string videouUrl, object setAccessRules, string videoToken, string htmlCode)
+        public VideoUploadHistoryData(string videoTitle, DateTime uploadDate, string videoUrl, object setAccessRules, string videoToken, string htmlCode)
         {
             this.VideoTitle = videoTitle;
             this.UploadDate = uploadDate;
-            this.VideoUrl = VideoUrl;
+            this.VideoUrl = videoUrl;
             this.SetAccesRules = setAccessRules;
             this.VideoToken = videoToken;
             this.HtmlCode = htmlCode;

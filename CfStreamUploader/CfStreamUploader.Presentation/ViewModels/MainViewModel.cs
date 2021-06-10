@@ -331,17 +331,18 @@ namespace CfStreamUploader.Presentation.ViewModels
 
                         var setAccessRules = this.Core.VideoManager.GetAccesRules(this.Core.ConfigManager.Config, this.checkboxRestrictionIP, this.checkboxRestrictionCountry, this.checkboxRestrictionAny);
 
-                        var videoToken = this.Core.VideoManager.SetRestrictions(this.Core.ConfigManager.Config,
+                        var videoTokenWithRestrictions = this.Core.VideoManager.SetRestrictions(this.Core.ConfigManager.Config,
                             videoUploadResult.VideoUrl, setAccessRules, this.CheckboxRestrictionExpireIn);
-
-                        this.Core.HistoryManager.WriteVideoUploadFile(videoTitel, videoUploadResult.VideoUrl, setAccessRules, videoToken, string.Format(this.Core.HtmlLayout.GetHtmlLayout(), videoToken));
 
                         this.VideoUploadPogresBarStepp3();
 
-                        this.HtmlOutput = string.Format(this.Core.HtmlLayout.GetHtmlLayout(), videoToken);
-                        this.VideoUrl = string.Format(this.defaultUri, videoToken);
+                        this.HtmlOutput = string.Format(this.Core.HtmlLayout.GetHtmlLayout(), videoTokenWithRestrictions);
+                        this.VideoUrl = string.Format(this.defaultUri, videoTokenWithRestrictions);
 
                         this.VideoUploadPogresBarStepp4();
+
+                        this.Core.HistoryManager.WriteVideoUploadFile(this.VideoTitel, videoUploadResult.VideoUrl, setAccessRules, videoTokenWithRestrictions, this.HtmlOutput);
+
                         this.VideoUploadPogressBarFinish();
 
                         return;
@@ -351,8 +352,10 @@ namespace CfStreamUploader.Presentation.ViewModels
                 this.HtmlOutput = string.Format(this.Core.HtmlLayout.GetHtmlLayout(), videoUploadResult.VideoUrl);
                 this.VideoUrl = string.Format(this.defaultUri, videoUploadResult.VideoUrl);
 
-                await Task.Delay(TimeSpan.FromSeconds(5));
                 this.VideoUploadPogresBarStepp4();
+
+                this.Core.HistoryManager.WriteVideoUploadFile(videoTitel, videoUploadResult.VideoUrl, String.Empty, String.Empty, this.htmlOutput);
+                
                 this.LoadingAnimation2IsVisible = false;
                 this.VideoUploadPogressBarFinish();
             }
