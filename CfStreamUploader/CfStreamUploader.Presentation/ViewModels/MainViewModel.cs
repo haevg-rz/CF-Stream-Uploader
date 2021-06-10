@@ -227,6 +227,7 @@ namespace CfStreamUploader.Presentation.ViewModels
         public RelayCommand SelectVideoCommand { get; set; }
         public RelayCommand CopyVideoUrlCommand { get; set; }
         public RelayCommand EditRestrictionsCommand { get; set; }
+        public RelayCommand OpenHistoryCommand { get; set; }
 
         #endregion
 
@@ -240,6 +241,7 @@ namespace CfStreamUploader.Presentation.ViewModels
             this.SelectVideoCommand = new RelayCommand(this.SelectVideo);
             this.CopyVideoUrlCommand = new RelayCommand(this.CopyVideoUrl);
             this.EditRestrictionsCommand = new RelayCommand(this.EditRestrictions);
+            this.OpenHistoryCommand = new RelayCommand(this.OpenHistory);
 
             this.SetRestrictions();
 
@@ -313,9 +315,12 @@ namespace CfStreamUploader.Presentation.ViewModels
                     {
                         this.VideoUploadPogresBarStepp2();
 
+                        var setAccessRules = this.Core.VideoManager.GetAccesRules(this.Core.ConfigManager.Config, this.checkboxRestrictionIP, this.checkboxRestrictionCountry, this.checkboxRestrictionAny);
+
                         var videoToken = this.Core.VideoManager.SetRestrictions(this.Core.ConfigManager.Config,
-                            videoUploadResult.VideoUrl, this.CheckboxRestrictionIP, this.CheckboxRestrictionCountry,
-                            this.CheckboxRestrictionAny, this.CheckboxRestrictionExpireIn);
+                            videoUploadResult.VideoUrl, setAccessRules, this.CheckboxRestrictionExpireIn);
+
+                        this.Core.HistoryManager.WriteVideoUploadFile(videoTitel, videoUploadResult.VideoUrl, setAccessRules, videoToken, string.Format(this.Core.HtmlLayout.GetHtmlLayout(), videoToken));
 
                         this.VideoUploadPogresBarStepp3();
 
@@ -361,6 +366,11 @@ namespace CfStreamUploader.Presentation.ViewModels
             return false;
         }
 
+        private void OpenHistory()
+        {
+            this.Core.HistoryManager.CreateVideoUploadHistoryFolder();
+            this.Core.HistoryManager.OpenVideoUploadHistoryFolder();
+        }
         private void CopyToClipbord()
         {
             Clipboard.SetText(this.HtmlOutput);
