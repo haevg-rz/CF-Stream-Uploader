@@ -28,4 +28,12 @@
         <Setter Property="Height" Value="20"/>
     </Style>
 
+    <Style TargetType="TextBox" x:Key="SettingsWindowTextBox">
+        <Setter Property="Margin" Value="5,5,10,5"/>
+        <Setter Property="Foreground" Value="{Binding TextColor}"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Height" Value="30"/>
+        <Setter Property="Background" Value="Transparent"/>
+    </Style>
+
 </ResourceDictionary>

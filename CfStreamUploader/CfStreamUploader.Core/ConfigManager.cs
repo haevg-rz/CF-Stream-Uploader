@@ -3,8 +3,6 @@ using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Text.Json;
-using JsonSerializer = Newtonsoft.Json.JsonSerializer;
 
 namespace CfStreamUploader.Core
 {
@@ -57,25 +55,7 @@ namespace CfStreamUploader.Core
             this.SetConfig(config);
             this.WriteConfig();
         }
-
-        public void OpenConfig()
-        {
-            if (!File.Exists(this.CfStreamUploaderPath))
-                this.WriteConfig();
-
-            var psi = new ProcessStartInfo
-            {
-                FileName = Path.Combine(this.CfStreamUploaderPath, "Config.json"),
-                UseShellExecute = true,
-                Verb = "open"
-            };
-            var p = Process.Start(psi);
-            p.WaitForInputIdle();
-            p.WaitForExit();
-
-            if (p.HasExited) this.ReadConfig();
-        }
-
+        
         #endregion
 
         #region private
