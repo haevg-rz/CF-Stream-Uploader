@@ -21,8 +21,10 @@ namespace CfStreamUploader.Core
 
         #region public
 
-        public void OpenVideoUploadHistoryFolder()
+        public void OpenVideoUploadHistory()
         {
+            this.CreateVideoUploadHistory();
+
             var psi = new ProcessStartInfo
             {
                 FileName = this.CfStreamUploaderHistoryPath,

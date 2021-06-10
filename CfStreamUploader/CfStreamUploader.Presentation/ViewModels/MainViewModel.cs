@@ -371,8 +371,7 @@ namespace CfStreamUploader.Presentation.ViewModels
 
         private void OpenHistory()
         {
-            this.Core.HistoryManager.CreateVideoUploadHistory();
-            this.Core.HistoryManager.OpenVideoUploadHistoryFolder();
+            this.Core.HistoryManager.OpenVideoUploadHistory();
         }
         private void CopyToClipbord()
         {
