@@ -5,7 +5,8 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-
+    
+jobs:
   build:
 
     runs-on: windows-latest
@@ -19,10 +20,9 @@ on:
     - name: Build with dotnet
       run: dotnet build CfStreamUploader/CfStreamUploader.sln --configuration Release
   
-  jobs:
-    test:
+  test:
     
-       runs-on: windows-latest
+   runs-on: windows-latest
        
     steps:
     - uses: actions/checkout@v2
