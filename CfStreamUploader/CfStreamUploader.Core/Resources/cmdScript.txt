@@ -1,2 +1,0 @@
-@echo off 
-curl -X POST -H \"Authorization: Bearer {0}\" -F file=@{1} https://api.cloudflare.com/client/v4/accounts/{2}/stream

@@ -176,7 +176,7 @@
                 <StackPanel>
                     <TextBox Style="{DynamicResource HtmlOutputTextBoxStyle}" Text="{Binding HtmlOutput}"
                              VerticalScrollBarVisibility="Visible" />
-                    <Button Style="{StaticResource CopyToClipboardButtonStyle}" Content="Copy to clipboard"
+                    <Button Style="{StaticResource CopyToClipboardButtonStyle}" Content="Copy HTML"
                             Command="{Binding CopyToClipbordCommad}" />
                     <TextBox Style="{DynamicResource UrlOutputTextBoxStyle}" Text="{Binding VideoUrl}"/>
                     <Button Style="{StaticResource CopyToClipboardButtonStyle}" Content="Copy video-url"
@@ -196,9 +196,11 @@
             <!-- SettingButtons -->
             <Grid Grid.Row="2" Grid.Column="2" Margin="10">
                 <TextBlock Style="{StaticResource WikiLinkTextBlockStyle}">
-                    <Hyperlink>How to use this HTML Code?</Hyperlink>
+                    <Hyperlink>Here is the wiki</Hyperlink>
                 </TextBlock>
             </Grid>
-        </Grid>
+        </Grid>   
+        <TextBox Margin="5" Foreground="Gray" BorderThickness="0" Text="v1.0.0" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+
     </Grid>
 </Window>
