@@ -1,11 +1,11 @@
-name: .NET build
+name: .NET Action
 
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-
+    
 jobs:
   build:
 
@@ -13,9 +13,22 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Setup .NET Core
+    - name: Setup .NET5
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 5.0.x
     - name: Build with dotnet
       run: dotnet build CfStreamUploader/CfStreamUploader.sln --configuration Release
+      
+  test:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET5
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    - name: Test with dotnet
+      run: dotnet test CfStreamUploader/CfStreamUploader.sln --configuration Release
