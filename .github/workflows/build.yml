@@ -1,7 +1,21 @@
-name: .NET Core
+name: .NET build
 
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    - name: Build with dotnet
+      run: dotnet build CfStreamUploader/CfStreamUploader.sln --configuration Release
