@@ -5,25 +5,23 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Resources\CmdScript.txt" />
     <None Remove="Resources\defaultHtmlLayout.txt" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Resources\cmdScript.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
     <EmbeddedResource Include="Resources\defaultHtmlLayout.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.NETCore.Targets" Version="3.0.0" PrivateAssets="all" />
     <PackageReference Include="BouncyCastle.NetCore" Version="1.8.8" />
     <PackageReference Include="jose-jwt" Version="3.1.1" />
     <PackageReference Include="JwtCore" Version="1.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.11.1" />
+    <PackageReference Include="TusDotNetClient" Version="1.2.0" />
   </ItemGroup>
 
 </Project>

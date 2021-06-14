@@ -4,11 +4,15 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using TusDotNetClient;
 
 [assembly: InternalsVisibleTo("CfStreamUploader.Core.Test")]
 
@@ -34,7 +38,8 @@ namespace CfStreamUploader.Core
 
         #region public
 
-        public string SetRestrictions(Config config, string videoId, object setAccessRules , bool checkboxRestrictionExpireIn)
+        public string SetRestrictions(Config config, string videoId, object setAccessRules,
+            bool checkboxRestrictionExpireIn)
         {
             var header = new Dictionary<string, object>()
             {
@@ -108,7 +113,7 @@ namespace CfStreamUploader.Core
 
             var accesruleJson = jsonStringList.Count switch
             {
-                1 => new[] { JsonConvert.DeserializeObject(jsonStringList[0]) },
+                1 => new[] {JsonConvert.DeserializeObject(jsonStringList[0])},
                 2 => new[]
                 {
                     JsonConvert.DeserializeObject(jsonStringList[0]),
@@ -152,12 +157,16 @@ namespace CfStreamUploader.Core
                     myProcess.StartInfo.FileName = "cmd";
                     myProcess.StartInfo.CreateNoWindow = true;
                     myProcess.StartInfo.RedirectStandardOutput = true;
+                    myProcess.StartInfo.RedirectStandardError = true;
                     myProcess.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
                     myProcess.StartInfo.Arguments = $"/c {cmdCommand}";
 
                     myProcess.Start();
 
                     var outputStreamReader = myProcess.StandardOutput;
+                    var error = myProcess.StandardError;
+                    var err = await error.ReadToEndAsync();
+                    Trace.WriteLine(err);
                     output = await outputStreamReader.ReadToEndAsync();
                 }
             }
@@ -168,7 +177,7 @@ namespace CfStreamUploader.Core
 
             return (output, new VideoUploadResult(true, null));
         }
-        
+
         private long GetExpireDate(bool checkboxRestrictionExpireIn, Config config)
         {
             var now = DateTime.Now;
@@ -180,11 +189,11 @@ namespace CfStreamUploader.Core
             }
             else
             {
-                long seconds = (356 * 10) * 24 * 60 * 60; //10 Years in seconds
+                long seconds = 356 * 10 * 24 * 60 * 60; //10 Years in seconds
                 return ((DateTimeOffset) now).ToUnixTimeSeconds() + seconds;
             }
         }
-       
+
         #endregion
     }
 }
