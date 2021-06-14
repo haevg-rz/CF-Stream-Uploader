@@ -1,4 +1,4 @@
-name: .NET build
+name: .NET Action
 
 on:
   push:
