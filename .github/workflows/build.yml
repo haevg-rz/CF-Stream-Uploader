@@ -19,7 +19,12 @@ jobs:
         dotnet-version: 5.0.x
     - name: Build with dotnet
       run: dotnet build CfStreamUploader/CfStreamUploader.sln --configuration Release
-      
+  
+  jobs:
+    test:
+    
+       runs-on: windows-latest
+       
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET5
