@@ -21,7 +21,6 @@
     <PackageReference Include="JwtCore" Version="1.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.11.1" />
-    <PackageReference Include="TusDotNetClient" Version="1.2.0" />
   </ItemGroup>
 
 </Project>
