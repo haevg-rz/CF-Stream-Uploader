@@ -86,8 +86,7 @@ namespace CfStreamUploader.Core
             return new VideoUploadResult(true, null);
         }
 
-        public object GetAccesRules(Config config, bool checkboxRestrictionIP, bool checkboxRestrictionCountry,
-            bool checkboxRestrictionAny)
+        public object GetAccesRules(Config config, bool checkboxRestrictionIP, bool checkboxRestrictionCountry)
         {
             var jsonStringList = new List<string>();
 
@@ -104,12 +103,7 @@ namespace CfStreamUploader.Core
                 jsonStringList.Add(
                     System.Text.Json.JsonSerializer.Serialize(config.AccessRules.Country, serializeOptions));
 
-            if (checkboxRestrictionAny)
-                jsonStringList.Add(
-                    System.Text.Json.JsonSerializer.Serialize(config.AccessRules.Any, serializeOptions));
-
-            if (!checkboxRestrictionIP && !checkboxRestrictionCountry && !checkboxRestrictionAny)
-                jsonStringList.Add(System.Text.Json.JsonSerializer.Serialize(new Any(), serializeOptions));
+            jsonStringList.Add(System.Text.Json.JsonSerializer.Serialize(config.AccessRules.Any, serializeOptions));
 
             var accesruleJson = jsonStringList.Count switch
             {
