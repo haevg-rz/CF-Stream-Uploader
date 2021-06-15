@@ -20,7 +20,6 @@ namespace CfStreamUploader.Presentation.ViewModels
 
         private string ipAction = "allow";
         private string countryAction = "allow";
-        private string anyAction = "allow";
 
         private string ipTextBox = string.Empty;
         private string countryTextBox = string.Empty;
@@ -34,7 +33,6 @@ namespace CfStreamUploader.Presentation.ViewModels
         public RelayCommand SaveButtonCommand { get; set; }
         public RelayCommand AllowIpsCommand { get; set; }
         public RelayCommand AllowCountriesCommand { get; set; }
-        public RelayCommand AllowAllCommand { get; set; }
         public ConfigManager ConfigManager { get; set; } = new ConfigManager();
 
         public string IpAction
@@ -47,12 +45,6 @@ namespace CfStreamUploader.Presentation.ViewModels
         {
             get => this.countryAction;
             set => this.Set(ref this.countryAction, value);
-        }
-
-        public string AnyAction
-        {
-            get => this.anyAction;
-            set => this.Set(ref this.anyAction, value);
         }
 
         public string IpTextBox
@@ -83,7 +75,6 @@ namespace CfStreamUploader.Presentation.ViewModels
             this.SaveButtonCommand = new RelayCommand(this.SaveButton);
             this.AllowIpsCommand = new RelayCommand(this.SetIpAction);
             this.AllowCountriesCommand = new RelayCommand(this.SetCountryAction);
-            this.AllowAllCommand = new RelayCommand(this.SetAnyAction);
 
             this.ConfigManager.ReadConfig();
 
@@ -94,9 +85,6 @@ namespace CfStreamUploader.Presentation.ViewModels
             this.CountryTextBox = this.ConfigManager.Config.AccessRules.Country.PrintCounties();
             if (this.ConfigManager.Config.AccessRules.Country.IsBlocked())
                 this.CountryAction = "block";
-
-            if (this.ConfigManager.Config.AccessRules.Any.IsBlocked())
-                this.AnyAction = "block";
 
             this.expiresInTextBox = this.ConfigManager.Config.AccessRules.ExpiresIn.ToString();
 
@@ -121,20 +109,6 @@ namespace CfStreamUploader.Presentation.ViewModels
                 Arguments = $"/c start {this.currentCodesUrl}"
             };
             Process.Start(psi);
-        }
-
-        private void SetAnyAction()
-        {
-            if (this.ConfigManager.Config.AccessRules.Any.IsBlocked())
-            {
-                this.AnyAction = "allow";
-                this.ConfigManager.Config.AccessRules.Any.Allow();
-            }
-            else
-            {
-                this.AnyAction = "block";
-                this.ConfigManager.Config.AccessRules.Any.Block();
-            }
         }
 
         private void SetCountryAction()

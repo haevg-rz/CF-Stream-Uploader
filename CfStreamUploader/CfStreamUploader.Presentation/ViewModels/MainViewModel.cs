@@ -7,8 +7,8 @@ using Microsoft.Win32;
 using System;
 using System.IO;
 using System.Linq;
+using System.Printing;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using System.Windows;
 
 [assembly: InternalsVisibleTo("CfStreamUploader.Presentation.Test")]
@@ -30,7 +30,6 @@ namespace CfStreamUploader.Presentation.ViewModels
         private string restrictionExpireIn = string.Empty;
         private bool checkboxRestrictionIP;
         private bool checkboxRestrictionCountry;
-        private bool checkboxRestrictionAny = true;
         private bool checkboxRestrictionExpireIn;
         private bool setSignedUrl = true;
 
@@ -117,12 +116,6 @@ namespace CfStreamUploader.Presentation.ViewModels
         {
             get => this.checkboxRestrictionCountry;
             set => this.Set(ref this.checkboxRestrictionCountry, value);
-        }
-
-        public bool CheckboxRestrictionAny
-        {
-            get => this.checkboxRestrictionAny;
-            set => this.Set(ref this.checkboxRestrictionAny, value);
         }
 
         public bool CheckboxRestrictionExpireIn
@@ -307,10 +300,14 @@ namespace CfStreamUploader.Presentation.ViewModels
 
             if (!this.IsConfigSolid())
             {
-                var messageBoxResult = MessageBox.Show("Please check your settings", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-                if(messageBoxResult == MessageBoxResult.Yes)
-                    this.OpenSettings();
+                MessageBox.Show("Please check your settings", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
 
+                return;
+            }
+
+            if (!this.SetRestrictionQuery())
+            {
+                MessageBox.Show("Please check your Restrictions", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
@@ -329,7 +326,7 @@ namespace CfStreamUploader.Presentation.ViewModels
                     {
                         this.VideoUploadPogresBarStepp2();
 
-                        var setAccessRules = this.Core.VideoManager.GetAccesRules(this.Core.ConfigManager.Config, this.checkboxRestrictionIP, this.checkboxRestrictionCountry, this.checkboxRestrictionAny);
+                        var setAccessRules = this.Core.VideoManager.GetAccesRules(this.Core.ConfigManager.Config, this.checkboxRestrictionIP, this.checkboxRestrictionCountry);
 
                         var videoTokenWithRestrictions = this.Core.VideoManager.SetRestrictions(this.Core.ConfigManager.Config,
                             videoUploadResult.VideoUrl, setAccessRules, this.CheckboxRestrictionExpireIn);
@@ -372,6 +369,19 @@ namespace CfStreamUploader.Presentation.ViewModels
                    this.Core.ConfigManager.Config.UserSettings.CfAccount != string.Empty;
         }
 
+        private bool SetRestrictionQuery()
+        {
+            if (this.CheckboxRestrictionCountry && this.checkboxRestrictionIP && (this.Core.ConfigManager.Config.AccessRules.Country.IsBlocked() && !this.Core.ConfigManager.Config.AccessRules.Ip.IsBlocked()|| !this.Core.ConfigManager.Config.AccessRules.Country.IsBlocked() && this.Core.ConfigManager.Config.AccessRules.Ip.IsBlocked()))
+                return false;
+
+            if(this.Core.ConfigManager.Config.AccessRules.Country.IsBlocked() && this.Core.ConfigManager.Config.AccessRules.Ip.IsBlocked()|| this.Core.ConfigManager.Config.AccessRules.Country.IsBlocked() || this.Core.ConfigManager.Config.AccessRules.Ip.IsBlocked()||(!this.checkboxRestrictionIP && !this.checkboxRestrictionCountry))
+                this.Core.ConfigManager.Config.AccessRules.Any.Allow();
+
+            if (!this.Core.ConfigManager.Config.AccessRules.Country.IsBlocked() && !this.Core.ConfigManager.Config.AccessRules.Ip.IsBlocked() || !this.Core.ConfigManager.Config.AccessRules.Country.IsBlocked() || !this.Core.ConfigManager.Config.AccessRules.Ip.IsBlocked())
+                this.Core.ConfigManager.Config.AccessRules.Any.Block();
+
+            return true;
+        }
         private void OpenHistory()
         {
             this.Core.HistoryManager.OpenVideoUploadHistory();

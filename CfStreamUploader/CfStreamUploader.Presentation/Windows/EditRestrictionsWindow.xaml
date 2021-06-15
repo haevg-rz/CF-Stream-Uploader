@@ -87,14 +87,6 @@
         <Grid Grid.Column="2" Grid.Row="2" />
         <!-- Set Acces limit -->
 
-        <!-- Allow All -->
-        <TextBlock Style="{DynamicResource EditTextBlockStyle}" Grid.Row="3" Grid.Column="0"
-                   Text="Default action" HorizontalAlignment="Left" />
-        <Button Command="{Binding AllowAllCommand}" Content="{Binding AnyAction}" Grid.Column="1"
-                Grid.Row="3" Style="{DynamicResource ToggleAllowBlockButtonStyle}" />
-
-        <!-- Allow All -->
-
         <Button Style="{DynamicResource SaveButtonStyle}" Command="{Binding SaveButtonCommand}" Grid.Row="4"
                 Grid.Column="2" Content="Save" />
 
