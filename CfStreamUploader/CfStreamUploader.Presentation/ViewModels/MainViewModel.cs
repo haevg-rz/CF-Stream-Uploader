@@ -305,7 +305,7 @@ namespace CfStreamUploader.Presentation.ViewModels
                 return;
             }
 
-            if (!this.SetRestrictionQuery())
+            if (!this.IsSetRestrictionSolid())
             {
                 MessageBox.Show("Please check your Restrictions", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
@@ -369,14 +369,17 @@ namespace CfStreamUploader.Presentation.ViewModels
                    this.Core.ConfigManager.Config.UserSettings.CfAccount != string.Empty;
         }
 
-        private bool SetRestrictionQuery()
+        private bool IsSetRestrictionSolid()
         {
+            // (country allow and Ip block) or (country block and Ip allow)
             if (this.CheckboxRestrictionCountry && this.checkboxRestrictionIP && (this.Core.ConfigManager.Config.AccessRules.Country.IsBlocked() && !this.Core.ConfigManager.Config.AccessRules.Ip.IsBlocked()|| !this.Core.ConfigManager.Config.AccessRules.Country.IsBlocked() && this.Core.ConfigManager.Config.AccessRules.Ip.IsBlocked()))
                 return false;
 
-            if(this.Core.ConfigManager.Config.AccessRules.Country.IsBlocked() && this.Core.ConfigManager.Config.AccessRules.Ip.IsBlocked()|| this.Core.ConfigManager.Config.AccessRules.Country.IsBlocked() || this.Core.ConfigManager.Config.AccessRules.Ip.IsBlocked()||(!this.checkboxRestrictionIP && !this.checkboxRestrictionCountry))
+            // (country block and/or Ip block) 
+            if(this.Core.ConfigManager.Config.AccessRules.Country.IsBlocked() && this.Core.ConfigManager.Config.AccessRules.Ip.IsBlocked()|| this.Core.ConfigManager.Config.AccessRules.Country.IsBlocked() || this.Core.ConfigManager.Config.AccessRules.Ip.IsBlocked())
                 this.Core.ConfigManager.Config.AccessRules.Any.Allow();
 
+            // (country allow and/or Ip allow)
             if (!this.Core.ConfigManager.Config.AccessRules.Country.IsBlocked() && !this.Core.ConfigManager.Config.AccessRules.Ip.IsBlocked() || !this.Core.ConfigManager.Config.AccessRules.Country.IsBlocked() || !this.Core.ConfigManager.Config.AccessRules.Ip.IsBlocked())
                 this.Core.ConfigManager.Config.AccessRules.Any.Block();
 
