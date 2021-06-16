@@ -26,7 +26,7 @@
 
         <Grid>
             <Button Style="{DynamicResource DarkmodeButtonStyle}" Content="{Binding ThemeText}"
-                    Command="{Binding SetDarkmodeCommand}" />
+                    Command="{Binding SetDarkmodeCommand}" IsEnabled="{Binding ButtonsAreEnabled}"/>
         </Grid>
 
         <Grid>
@@ -70,11 +70,11 @@
                         </Grid.ColumnDefinitions>
                         <TextBlock Text="{Binding VideoTitel}" Style="{StaticResource VideoNameTextBlockStyle}" />
                         <Button Style="{StaticResource UploadButtonStyle}" Content="Select Video" Grid.Column="1"
-                                Command="{Binding SelectVideoCommand}" />
+                                Command="{Binding SelectVideoCommand}" IsEnabled="{Binding ButtonsAreEnabled}"/>
                     </Grid>
 
                     <Button Content="Start" Style="{StaticResource StartButtonStyle}"
-                            Command="{Binding UploadViedeoCommand}" />
+                            Command="{Binding UploadViedeoCommand}" IsEnabled="{Binding ButtonsAreEnabled}"/>
 
                 </StackPanel>
 
@@ -93,7 +93,7 @@
                     <TextBlock Style="{StaticResource RestrictionTextBlockStyle}" Text="Set Restriction" />
 
                     <Button Style="{StaticResource EditButtonStyle}" Content="edit" Grid.Row="0" Grid.Column="1"
-                            Command="{Binding OpenEditRestrictionsCommand}" />
+                            Command="{Binding OpenEditRestrictionsCommand}" IsEnabled="{Binding ButtonsAreEnabled}"/>
 
                     <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="0" Margin="5">
 
@@ -175,10 +175,10 @@
                     <TextBox Style="{DynamicResource HtmlOutputTextBoxStyle}" Text="{Binding HtmlOutput}"
                              VerticalScrollBarVisibility="Visible" />
                     <Button Style="{StaticResource CopyToClipboardButtonStyle}" Content="Copy HTML"
-                            Command="{Binding CopyToClipbordCommad}" />
+                            Command="{Binding CopyToClipbordCommad}" IsEnabled="{Binding ButtonsAreEnabled}"/>
                     <TextBox Style="{DynamicResource UrlOutputTextBoxStyle}" Text="{Binding VideoUrl}"/>
                     <Button Style="{StaticResource CopyToClipboardButtonStyle}" Content="Copy video-url"
-                            Command="{Binding CopyVideoUrlCommand}" />
+                            Command="{Binding CopyVideoUrlCommand}" IsEnabled="{Binding ButtonsAreEnabled}"/>
                 </StackPanel>
             </Grid>
             <!-- Video Upload -->
@@ -186,8 +186,8 @@
             <!-- SettingButtons -->
             <Grid Grid.Row="0" Grid.Column="2" Margin="10,140,10,10">
                 <StackPanel>
-                    <Button Style="{StaticResource SettingButtonStyle}" Content="Open history" Command="{Binding OpenHistoryCommand}" />
-                    <Button Style="{StaticResource SettingButtonStyle}" Command="{Binding OpenSettingsCommand}" Content="Open settings" />
+                    <Button Style="{StaticResource SettingButtonStyle}" Content="Open history" Command="{Binding OpenHistoryCommand}" IsEnabled="{Binding ButtonsAreEnabled}"/>
+                    <Button Style="{StaticResource SettingButtonStyle}" Command="{Binding OpenSettingsCommand}" Content="Open settings" IsEnabled="{Binding ButtonsAreEnabled}"/>
                 </StackPanel>
 
             </Grid>
