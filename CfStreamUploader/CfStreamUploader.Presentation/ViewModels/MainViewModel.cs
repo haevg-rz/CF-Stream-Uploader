@@ -19,6 +19,7 @@ namespace CfStreamUploader.Presentation.ViewModels
     {
         #region Fields
 
+        private string videoFormatsFilter = "mp4 files(*mp4)|*.mp4|mkv files(*mkv)|*.mkv|mov files(*mov)|*.mov|avi files(*avi)|*.avi|flv files(*flv)|*.flv|mpeg-2 files(*mpeg-2)|(*.mpeg-2)|mfx files(*mfx)|(*.mfx)|gxf files (*gfx)|(*.gfx)|3gp files (*3gp)|(*.3gp)|mpg files (*mpg)|(*.mpg)|quicktime files (*quicktime)|(*.quicktime)";
         private string htmlOutput = "HTML";
         private string videoTitel = "No video found";
         private string videoUrl = "VideoUrl";
@@ -262,7 +263,7 @@ namespace CfStreamUploader.Presentation.ViewModels
             dropInfo.Effects = dragFileList.Any(item =>
             {
                 var extension = Path.GetExtension(item);
-                return extension != null && extension.Equals(".mp4");
+                return extension != null && extension.Equals(".mp4")|| extension.Equals(".mkv") || extension.Equals(".mov")|| extension.Equals(".avi")|| extension.Equals(".flv")|| extension.Equals(".mpeg-2 ts")|| extension.Equals(".mfx")|| extension.Equals(".lfx")||extension.Equals(".gxf")||extension.Equals(".3gp")||extension.Equals(".mpg")|| extension.Equals(".quicktime");
             })
                 ? DragDropEffects.Copy
                 : DragDropEffects.None;
@@ -402,19 +403,12 @@ namespace CfStreamUploader.Presentation.ViewModels
         private void SelectVideo()
         {
             var fileDialog = new OpenFileDialog();
+            fileDialog.Filter = this.videoFormatsFilter;
 
             if (fileDialog.ShowDialog() != true) return;
 
-            if (fileDialog.FileName.Split(".").Last() == "mp4")
-            {
-                this.Core.VideoManager.VideoPath = fileDialog.FileName;
-                this.VideoTitel = this.Core.VideoManager.VideoPath.Split("\\").Last();
-            }
-            else
-            {
-                MessageBox.Show("You selected a file with a not supported format", "Error", MessageBoxButton.OK,
-                    MessageBoxImage.Error);
-            }
+            this.Core.VideoManager.VideoPath = fileDialog.FileName;
+            this.VideoTitel = this.Core.VideoManager.VideoPath.Split("\\").Last();
         }
 
         private void UpdateConfig()
