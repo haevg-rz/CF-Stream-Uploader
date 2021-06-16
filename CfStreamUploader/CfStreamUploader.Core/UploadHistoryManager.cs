@@ -1,16 +1,12 @@
 ﻿using CfStreamUploader.Core.Models;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CfStreamUploader.Core
 {
-    public class VideoUploadHistoryManager
+    public class UploadHistoryManager
     {
         #region fields
 
@@ -34,14 +30,16 @@ namespace CfStreamUploader.Core
             Process.Start(psi);
         }
 
-        public void WriteVideoUploadFile(string videotitle, string videoUrl, object setAccessRules, string videoTokenWithRestrictions, string htmlCode)
+        public void WriteVideoUploadFile(string videotitle, string videoUrl, object setAccessRules,
+            string videoTokenWithRestrictions, string htmlCode)
         {
             this.CreateVideoUploadHistory();
 
             var uploadDate = DateTime.Now;
-            var videoUploadData = new VideoUploadHistoryData(videotitle,uploadDate,videoUrl,setAccessRules,videoTokenWithRestrictions,htmlCode);
+            var videoUploadData = new VideoUploadHistoryData(videotitle, uploadDate, videoUrl, setAccessRules,
+                videoTokenWithRestrictions, htmlCode);
 
-            var filename = this.CreateFileName(videotitle,uploadDate);
+            var filename = this.CreateFileName(videotitle, uploadDate);
 
             var jsonString = JsonConvert.SerializeObject(videoUploadData, Formatting.Indented);
             File.WriteAllText(Path.Combine(this.CfStreamUploaderHistoryPath, filename), jsonString);
@@ -55,7 +53,7 @@ namespace CfStreamUploader.Core
 
         #endregion
 
-        #region private 
+        #region private
 
         private string CreateFileName(string videoTitle, DateTime uploadDate)
         {

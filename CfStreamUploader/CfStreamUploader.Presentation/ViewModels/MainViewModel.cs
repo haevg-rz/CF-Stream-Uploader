@@ -5,6 +5,7 @@ using GalaSoft.MvvmLight.Command;
 using GongSolutions.Wpf.DragDrop;
 using Microsoft.Win32;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Printing;
@@ -23,6 +24,7 @@ namespace CfStreamUploader.Presentation.ViewModels
         private string videoTitel = "No video found";
         private string videoUrl = "VideoUrl";
         private readonly string defaultUri = "https://iframe.videodelivery.net/{0}?preload=true";
+        private readonly string wikiUrl = "https://github.com/haevg-rz/CF-Stream-Uploader/wiki";
         private string dragAndDropInfo = "Drop video here";
         private string restrictionIP = string.Empty;
         private string restrictionCountry = string.Empty;
@@ -227,6 +229,7 @@ namespace CfStreamUploader.Presentation.ViewModels
         public RelayCommand OpenEditRestrictionsCommand { get; set; }
         public RelayCommand OpenSettingsCommand { get; set; }
         public RelayCommand OpenHistoryCommand { get; set; }
+        public RelayCommand OpenWikiCommand { get; set; }
 
         #endregion
 
@@ -242,6 +245,7 @@ namespace CfStreamUploader.Presentation.ViewModels
             this.OpenHistoryCommand = new RelayCommand(this.OpenHistory);
             this.OpenEditRestrictionsCommand = new RelayCommand(this.OpenEditRestrictions);
             this.OpenSettingsCommand = new RelayCommand(this.OpenSettings);
+            this.OpenWikiCommand = new RelayCommand(this.OpenWiki);
 
             this.SetRestrictions();
 
@@ -300,67 +304,84 @@ namespace CfStreamUploader.Presentation.ViewModels
 
             if (!this.IsConfigSolid())
             {
-                MessageBox.Show("Please check your settings", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
-
-                return;
+                var openSettins = MessageBox.Show("Please check your settings", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                if (openSettins == MessageBoxResult.Yes)
+                {
+                    this.OpenSettings();
+                    return;
+                }
+                
             }
 
             if (!this.IsSetRestrictionSolid())
             {
-                MessageBox.Show("Please check your Restrictions", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
-            var videoUploadResult = await this.Core.VideoManager.UploadVideoAsync(this.Core.ConfigManager.Config);
-
-            this.VideoUploadPogresBarStepp1();
-
-            if (videoUploadResult.videoUploadResult.Success)
-            {
-                if (this.SetSignedUrl)
+                var openRestrictions = MessageBox.Show("Please check your Restrictions", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                if (openRestrictions == MessageBoxResult.Yes)
                 {
-                    var signedUrlResult = await this.Core.VideoManager.SetSignedUrl(this.Core.ConfigManager.Config,
-                        videoUploadResult.VideoUrl);
-
-                    if (signedUrlResult.Success)
-                    {
-                        this.VideoUploadPogresBarStepp2();
-
-                        var setAccessRules = this.Core.VideoManager.GetAccesRules(this.Core.ConfigManager.Config, this.checkboxRestrictionIP, this.checkboxRestrictionCountry);
-
-                        var videoTokenWithRestrictions = this.Core.VideoManager.SetRestrictions(this.Core.ConfigManager.Config,
-                            videoUploadResult.VideoUrl, setAccessRules, this.CheckboxRestrictionExpireIn);
-
-                        this.VideoUploadPogresBarStepp3();
-
-                        this.HtmlOutput = string.Format(this.Core.HtmlLayout.GetHtmlLayout(), videoTokenWithRestrictions);
-                        this.VideoUrl = string.Format(this.defaultUri, videoTokenWithRestrictions);
-
-                        this.VideoUploadPogresBarStepp4();
-
-                        this.Core.HistoryManager.WriteVideoUploadFile(this.VideoTitel, videoUploadResult.VideoUrl, setAccessRules, videoTokenWithRestrictions, this.HtmlOutput);
-
-                        this.VideoUploadPogressBarFinish();
-
-                        return;
-                    }
+                    this.OpenEditRestrictions();
+                    return;
                 }
-
-                this.HtmlOutput = string.Format(this.Core.HtmlLayout.GetHtmlLayout(), videoUploadResult.VideoUrl);
-                this.VideoUrl = string.Format(this.defaultUri, videoUploadResult.VideoUrl);
-
-                this.VideoUploadPogresBarStepp4();
-
-                this.Core.HistoryManager.WriteVideoUploadFile(videoTitel, videoUploadResult.VideoUrl, String.Empty, String.Empty, this.htmlOutput);
-                
-                this.LoadingAnimation2IsVisible = false;
-                this.VideoUploadPogressBarFinish();
             }
-            else
+
+            try
             {
-                MessageBox.Show(videoUploadResult.videoUploadResult.Exception.Message, "Error", MessageBoxButton.OK,
+                var videoUploadResult = await this.Core.VideoManager.UploadVideoAsync(this.Core.ConfigManager.Config);
+
+                this.VideoUploadPogresBarStepp1();
+
+                if (videoUploadResult.videoUploadResult.Success)
+                {
+                    if (this.SetSignedUrl)
+                    {
+                        var signedUrlResult = await this.Core.VideoManager.SetSignedUrl(this.Core.ConfigManager.Config,
+                            videoUploadResult.VideoUrl);
+
+                        if (signedUrlResult.Success)
+                        {
+                            this.VideoUploadPogresBarStepp2();
+
+                            var setAccessRules = this.Core.VideoManager.GetAccesRules(this.Core.ConfigManager.Config, this.checkboxRestrictionIP, this.checkboxRestrictionCountry);
+
+                            var videoTokenWithRestrictions = this.Core.VideoManager.SetRestrictions(this.Core.ConfigManager.Config,
+                                videoUploadResult.VideoUrl, setAccessRules, this.CheckboxRestrictionExpireIn);
+
+                            this.VideoUploadPogresBarStepp3();
+
+                            this.HtmlOutput = string.Format(this.Core.HtmlLayout.GetHtmlLayout(), videoTokenWithRestrictions);
+                            this.VideoUrl = string.Format(this.defaultUri, videoTokenWithRestrictions);
+
+                            this.VideoUploadPogresBarStepp4();
+
+                            this.Core.UploadHistoryManager.WriteVideoUploadFile(this.VideoTitel, videoUploadResult.VideoUrl, setAccessRules, videoTokenWithRestrictions, this.HtmlOutput);
+
+                            this.VideoUploadPogressBarFinish();
+
+                            return;
+                        }
+                    }
+
+                    this.HtmlOutput = string.Format(this.Core.HtmlLayout.GetHtmlLayout(), videoUploadResult.VideoUrl);
+                    this.VideoUrl = string.Format(this.defaultUri, videoUploadResult.VideoUrl);
+
+                    this.VideoUploadPogresBarStepp4();
+
+                    this.Core.UploadHistoryManager.WriteVideoUploadFile(videoTitel, videoUploadResult.VideoUrl, String.Empty, String.Empty, this.htmlOutput);
+
+                    this.LoadingAnimation2IsVisible = false;
+                    this.VideoUploadPogressBarFinish();
+                }
+                else
+                {
+                    MessageBox.Show(videoUploadResult.videoUploadResult.Exception.Message, "Error", MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Something went wrong", "Error", MessageBoxButton.OK,
                     MessageBoxImage.Error);
             }
+            
         }
 
         internal bool IsConfigSolid()
@@ -387,7 +408,7 @@ namespace CfStreamUploader.Presentation.ViewModels
         }
         private void OpenHistory()
         {
-            this.Core.HistoryManager.OpenVideoUploadHistory();
+            this.Core.UploadHistoryManager.OpenVideoUploadHistory();
         }
         private void CopyToClipbord()
         {
@@ -448,6 +469,19 @@ namespace CfStreamUploader.Presentation.ViewModels
             this.RestrictionIP = this.Core.ConfigManager.Config.AccessRules.Ip.PrintRestriction();
             this.RestrictionExpireIn =
                 string.Format($"expiry date in {this.Core.ConfigManager.Config.AccessRules.ExpiresIn} days");
+        }
+
+        private void OpenWiki()
+        {
+            var psi = new ProcessStartInfo()
+            {
+                FileName = "cmd",
+                WindowStyle = ProcessWindowStyle.Hidden,
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                Arguments = $"/c start {this.wikiUrl}"
+            };
+            Process.Start(psi);
         }
 
         //VideoPogressBar

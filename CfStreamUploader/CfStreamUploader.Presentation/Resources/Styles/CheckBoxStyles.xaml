@@ -35,12 +35,31 @@
     </Style>
 
     <Style TargetType="CheckBox" x:Key="SetSignedUrlCheckBoxStyle">
-        <Setter Property="Margin" Value="5,30,5,5" />
+        <Setter Property="Margin" Value="5,70,5,5" />
         <Setter Property="VerticalAlignment" Value="Bottom" />
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Foreground" Value="{Binding TextColor}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="BorderBrush" Value="{Binding Button2Fg}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="CheckBox">
+                    <BulletDecorator Background="Transparent">
+                        <BulletDecorator.Bullet>
+                            <Border x:Name="Border" Width="15" Height="15" CornerRadius="2" Background="Transparent" BorderThickness="1" BorderBrush="{Binding Button2Fg}">
+                                <Path Width="9" Height="9" x:Name="CheckMark" SnapsToDevicePixels="False" Stroke="{Binding TextColor}" StrokeThickness="2" Data="M 0 4 L 3 8 8 0" />
+                            </Border>
+                        </BulletDecorator.Bullet>
+                        <ContentPresenter Margin="4,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" RecognizesAccessKey="True"/>
+                    </BulletDecorator>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="false">
+                            <Setter TargetName="CheckMark" Property="Visibility" Value="Collapsed"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
 </ResourceDictionary>
