@@ -17,7 +17,7 @@ jobs:
       with:
         dotnet-version: 5.0.x
     - name: Publish with dotnet
-      run: dotnet publish CfStreamUploader/CfStreamUploader.Presentation.csproj -r win-x64 -c Release --self-contained true /p:useapphost=true /p:PublishSingleFile=True
+      run: dotnet publish CfStreamUploader/CfStreamUploader.Presentation/CfStreamUploader.Presentation.csproj -r win-x64 -c Release --self-contained true /p:useapphost=true /p:PublishSingleFile=True
     - name: GH Release
       uses: softprops/action-gh-release@v0.1.5
       with:
