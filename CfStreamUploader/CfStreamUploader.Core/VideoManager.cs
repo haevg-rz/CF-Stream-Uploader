@@ -6,13 +6,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using TusClient;
 
 [assembly: InternalsVisibleTo("CfStreamUploader.Core.Test")]
 
@@ -67,7 +65,7 @@ namespace CfStreamUploader.Core
         {
             var file = new FileInfo(this.VideoPath);
 
-            if (file.Length <= (200 * 1024 * 1024)) // 200mb
+            if (file.Length <= 200 * 1024 * 1024) // 200mb
             {
                 var cmdVideoUploadScript = this.GetCmdVideoUploadScript(config);
                 var videoUploadResult = await this.RunCmdAsync(cmdVideoUploadScript);
@@ -86,14 +84,14 @@ namespace CfStreamUploader.Core
                 var header = new Dictionary<string, string>
                 {
                     {"name", file.Name},
-                    {"thumbnailtimestamppct", "0.0" }
+                    {"thumbnailtimestamppct", "0.0"}
                 };
 
-                var fileUrl = tusClient.Create(
+                var fileUrl = await Task.Run(() => tusClient.Create(
                     $"https://api.cloudflare.com/client/v4/accounts/{config.UserSettings.CfAccount}/stream",
-                    file, config.UserSettings.CfToken, header);
+                    file, config.UserSettings.CfToken, header));
 
-                tusClient.Upload(fileUrl, file, config.UserSettings.CfToken);
+                await Task.Run(() => tusClient.Upload(fileUrl, file, config.UserSettings.CfToken));
 
                 var client = new HttpClient();
                 client.DefaultRequestHeaders.Add("Authorization", $"Bearer {config.UserSettings.CfToken}");
@@ -101,13 +99,11 @@ namespace CfStreamUploader.Core
                 var json = JsonConvert.DeserializeObject<HttpResponse>(videoUploadResult.ToString());
 
                 return (new VideoUploadResult(true, null), json.result.uid);
-
             }
             catch (Exception e)
             {
                 return (new VideoUploadResult(true, e), string.Empty);
             }
-
         }
 
         public async Task<VideoUploadResult> SetSignedUrl(Config config, string videoId)

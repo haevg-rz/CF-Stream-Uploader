@@ -4,7 +4,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Edit restrictions" Height="280" Width="470"
+        Title="Edit restrictions" Height="230" Width="470"
         DataContext="{StaticResource EditRestrictionViewModel}"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen">

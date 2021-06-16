@@ -19,7 +19,21 @@ namespace CfStreamUploader.Core
 
         public string GetHtmlLayout()
         {
-            if (File.Exists(Path.Combine(this.CfStreamUploaderPath, this.htmlLayoutFile))) return this.ReadHtmlLayout();
+            if (File.Exists(Path.Combine(this.CfStreamUploaderPath, this.htmlLayoutFile)))
+            {
+                try
+                {
+                    var test = string.Format(this.ReadHtmlLayout(), "test");
+                }
+                catch (Exception e)
+                {
+                    var htmlLayout = this.GetDefaultHtmlLayout();
+                    this.WriteDefaultHtmlLayout(htmlLayout);
+                    return htmlLayout;
+                }
+
+                return this.ReadHtmlLayout();
+            }
 
             var defaultHtmlLayout = this.GetDefaultHtmlLayout();
             this.WriteDefaultHtmlLayout(defaultHtmlLayout);
