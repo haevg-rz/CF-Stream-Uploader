@@ -1,4 +1,4 @@
-name: .NET Puplish
+name: .NET Publish
 
 on:
   push:
@@ -17,7 +17,7 @@ jobs:
       with:
         dotnet-version: 5.0.x
     - name: Publish with dotnet
-      run: dotnet publish CfStreamUploader/CfStreamUploader.Presentation/CfStreamUploader.Presentation.csproj -r win-x64 -c Release --self-contained true -p:PublishSingleFile=true
+      run: dotnet publish CfStreamUploader/CfStreamUploader.Presentation/CfStreamUploader.Presentation.csproj -r win-x64 -c Release --self-contained true /p:PublishSingleFile=true /p:useapphost=true
     - name: GH Release
       uses: softprops/action-gh-release@v0.1.5
       with:
