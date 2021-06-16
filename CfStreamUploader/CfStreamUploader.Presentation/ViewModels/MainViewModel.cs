@@ -34,6 +34,7 @@ namespace CfStreamUploader.Presentation.ViewModels
         private bool checkboxRestrictionCountry;
         private bool checkboxRestrictionExpireIn;
         private bool setSignedUrl = true;
+        private bool buttonsAreEnabled = true;
 
         //VideoPogressBar
         private bool checkImage1IsVisible;
@@ -130,6 +131,11 @@ namespace CfStreamUploader.Presentation.ViewModels
         {
             get => this.setSignedUrl;
             set => this.Set(ref this.setSignedUrl, value);
+        } 
+        public bool ButtonsAreEnabled
+        {
+            get => this.buttonsAreEnabled;
+            set => this.Set(ref this.buttonsAreEnabled, value);
         }
 
         //VideoPogressBar
@@ -293,10 +299,12 @@ namespace CfStreamUploader.Presentation.ViewModels
 
         private async void UploadVideoAsync()
         {
+            this.ButtonsAreEnabled = false;
             if (this.Core.VideoManager.VideoPath == string.Empty)
             {
                 MessageBox.Show("Please select a Video.", "Information", MessageBoxButton.OK,
                     MessageBoxImage.Information);
+                this.ButtonsAreEnabled = true;
                 return;
             }
 
@@ -308,6 +316,7 @@ namespace CfStreamUploader.Presentation.ViewModels
                 if (openSettins == MessageBoxResult.Yes)
                 {
                     this.OpenSettings();
+                    this.ButtonsAreEnabled = true;
                     return;
                 }
                 
@@ -319,6 +328,7 @@ namespace CfStreamUploader.Presentation.ViewModels
                 if (openRestrictions == MessageBoxResult.Yes)
                 {
                     this.OpenEditRestrictions();
+                    this.ButtonsAreEnabled = true;
                     return;
                 }
             }
@@ -356,6 +366,7 @@ namespace CfStreamUploader.Presentation.ViewModels
 
                             this.VideoUploadPogressBarFinish();
 
+                            this.ButtonsAreEnabled = true;
                             return;
                         }
                     }
@@ -369,19 +380,24 @@ namespace CfStreamUploader.Presentation.ViewModels
 
                     this.LoadingAnimation2IsVisible = false;
                     this.VideoUploadPogressBarFinish();
+                    this.ButtonsAreEnabled = true;
+                    return;
                 }
                 else
                 {
                     MessageBox.Show(videoUploadResult.videoUploadResult.Exception.Message, "Error", MessageBoxButton.OK,
                         MessageBoxImage.Error);
+                    this.ButtonsAreEnabled = true;
+                    return;
                 }
             }
             catch (Exception e)
             {
                 MessageBox.Show("Something went wrong", "Error", MessageBoxButton.OK,
                     MessageBoxImage.Error);
+                this.ButtonsAreEnabled = true;
+                return;
             }
-            
         }
 
         internal bool IsConfigSolid()
