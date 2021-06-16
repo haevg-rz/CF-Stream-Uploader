@@ -173,8 +173,8 @@ namespace CfStreamUploader.Presentation.ViewModels
         {
             foreach (var ipString in ipStrings)
             {
-                var ipStringWithoutSubnetMask = ipString.Split("/").ToList();
-                var result = IPAddress.TryParse(ipStringWithoutSubnetMask[0], out var ipAdress);
+                var ipStringWithoutSubnetMask = ipString.Split("/").First();
+                var result = IPAddress.TryParse(ipStringWithoutSubnetMask, out var ipAdress);
                 if (!result)
                     return false;
             }
