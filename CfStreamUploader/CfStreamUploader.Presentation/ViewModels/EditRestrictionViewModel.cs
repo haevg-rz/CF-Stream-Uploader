@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Windows;
 
 namespace CfStreamUploader.Presentation.ViewModels
@@ -170,10 +171,10 @@ namespace CfStreamUploader.Presentation.ViewModels
 
         private bool IsValidId(List<string> ipStrings)
         {
-            return true; //TODO
             foreach (var ipString in ipStrings)
             {
-                var result = IPAddress.TryParse(ipString, out var ipAdress);
+                var ipStringWithoutSubnetMask = ipString.Split("/").First();
+                var result = IPAddress.TryParse(ipStringWithoutSubnetMask, out var ipAdress);
                 if (!result)
                     return false;
             }
