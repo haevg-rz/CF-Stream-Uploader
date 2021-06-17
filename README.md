@@ -21,16 +21,21 @@ The CF-Stream-Uploader is an UI to upload your videos :video_camera: in your [cl
 
 Here are our milestones:
 - [M1](https://github.com/haevg-rz/CF-Stream-Uploader/milestone/1) The user can upload a given video and gets generated HTML Code to embedded in websites. :heavy_check_mark:
-- [M2](https://github.com/haevg-rz/CF-Stream-Uploader/milestone/2) The user can apply video restrictions and the complete process is visualised :building_construction:
+- [M2](https://github.com/haevg-rz/CF-Stream-Uploader/milestone/2) The user can apply video restrictions and the complete process is visualised :heavy_check_mark:
 - [M3](https://github.com/haevg-rz/CF-Stream-Uploader/milestone/3) The user can manage history and settings and can view remaining video runtime capacity
+:heavy_check_mark:
 
-### :1234: MockUp 
+### 📱 MockUp 
 
-Thats our first idea :stuck_out_tongue_winking_eye:
-
-![Unbenannt](https://user-images.githubusercontent.com/62097375/118947701-e3cba700-b957-11eb-9422-2e9b7ca0c986.PNG)
+![image](https://user-images.githubusercontent.com/62097365/122367519-cab91480-cf5c-11eb-9116-218d0e9b9618.png)
 
 ## :chart_with_upwards_trend: Video Upload 
+
+### :card_file_box: Open Settings
+
+- Here you have to enter your account data
+- All fields have to filled out
+- Save your settings
 
 ### :point_up: Select a video 
 
@@ -38,20 +43,23 @@ There are two options to select a video:
  1. You can easily drop a video in the the "DragAndDrop" field
  2. Press the button "Select video" and choose your file
 
+The name of the video is now displayed bellow the drag and drop field
+
  Here is a list of supported video-formates:
- - .mp4
-
-### :movie_camera: Video uploading 
-
-- Press the Button "Start"
-- The single stepps will be displayed under the "Start" button
-- After finishing all stepps the HTML will be displayed
-- You can copy the HTML-Code with the Button "copy to clipboard" 
-- The Button "copy video-url" gives the link to your video
-
-:bangbang: Notice:
-- If you try to upload a video with an empty config you will get an error.
-- Make sure that you *save* the config before you try the upload again :)
+ - MP4, 
+ - MKV
+ - MOV
+ - AVI
+ - FLV
+ - MPEG-2 TS
+ - MPEG-2 PS
+ - MXF
+ - LXF
+ - GXF
+ - 3GP
+ - WebM
+ - MPG
+ - QuickTime.
 
 ## :pencil: Set restrictions
 ![image](https://user-images.githubusercontent.com/62097375/119634127-b331b480-be12-11eb-91d7-01a1055a4172.png)
@@ -72,11 +80,17 @@ There are two options to select a video:
 - You have a list of supported countries in the link below
 - You can switch between "allow" and "block" for your entered countries
 ### :black_nib: Set Access limit
-- ...comming :building_construction:
-### :black_nib: Default action
-- May be used as a wildcard to apply a default action after other rules
-- You can swap between "allow" and "block"
-- Example: "all block" and "DE allow" --> the video will only accessible in Germany
+- Set a time limit until the video can be seen
+- The default value time is ten years (if it was not set by yourself)
+
+### :movie_camera: Video uploading 
+
+- Press the Button "Start"
+- The single stepps will be displayed under the "Start" button
+- After finishing all stepps the HTML will be displayed
+- You can copy the HTML-Code with the button "copy HTML"
+- The button "copy video-url" gives the link to your video
+
 ## :clipboard: Config 
 
 The JSON config file has the following format:
