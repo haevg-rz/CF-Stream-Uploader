@@ -86,23 +86,23 @@ namespace CfStreamUploader.Core
                     {"name", file.Name},
                     {"thumbnailtimestamppct", "0.0"}
                 };
-
+                
                 var fileUrl = await Task.Run(() => tusClient.Create(
                     $"https://api.cloudflare.com/client/v4/accounts/{config.UserSettings.CfAccount}/stream",
                     file, config.UserSettings.CfToken, header));
-
+                
                 await Task.Run(() => tusClient.Upload(fileUrl, file, config.UserSettings.CfToken));
-
+                
                 var client = new HttpClient();
                 client.DefaultRequestHeaders.Add("Authorization", $"Bearer {config.UserSettings.CfToken}");
                 var videoUploadResult = await client.GetAsync(fileUrl);
-                var json = JsonConvert.DeserializeObject<HttpResponse>(videoUploadResult.ToString());
-
+                var responseMessage = await videoUploadResult.Content.ReadAsStringAsync();
+                var json = JsonConvert.DeserializeObject<HttpResponse>(responseMessage);
                 return (new VideoUploadResult(true, null), json.result.uid);
             }
             catch (Exception e)
             {
-                return (new VideoUploadResult(true, e), string.Empty);
+                return (new VideoUploadResult(false, e), string.Empty);
             }
         }
 

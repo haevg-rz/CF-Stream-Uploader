@@ -58,6 +58,5 @@ namespace CfStreamUploader.Presentation.Test
 
             #endregion
         }
-
     }
 }

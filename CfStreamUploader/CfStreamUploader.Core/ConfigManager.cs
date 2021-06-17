@@ -1,7 +1,6 @@
 ﻿using CfStreamUploader.Core.Models;
 using Newtonsoft.Json;
 using System;
-using System.Diagnostics;
 using System.IO;
 
 namespace CfStreamUploader.Core
@@ -55,7 +54,7 @@ namespace CfStreamUploader.Core
             this.SetConfig(config);
             this.WriteConfig();
         }
-        
+
         #endregion
 
         #region private
