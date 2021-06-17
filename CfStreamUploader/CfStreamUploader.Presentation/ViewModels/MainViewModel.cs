@@ -19,7 +19,9 @@ namespace CfStreamUploader.Presentation.ViewModels
     {
         #region Fields
 
-        private string videoFormatsFilter = "mp4 files(*mp4)|*.mp4|mkv files(*mkv)|*.mkv|mov files(*mov)|*.mov|avi files(*avi)|*.avi|flv files(*flv)|*.flv|mpeg-2 files(*mpeg-2)|(*.mpeg-2)|mfx files(*mfx)|(*.mfx)|gxf files (*gfx)|(*.gfx)|3gp files (*3gp)|(*.3gp)|mpg files (*mpg)|(*.mpg)|quicktime files (*quicktime)|(*.quicktime)";
+        private string videoFormatsFilter =
+            "mp4 files(*mp4)|*.mp4|mkv files(*mkv)|*.mkv|mov files(*mov)|*.mov|avi files(*avi)|*.avi|flv files(*flv)|*.flv|mpeg-2 files(*mpeg-2)|(*.mpeg-2)|mfx files(*mfx)|(*.mfx)|gxf files (*gfx)|(*.gfx)|3gp files (*3gp)|(*.3gp)|mpg files (*mpg)|(*.mpg)|quicktime files (*quicktime)|(*.quicktime)";
+
         private string htmlOutput = "HTML";
         private string videoTitel = "No video found";
         private string videoUrl = "VideoUrl";
@@ -67,6 +69,7 @@ namespace CfStreamUploader.Presentation.ViewModels
             get => this.htmlOutput;
             set => this.Set(ref this.htmlOutput, value);
         }
+
         public string VideoUrl
         {
             get => this.videoUrl;
@@ -131,7 +134,8 @@ namespace CfStreamUploader.Presentation.ViewModels
         {
             get => this.setSignedUrl;
             set => this.Set(ref this.setSignedUrl, value);
-        } 
+        }
+
         public bool ButtonsAreEnabled
         {
             get => this.buttonsAreEnabled;
@@ -261,7 +265,7 @@ namespace CfStreamUploader.Presentation.ViewModels
             else
                 this.Lightmode();
         }
-        
+
         #endregion
 
         #region public
@@ -272,7 +276,11 @@ namespace CfStreamUploader.Presentation.ViewModels
             dropInfo.Effects = dragFileList.Any(item =>
             {
                 var extension = Path.GetExtension(item);
-                return extension != null && extension.Equals(".mp4")|| extension.Equals(".mkv") || extension.Equals(".mov")|| extension.Equals(".avi")|| extension.Equals(".flv")|| extension.Equals(".mpeg-2 ts")|| extension.Equals(".mfx")|| extension.Equals(".lfx")||extension.Equals(".gxf")||extension.Equals(".3gp")||extension.Equals(".mpg")|| extension.Equals(".quicktime");
+                return extension != null && extension.Equals(".mp4") || extension.Equals(".mkv") ||
+                       extension.Equals(".mov") || extension.Equals(".avi") || extension.Equals(".flv") ||
+                       extension.Equals(".mpeg-2 ts") || extension.Equals(".mfx") || extension.Equals(".lfx") ||
+                       extension.Equals(".gxf") || extension.Equals(".3gp") || extension.Equals(".mpg") ||
+                       extension.Equals(".quicktime");
             })
                 ? DragDropEffects.Copy
                 : DragDropEffects.None;
@@ -312,19 +320,20 @@ namespace CfStreamUploader.Presentation.ViewModels
 
             if (!this.IsConfigSolid())
             {
-                var openSettins = MessageBox.Show("Please check your settings", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                var openSettins = MessageBox.Show("Please check your settings", "Warning", MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
                 if (openSettins == MessageBoxResult.Yes)
                 {
                     this.OpenSettings();
                     this.ButtonsAreEnabled = true;
                     return;
                 }
-                
             }
 
             if (!this.IsSetRestrictionSolid())
             {
-                var openRestrictions = MessageBox.Show("Please check your Restrictions", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                var openRestrictions = MessageBox.Show("Please check your Restrictions", "Warning",
+                    MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 if (openRestrictions == MessageBoxResult.Yes)
                 {
                     this.OpenEditRestrictions();
@@ -350,19 +359,24 @@ namespace CfStreamUploader.Presentation.ViewModels
                         {
                             this.VideoUploadPogresBarStepp2();
 
-                            var setAccessRules = this.Core.VideoManager.GetAccesRules(this.Core.ConfigManager.Config, this.checkboxRestrictionIP, this.checkboxRestrictionCountry);
+                            var setAccessRules = this.Core.VideoManager.GetAccesRules(this.Core.ConfigManager.Config,
+                                this.checkboxRestrictionIP, this.checkboxRestrictionCountry);
 
-                            var videoTokenWithRestrictions = this.Core.VideoManager.SetRestrictions(this.Core.ConfigManager.Config,
+                            var videoTokenWithRestrictions = this.Core.VideoManager.SetRestrictions(
+                                this.Core.ConfigManager.Config,
                                 videoUploadResult.VideoUrl, setAccessRules, this.CheckboxRestrictionExpireIn);
 
                             this.VideoUploadPogresBarStepp3();
 
-                            this.HtmlOutput = string.Format(this.Core.HtmlLayout.GetHtmlLayout(), videoTokenWithRestrictions);
+                            this.HtmlOutput = string.Format(this.Core.HtmlLayout.GetHtmlLayout(),
+                                videoTokenWithRestrictions);
                             this.VideoUrl = string.Format(this.defaultUri, videoTokenWithRestrictions);
 
                             this.VideoUploadPogresBarStepp4();
 
-                            this.Core.UploadHistoryManager.WriteVideoUploadFile(this.VideoTitel, videoUploadResult.VideoUrl, setAccessRules, videoTokenWithRestrictions, this.HtmlOutput);
+                            this.Core.UploadHistoryManager.WriteVideoUploadFile(this.VideoTitel,
+                                videoUploadResult.VideoUrl, setAccessRules, videoTokenWithRestrictions,
+                                this.HtmlOutput);
 
                             this.VideoUploadPogressBarFinish();
 
@@ -376,7 +390,8 @@ namespace CfStreamUploader.Presentation.ViewModels
 
                     this.VideoUploadPogresBarStepp4();
 
-                    this.Core.UploadHistoryManager.WriteVideoUploadFile(videoTitel, videoUploadResult.VideoUrl, String.Empty, String.Empty, this.htmlOutput);
+                    this.Core.UploadHistoryManager.WriteVideoUploadFile(this.videoTitel, videoUploadResult.VideoUrl,
+                        string.Empty, string.Empty, this.htmlOutput);
 
                     this.LoadingAnimation2IsVisible = false;
                     this.VideoUploadPogressBarFinish();
@@ -409,23 +424,35 @@ namespace CfStreamUploader.Presentation.ViewModels
         private bool IsSetRestrictionSolid()
         {
             // (country allow and Ip block) or (country block and Ip allow)
-            if (this.CheckboxRestrictionCountry && this.checkboxRestrictionIP && (this.Core.ConfigManager.Config.AccessRules.Country.IsBlocked() && !this.Core.ConfigManager.Config.AccessRules.Ip.IsBlocked()|| !this.Core.ConfigManager.Config.AccessRules.Country.IsBlocked() && this.Core.ConfigManager.Config.AccessRules.Ip.IsBlocked()))
+            if (this.CheckboxRestrictionCountry && this.checkboxRestrictionIP &&
+                (this.Core.ConfigManager.Config.AccessRules.Country.IsBlocked() &&
+                 !this.Core.ConfigManager.Config.AccessRules.Ip.IsBlocked() ||
+                 !this.Core.ConfigManager.Config.AccessRules.Country.IsBlocked() &&
+                 this.Core.ConfigManager.Config.AccessRules.Ip.IsBlocked()))
                 return false;
 
             // (country block and/or Ip block) 
-            if(this.Core.ConfigManager.Config.AccessRules.Country.IsBlocked() && this.Core.ConfigManager.Config.AccessRules.Ip.IsBlocked()|| this.Core.ConfigManager.Config.AccessRules.Country.IsBlocked() || this.Core.ConfigManager.Config.AccessRules.Ip.IsBlocked())
+            if (this.Core.ConfigManager.Config.AccessRules.Country.IsBlocked() &&
+                this.Core.ConfigManager.Config.AccessRules.Ip.IsBlocked() ||
+                this.Core.ConfigManager.Config.AccessRules.Country.IsBlocked() ||
+                this.Core.ConfigManager.Config.AccessRules.Ip.IsBlocked())
                 this.Core.ConfigManager.Config.AccessRules.Any.Allow();
 
             // (country allow and/or Ip allow)
-            if (!this.Core.ConfigManager.Config.AccessRules.Country.IsBlocked() && !this.Core.ConfigManager.Config.AccessRules.Ip.IsBlocked() || !this.Core.ConfigManager.Config.AccessRules.Country.IsBlocked() || !this.Core.ConfigManager.Config.AccessRules.Ip.IsBlocked())
+            if (!this.Core.ConfigManager.Config.AccessRules.Country.IsBlocked() &&
+                !this.Core.ConfigManager.Config.AccessRules.Ip.IsBlocked() ||
+                !this.Core.ConfigManager.Config.AccessRules.Country.IsBlocked() ||
+                !this.Core.ConfigManager.Config.AccessRules.Ip.IsBlocked())
                 this.Core.ConfigManager.Config.AccessRules.Any.Block();
 
             return true;
         }
+
         private void OpenHistory()
         {
             this.Core.UploadHistoryManager.OpenVideoUploadHistory();
         }
+
         private void CopyToClipbord()
         {
             Clipboard.SetText(this.HtmlOutput);
