@@ -15,7 +15,6 @@ The CF-Stream-Uploader is an UI to upload your videos :video_camera: in your [cl
 - The CF-Stream-Uploader displays your video-storage-capacity for an easy overview :part_alternation_mark:
 - The CF-Stream-Uploader saves your HTML-Codes on your pc :computer:
 - ...
-- More fearures are in progress :hourglass: :building_construction:
 
 ### :airplane: Roadmap 
 
@@ -27,7 +26,7 @@ Here are our milestones:
 
 ### 📱 MockUp 
 
-![image](https://user-images.githubusercontent.com/62097365/122367519-cab91480-cf5c-11eb-9116-218d0e9b9618.png)
+<img src="https://user-images.githubusercontent.com/62097365/122367519-cab91480-cf5c-11eb-9116-218d0e9b9618.png" width="50%" height="50%">
 
 ## :chart_with_upwards_trend: Video Upload 
 
@@ -37,6 +36,9 @@ Here are our milestones:
 - All fields have to filled out
 - Save your settings
 
+<img src="https://user-images.githubusercontent.com/62097375/122385628-563aa180-cf6d-11eb-8d88-ce7272699eb9.png" width="50%" height="50%">
+<img src="https://user-images.githubusercontent.com/62097375/122386398-23dd7400-cf6e-11eb-8be2-b5e8f9272219.png" width="40%" height="40%">
+
 ### :point_up: Select a video 
 
 There are two options to select a video:
@@ -44,6 +46,8 @@ There are two options to select a video:
  2. Press the button "Select video" and choose your file
 
 The name of the video is now displayed bellow the drag and drop field
+
+<img src="https://user-images.githubusercontent.com/62097375/122385532-3a370000-cf6d-11eb-8998-065f62d1c034.png" width="50%" height="50%">
 
  Here is a list of supported video-formates:
  - MP4, 
@@ -62,7 +66,8 @@ The name of the video is now displayed bellow the drag and drop field
  - QuickTime.
 
 ## :pencil: Set restrictions
-![image](https://user-images.githubusercontent.com/62097375/119634127-b331b480-be12-11eb-91d7-01a1055a4172.png)
+<img src="https://user-images.githubusercontent.com/62097375/122385770-7bc7ab00-cf6d-11eb-8ee1-ff2243791cd0.png" width="50%" height="50%">
+
 ### :bangbang: These Rule actions are available
 - "allow" - View is considered valid
 - "block" - View is considered invalid and a 401 or 403 is returned
@@ -90,6 +95,8 @@ The name of the video is now displayed bellow the drag and drop field
 - After finishing all stepps the HTML will be displayed
 - You can copy the HTML-Code with the button "copy HTML"
 - The button "copy video-url" gives the link to your video
+
+<img src="https://user-images.githubusercontent.com/62097375/122386606-56876c80-cf6e-11eb-8bd9-288e0d64f76b.png" width="50%" height="50%">
 
 ## :clipboard: Config 
 
@@ -133,7 +140,20 @@ C:\Users\LOCAL_USER\AppData\Roaming\CfStreamUploader\Config.json
 ```
 (make sure to exchange "LOCAL_USER" with you local windows user name ;) )
 
+## Open history
+- every video upload is saved
+<img src="https://user-images.githubusercontent.com/62097375/122386279-090aff80-cf6e-11eb-8ab8-29ac76d5e7f8.png" width="50%" height="50%">
 
+```
+{
+  "VideoTitle": "",
+  "UploadDate": "",
+  "VideoUrl": "",
+  "SetAccesRules": [ ],
+  "VideoToken": "",
+  "HtmlCode": ""
+}
+```
 ## :newspaper: HTML-Output
 
 ### :file_folder: Default HTML-Output
