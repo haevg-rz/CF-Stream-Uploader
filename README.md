@@ -1,6 +1,6 @@
 # CF-Stream-Uploader
 
-[![.github/workflows/build.yml](https://github.com/haevg-rz/CF-Stream-Uploader/actions/workflows/build.yml/badge.svg)](https://github.com/haevg-rz/CF-Stream-Uploader/actions/workflows/build.yml)
+[![.github/workflows/build.yml](https://github.com/haevg-rz/CF-Stream-Uploader/actions/workflows/build.yml/badge.svg)](https://github.com/haevg-rz/CF-Stream-Uploader/actions/workflows/build.yml) [![.NET Publish](https://github.com/haevg-rz/CF-Stream-Uploader/actions/workflows/publish.yml/badge.svg)](https://github.com/haevg-rz/CF-Stream-Uploader/actions/workflows/publish.yml)
 
 
 The CF-Stream-Uploader is an UI to upload your videos :video_camera: in your [cloudflare](https://www.cloudflare.com/de-de/) cloud.
