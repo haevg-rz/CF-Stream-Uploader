@@ -201,7 +201,7 @@
             </Grid>
         </Grid>
 
-        <TextBox Style="{DynamicResource VersioTagTextBox}" Text="v 1.0.1" />
+        <TextBox Style="{DynamicResource VersioTagTextBox}" Text="v 1.0.2" />
 
     </Grid>
 </Window>
