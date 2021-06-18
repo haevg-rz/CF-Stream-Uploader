@@ -82,7 +82,7 @@ namespace TusClient
             }
             request.AddHeader("Upload-Metadata", string.Join(",",metadatastrings.ToArray()));
 
-            var response = client.PerformRequest(request, auth); //TODO inc auth
+            var response = client.PerformRequest(request, auth);
 
             if (response.StatusCode == HttpStatusCode.Created)
             {
@@ -129,7 +129,7 @@ namespace TusClient
             var Offset = this.getFileOffset(URL, auth);
             var client = new TusHTTPClient();
             System.Security.Cryptography.SHA1 sha = new System.Security.Cryptography.SHA1Managed();
-            int ChunkSize = (int) Math.Ceiling(5 * 1024.0 * 1024.0); //3 mb // TODO
+            int ChunkSize = (int) Math.Ceiling(200 * 1024.0 * 1024.0); //200 mb 
 
             if (Offset == fs.Length)
             {
