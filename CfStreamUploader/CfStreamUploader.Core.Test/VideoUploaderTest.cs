@@ -13,29 +13,29 @@ namespace CfStreamUploader.Core.Test
 
         #region tests
 
-        [Fact]
-        public void GetCmdScriptsTest()
-        {
-            #region Assign
+        //[Fact]
+        //public void GetCmdScriptsTest()
+        //{
+        //    #region Assign
 
-            const string expectedResult =
-                "curl -X POST -H \"Authorization: Bearer TestCfToken\" -F file=@TestVideoPath https://api.cloudflare.com/client/v4/accounts/TestCfAccount/stream";
-            this.VideoManager.VideoPath = "TestVideoPath";
+        //    const string expectedResult =
+        //        "curl -X POST -H \"Authorization: Bearer TestCfToken\" -F file=@TestVideoPath https://api.cloudflare.com/client/v4/accounts/TestCfAccount/stream";
+        //    this.VideoManager.VideoPath = "TestVideoPath";
 
-            #endregion
+        //    #endregion
 
-            #region Act
+        //    #region Act
 
-            var result = this.VideoManager.GetCmdVideoUploadScript(Samples.ConfigSample);
+        //    var result = this.VideoManager.GetCmdVideoUploadScript(Samples.ConfigSample);
 
-            #endregion
+        //    #endregion
 
-            #region Assert
+        //    #region Assert
 
-            Assert.Equal(expectedResult, result);
+        //    Assert.Equal(expectedResult, result);
 
-            #endregion
-        }
+        //    #endregion
+        //}
 
         #endregion
     }
