@@ -13,10 +13,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Setup .NET6
+    - name: Setup .NET5
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: 5.0.x
     - name: Build with dotnet
       run: dotnet build CfStreamUploader/CfStreamUploader.sln --configuration Release
       
@@ -26,9 +26,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Setup .NET6
+    - name: Setup .NET5
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: 5.0.x
     - name: Test with dotnet
       run: dotnet test CfStreamUploader/CfStreamUploader.sln --configuration Release
