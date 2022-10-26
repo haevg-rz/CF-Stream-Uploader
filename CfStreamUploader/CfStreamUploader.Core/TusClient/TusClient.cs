@@ -1,342 +1,361 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
+using System.Net.Sockets;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
-namespace TusClient
+namespace TusDotNetClient
 {
+    /// <summary>
+    /// Represents the different hashing algorithm implementations supported by <see cref="TusClient"/>
+    /// </summary>
+    public enum HashingImplementation
+    {
+        Sha1Managed,
+        SHA1CryptoServiceProvider,
+    }
+    
+    /// <summary>
+    /// A class to perform actions against a Tus enabled server.
+    /// </summary>
     public class TusClient
     {
-        // ***********************************************************************************************
-        // Properties
-
-
-
-        // ***********************************************************************************************
-        // Events
-        public delegate void UploadingEvent(long bytesTransferred, long bytesTotal);
-        public event UploadingEvent Uploading;
-
-        public delegate void DownloadingEvent(long bytesTransferred, long bytesTotal);
-        public event DownloadingEvent Downloading;
-
-        // ***********************************************************************************************
-        // Private
-        //------------------------------------------------------------------------------------------------
-
-        private CancellationTokenSource cancelSource = new CancellationTokenSource();
+        /// <summary>
+        /// Get or set the hashing algorithm implementation to be used for checksum calculation.
+        /// </summary>
+        public static HashingImplementation HashingImplementation { get; set; } =
+            HashingImplementation.Sha1Managed;
         
-        // ***********************************************************************************************
-        // Public
-        //------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// A mutable dictionary of headers which will be included with all requests.
+        /// </summary>
+        public Dictionary<string, string> AdditionalHeaders { get; } =
+            new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
+        /// <summary>
+        /// Get or set the proxy to use when making requests.
+        /// </summary>
         public IWebProxy Proxy { get; set; }
 
-        public TusClient()
+        /// <summary>
+        /// Create a file at the Tus server.
+        /// </summary>
+        /// <param name="url">URL to the creation endpoint of the Tus server.</param>
+        /// <param name="fileInfo">The file which will be uploaded.</param>
+        /// <param name="metadata">Metadata to be stored alongside the file.</param>
+        /// <returns>The URL to the created file.</returns>
+        /// <exception cref="Exception">Throws if the response doesn't contain the required information.</exception>
+        public async Task<string> CreateAsync(string url, string authToken, FileInfo fileInfo,
+            params (string key, string value)[] metadata)
         {
-            
+            if (!metadata.Any(m => m.key == "filename"))
+            {
+                metadata = metadata.Concat(new[] {("filename", fileInfo.Name)}).ToArray();
+            }
+
+            return await CreateAsync(url, authToken, fileInfo.Length, metadata);
         }
 
-        public void Cancel()
+        /// <summary>
+        /// Create a file at the Tus server.
+        /// </summary>
+        /// <param name="url">URL to the creation endpoint of the Tus server.</param>
+        /// <param name="uploadLength">The byte size of the file which will be uploaded.</param>
+        /// <param name="metadata">Metadata to be stored alongside the file.</param>
+        /// <returns>The URL to the created file.</returns>
+        /// <exception cref="Exception">Throws if the response doesn't contain the required information.</exception>
+        public async Task<string> CreateAsync(string url, string authToken, long uploadLength,
+            params (string key, string value)[] metadata)
         {
-            this.cancelSource.Cancel();
-        }
-
-        public string Create(string URL, System.IO.FileInfo file,string auth, Dictionary<string, string> metadata = null)
-        {
-            if (metadata == null)
+            var requestUri = new Uri(url);
+            var client = new TusHttpClient
             {
-                metadata = new Dictionary<string,string>();
-            }
-            if (!metadata.ContainsKey("filename"))
-            {
-                metadata["filename"] = file.Name;
-            }
-            return Create(URL, file.Length,auth, metadata );
-        }
-        public string Create(string URL, long UploadLength, string auth, Dictionary<string, string> metadata = null)
-        {
-            var requestUri = new Uri(URL);
-            var client = new TusHTTPClient();
-            client.Proxy = this.Proxy;
-
-            var request = new TusHTTPRequest(URL);
-            request.Method = "POST";
-            request.AddHeader("Tus-Resumable", "1.0.0");
-            request.AddHeader("Upload-Length", UploadLength.ToString());
-            request.AddHeader("Content-Length", "0");
-            request.AddHeader("Authorization", $"Bearer {auth}");
-
-            if (metadata == null)
-            {
-                metadata = new Dictionary<string,string>();
-            }
-
-            var metadatastrings = new List<string>();
-            foreach (var meta in metadata)
-            {
-                string k = meta.Key.Replace(" ", "").Replace(",","");
-                string v = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(meta.Value));
-                metadatastrings.Add(string.Format("{0} {1}", k, v ));
-            }
-            request.AddHeader("Upload-Metadata", string.Join(",",metadatastrings.ToArray()));
-
-            var response = client.PerformRequest(request, auth);
-
-            if (response.StatusCode == HttpStatusCode.Created)
-            {
-                if (response.Headers.ContainsKey("Location"))
-                {
-                    Uri locationUri;
-                    if (Uri.TryCreate(response.Headers["Location"],UriKind.RelativeOrAbsolute,out locationUri ))
-                    {
-                        if (!locationUri.IsAbsoluteUri)
-                        {
-                            locationUri = new Uri(requestUri, locationUri);
-                        }
-                        return locationUri.ToString();
-                    }
-                    else
-                    {
-                        throw new Exception("Invalid Location Header");
-                    }
-
-                }
-                else
-                {
-                    throw new Exception("Location Header Missing");
-                }
-                
-            }
-            else
-            {
-                throw new Exception("CreateFileInServer failed. " + response.ResponseString );
-            }
-        }
-        //------------------------------------------------------------------------------------------------
-        public void Upload(string URL, System.IO.FileInfo file, string auth)
-        {
-            using (var fs = new FileStream(file.FullName, FileMode.Open, FileAccess.Read))
-            {
-                Upload(URL, fs, auth);
-            }
-
-        }
-        public void Upload(string URL, System.IO.Stream fs, string auth)
-        {
-
-            var Offset = this.getFileOffset(URL, auth);
-            var client = new TusHTTPClient();
-            System.Security.Cryptography.SHA1 sha = new System.Security.Cryptography.SHA1Managed();
-            int ChunkSize = (int) Math.Ceiling(200 * 1024.0 * 1024.0); //200 mb 
-
-            if (Offset == fs.Length)
-            {
-                if (Uploading != null)
-                    Uploading((long)fs.Length, (long)fs.Length);
-            }
-
-
-            while (Offset < fs.Length)
-                {
-                    fs.Seek(Offset, SeekOrigin.Begin);
-                    byte[] buffer = new byte[ChunkSize];
-                    var BytesRead = fs.Read(buffer, 0, ChunkSize);
-
-                    Array.Resize(ref buffer, BytesRead);
-                    var sha1hash = sha.ComputeHash(buffer);
-
-                    var request = new TusHTTPRequest(URL);
-                    request.cancelToken = this.cancelSource.Token;
-                    request.Method = "PATCH";
-                    request.AddHeader("Tus-Resumable", "1.0.0");
-                    request.AddHeader("Upload-Offset", string.Format("{0}", Offset));
-                    request.AddHeader("Upload-Checksum", "sha1 " + Convert.ToBase64String(sha1hash));
-                    request.AddHeader("Content-Type", "application/offset+octet-stream");
-                    request.AddHeader("Authorization", $"Bearer {auth}");
-                    request.BodyBytes = buffer;
-
-                    request.Uploading += delegate(long bytesTransferred, long bytesTotal)
-                    {
-                        if (Uploading != null)
-                            Uploading((long)Offset + bytesTransferred, (long)fs.Length);
-                    };
-
-                    try
-                    {
-                        var response = client.PerformRequest(request, auth);
-
-                        if (response.StatusCode == HttpStatusCode.NoContent)
-                        {
-                            Offset += BytesRead;
-                        }
-                        else
-                        {
-                            throw new Exception("WriteFileInServer failed. " + response.ResponseString);
-                        }
-                    }
-                    catch (IOException ex)
-                    {
-                        if (ex.InnerException.GetType() == typeof(System.Net.Sockets.SocketException))
-                        {
-                            var socketex = (System.Net.Sockets.SocketException) ex.InnerException;
-                            if (socketex.SocketErrorCode == System.Net.Sockets.SocketError.ConnectionReset)
-                            {
-                                // retry by continuing the while loop but get new offset from server to prevent Conflict error
-                                Offset = this.getFileOffset(URL, auth);
-                            }
-                            else
-                            {
-                                throw socketex;
-                            }                            
-                        }
-                        else
-                        {
-                            throw;
-                        }                        
-                    }
-
-
-
-                }
-            
-        }
-        //------------------------------------------------------------------------------------------------
-        public TusHTTPResponse Download(string URL, string auth)
-        {
-            var client = new TusHTTPClient();
-
-            var request = new TusHTTPRequest(URL);
-            request.cancelToken = this.cancelSource.Token;
-            request.Method = "GET";
-
-            request.Downloading += delegate(long bytesTransferred, long bytesTotal)
-            {
-                if (Downloading != null)
-                    Downloading((long)bytesTransferred, (long)bytesTotal);
+                Proxy = Proxy
             };
 
-            var response = client.PerformRequest(request, auth);
+            var request = new TusHttpRequest(url, RequestMethod.Post, AdditionalHeaders);
 
-            return response;
+            request.AddHeader(TusHeaderNames.UploadLength, uploadLength.ToString());
+            request.AddHeader(TusHeaderNames.ContentLength, "0");
+            request.AddHeader("Authorization", $"Bearer {authToken}");
+
+            if (metadata.Length > 0)
+            {
+                request.AddHeader(TusHeaderNames.UploadMetadata, string.Join(",", metadata.Select(md =>
+                   $"{md.key.Replace(" ", "").Replace(",", "")} {Convert.ToBase64String(Encoding.UTF8.GetBytes(md.value))}")));
+            }
+
+            var response = await client.PerformRequestAsync(request)
+                .ConfigureAwait(false);
+
+            if (response.StatusCode != HttpStatusCode.Created)
+                throw new Exception("CreateFileInServer failed. " + response.ResponseString);
+
+            if (!response.Headers.ContainsKey("Location"))
+                throw new Exception("Location Header Missing");
+
+            if (!Uri.TryCreate(response.Headers["Location"], UriKind.RelativeOrAbsolute, out var locationUri))
+                throw new Exception("Invalid Location Header");
+
+            if (!locationUri.IsAbsoluteUri)
+                locationUri = new Uri(requestUri, locationUri);
+
+            return locationUri.ToString();
         }
-        //------------------------------------------------------------------------------------------------
-        public TusHTTPResponse Head(string URL, string auth)
+
+        /// <summary>
+        /// Upload a file to the Tus server.
+        /// </summary>
+        /// <param name="url">URL to a previously created file.</param>
+        /// <param name="file">The file to upload.</param>
+        /// <param name="chunkSize">The size, in megabytes, of each file chunk when uploading.</param>
+        /// <param name="cancellationToken">A cancellation token to cancel the operation with.</param>
+        /// <returns>A <see cref="TusOperation{T}"/> which represents the upload operation.</returns>
+        public TusOperation<List<TusHttpResponse>> UploadAsync(
+            string url,
+            FileInfo file,
+            string authToken,
+            double chunkSize = 5.0,
+            CancellationToken cancellationToken = default)
         {
-            var client = new TusHTTPClient();
-            var request = new TusHTTPRequest(URL);
-            request.Method = "HEAD";
-            request.AddHeader("Tus-Resumable", "1.0.0");
+            FileStream fileStream = new FileStream(
+                file.FullName,
+                FileMode.Open,
+                FileAccess.Read,
+                FileShare.Read,
+                ChunkSizeToMB(chunkSize),
+                true);
+
+            return UploadAsync(
+                url,
+                authToken,
+                fileStream,
+                chunkSize,
+                cancellationToken);
+        }
+
+        /// <summary>
+        /// Upload a file to the Tus server.
+        /// </summary>
+        /// <param name="url">URL to a previously created file.</param>
+        /// <param name="fileStream">A file stream of the file to upload. The stream will be closed automatically.</param>
+        /// <param name="chunkSize">The size, in megabytes, of each file chunk when uploading.</param>
+        /// <param name="cancellationToken">A cancellation token to cancel the operation with.</param>
+        /// <returns>A <see cref="TusOperation{T}"/> which represents the upload operation.</returns>
+        public TusOperation<List<TusHttpResponse>> UploadAsync(
+            string url,
+            string authToken,
+            Stream fileStream,
+            double chunkSize = 5.0,
+            CancellationToken cancellationToken = default)
+        {
+            return new TusOperation<List<TusHttpResponse>>(
+                async reportProgress =>
+                {
+                    try
+                    {
+                        var offset = await GetFileOffset(url, authToken)
+                            .ConfigureAwait(false);
+
+                        var client = new TusHttpClient();
+                        var sha = HashingImplementation == HashingImplementation.Sha1Managed
+                            ? (SHA1) new SHA1Managed()
+                            : new SHA1CryptoServiceProvider();
+
+                        var uploadChunkSize = ChunkSizeToMB(chunkSize);
+
+                        if (offset == fileStream.Length)
+                            reportProgress(fileStream.Length, fileStream.Length);
+
+                        var buffer = new byte[uploadChunkSize];
+
+                        void OnProgress(long written, long total) =>
+                            reportProgress(offset + written, fileStream.Length);
+
+                        List<TusHttpResponse> responses = new List<TusHttpResponse>();
+
+                        while (offset < fileStream.Length)
+                        {
+                            fileStream.Seek(offset, SeekOrigin.Begin);
+
+                            var bytesRead = await fileStream.ReadAsync(buffer, 0, uploadChunkSize);
+                            var segment = new ArraySegment<byte>(buffer, 0, bytesRead);
+                            var sha1Hash = sha.ComputeHash(buffer, 0, bytesRead);
+
+                            var request = new TusHttpRequest(url, RequestMethod.Patch, AdditionalHeaders, segment, cancellationToken);
+
+                            request.AddHeader("Authorization", $"Bearer {authToken}");
+                            request.AddHeader(TusHeaderNames.UploadOffset, offset.ToString());
+                            request.AddHeader(TusHeaderNames.UploadChecksum, $"sha1 {Convert.ToBase64String(sha1Hash)}");
+                            request.AddHeader(TusHeaderNames.ContentType, "application/offset+octet-stream");
+
+                            try
+                            {
+                                request.UploadProgressed += OnProgress;
+                                var response = await client.PerformRequestAsync(request)
+                                    .ConfigureAwait(false);
+                                responses.Add(response);
+                                request.UploadProgressed -= OnProgress;
+
+                                if (response.StatusCode != HttpStatusCode.NoContent)
+                                {
+                                    throw new Exception("WriteFileInServer failed. " + response.ResponseString);
+                                }
+
+                                offset = long.Parse(response.Headers[TusHeaderNames.UploadOffset]);
+
+                                //                            reportProgress(offset, fileStream.Length);
+                            }
+                            catch (IOException ex)
+                            {
+                                if (ex.InnerException is SocketException socketException)
+                                {
+                                    if (socketException.SocketErrorCode == SocketError.ConnectionReset)
+                                    {
+                                        // retry by continuing the while loop
+                                        // but get new offset from server to prevent Conflict error
+                                        offset = await GetFileOffset(url, authToken)
+                                            .ConfigureAwait(false);
+                                    }
+                                    else
+                                    {
+                                        throw;
+                                    }
+                                }
+                                else
+                                {
+                                    throw;
+                                }
+                            }
+                        }
+
+                        return responses;
+                    }
+                    finally
+                    {
+                        fileStream.Dispose();
+                    }
+                });
+        }
+
+        /// <summary>
+        /// Download a file from the Tus server.
+        /// </summary>
+        /// <param name="url">The URL of a file at the Tus server.</param>
+        /// <param name="cancellationToken">A cancellation token to cancel the operation with.</param>
+        /// <returns>A <see cref="TusOperation{T}"/> which represents the download operation.</returns>
+        public TusOperation<TusHttpResponse> DownloadAsync(string url, CancellationToken cancellationToken = default) =>
+            new TusOperation<TusHttpResponse>(
+                async reportProgress =>
+                {
+                    var client = new TusHttpClient();
+                    var request = new TusHttpRequest(
+                        url,
+                        RequestMethod.Get,
+                        AdditionalHeaders,
+                        cancelToken: cancellationToken);
+
+                    request.DownloadProgressed += reportProgress;
+
+                    var response = await client.PerformRequestAsync(request)
+                        .ConfigureAwait(false);
+
+                    request.DownloadProgressed -= reportProgress;
+
+                    return response;
+                });
+
+        /// <summary>
+        /// Send a HEAD request to the Tus server.
+        /// </summary>
+        /// <param name="url">The endpoint to post the HEAD request to.</param>
+        /// <returns>The response from the Tus server.</returns>
+        public async Task<TusHttpResponse> HeadAsync(string url)
+        {
+            var client = new TusHttpClient();
+            var request = new TusHttpRequest(url, RequestMethod.Head, AdditionalHeaders);
 
             try
             {
-                var response = client.PerformRequest(request, auth);
-                return response;
+                return await client.PerformRequestAsync(request)
+                    .ConfigureAwait(false);
             }
             catch (TusException ex)
             {
-                var response = new TusHTTPResponse();
-                response.StatusCode = ex.statuscode;
-                return response;
+                return new TusHttpResponse(ex.StatusCode);
             }
         }
-        //------------------------------------------------------------------------------------------------
-        public class TusServerInfo
+
+        /// <summary>
+        /// Get information about the Tus server.
+        /// </summary>
+        /// <param name="url">The URL of the Tus enabled endpoint.</param>
+        /// <returns>A <see cref="TusServerInfo"/> containing information about the Tus server.</returns>
+        /// <exception cref="Exception">Throws if request fails.</exception>
+        public async Task<TusServerInfo> GetServerInfo(string url)
         {
-            public string Version = "";
-            public string SupportedVersions = "";
-            public string Extensions = "";
-            public long MaxSize = 0;
-            
-            public bool SupportsDelete
-            {
-                get { return this.Extensions.Contains("termination"); }
-            }
-            
-        }
+            var client = new TusHttpClient();
+            var request = new TusHttpRequest(url, RequestMethod.Options, AdditionalHeaders);
 
-        public TusServerInfo getServerInfo(string URL, string auth)
-        {
-            var client = new TusHTTPClient();
-            var request = new TusHTTPRequest(URL);
-            request.Method = "OPTIONS";
+            var response = await client.PerformRequestAsync(request)
+                .ConfigureAwait(false);
 
-            var response = client.PerformRequest(request, auth);
-
-            if (response.StatusCode == HttpStatusCode.NoContent || response.StatusCode == HttpStatusCode.OK)
-            {
-                // Spec says NoContent but tusd gives OK because of browser bugs
-                var info = new TusServerInfo();
-                response.Headers.TryGetValue("Tus-Resumable", out info.Version);
-                response.Headers.TryGetValue("Tus-Version", out info.SupportedVersions);
-                response.Headers.TryGetValue("Tus-Extension", out info.Extensions);
-
-                string MaxSize;
-                if (response.Headers.TryGetValue("Tus-Max-Size", out MaxSize))
-                {
-                    info.MaxSize = long.Parse(MaxSize);
-                }
-                else
-                {
-                    info.MaxSize = 0;
-                }
-
-                return info;
-            }
-            else
-            {
+            // Spec says NoContent but tusd gives OK because of browser bugs
+            if (response.StatusCode != HttpStatusCode.NoContent && response.StatusCode != HttpStatusCode.OK)
                 throw new Exception("getServerInfo failed. " + response.ResponseString);
-            }
+
+            response.Headers.TryGetValue(TusHeaderNames.TusResumable, out var version);
+            response.Headers.TryGetValue(TusHeaderNames.TusVersion, out var supportedVersions);
+            response.Headers.TryGetValue(TusHeaderNames.TusExtension, out var extensions);
+            response.Headers.TryGetValue(TusHeaderNames.TusMaxSize, out var maxSizeString);
+            response.Headers.TryGetValue(TusHeaderNames.TusChecksumAlgorithm, out var checksumAlgorithms);
+            long.TryParse(maxSizeString, out var maxSize);
+            return new TusServerInfo(version, supportedVersions, extensions, maxSize, checksumAlgorithms);
         }
-        //------------------------------------------------------------------------------------------------
-        public bool Delete(string URL, string auth)
+
+        /// <summary>
+        /// Delete a file from the Tus server.
+        /// </summary>
+        /// <param name="url">The URL of the file at the Tus server.</param>
+        /// <returns>A <see cref="bool"/> indicating whether the file is deleted.</returns>
+        public async Task<bool> Delete(string url)
         {
-            var client = new TusHTTPClient();
-            var request = new TusHTTPRequest(URL);
-            request.Method = "DELETE";
-            request.AddHeader("Tus-Resumable", "1.0.0");
+            var client = new TusHttpClient();
+            var request = new TusHttpRequest(url, RequestMethod.Delete, AdditionalHeaders);
 
-            var response = client.PerformRequest(request, auth);
+            var response = await client.PerformRequestAsync(request)
+                .ConfigureAwait(false);
 
-            if (response.StatusCode == HttpStatusCode.NoContent || response.StatusCode == HttpStatusCode.NotFound || response.StatusCode == HttpStatusCode.Gone)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return response.StatusCode == HttpStatusCode.NoContent ||
+                   response.StatusCode == HttpStatusCode.NotFound ||
+                   response.StatusCode == HttpStatusCode.Gone;
         }
-        // ***********************************************************************************************
-        // Internal
-        //------------------------------------------------------------------------------------------------
-        private long getFileOffset(string URL, string auth)
+
+        private async Task<long> GetFileOffset(string url, string authToken)  //TODO
         {
-            var client = new TusHTTPClient();
-            var request = new TusHTTPRequest(URL);
-            request.Method = "HEAD";
-            request.AddHeader("Tus-Resumable", "1.0.0");
-            request.AddHeader("Authorization", $"Bearer {auth}");
+            var client = new TusHttpClient();
+            var request = new TusHttpRequest(url, RequestMethod.Head, AdditionalHeaders);
+            request.AddHeader("Authorization", $"Bearer {authToken}");
+            var response = await client.PerformRequestAsync(request)
+                .ConfigureAwait(false);
 
-            var response = client.PerformRequest(request, auth);
+            if (response.StatusCode != HttpStatusCode.NoContent && response.StatusCode != HttpStatusCode.OK)
+                throw new Exception("GetFileOffset failed. " + response.ResponseString);
 
-            if (response.StatusCode == HttpStatusCode.NoContent || response.StatusCode == HttpStatusCode.OK)
-            {
-                if (response.Headers.ContainsKey("upload-offset"))
-                {
-                    return long.Parse(response.Headers["upload-offset"]);
-                }
-                else
-                {
-                    throw new Exception("Offset Header Missing");
-                }
-            }
-            else
-            {
-                throw new Exception("getFileOffset failed. " + response.ResponseString);
-            }
+            if (!response.Headers.ContainsKey(TusHeaderNames.UploadOffset))
+                throw new Exception("Offset Header Missing");
+
+            return long.Parse(response.Headers[TusHeaderNames.UploadOffset]);
         }
-        // ***********************************************************************************************
-    } // End of Class
-} // End of Namespace
+
+        private static int ChunkSizeToMB(double chunkSize)
+        {
+            return (int) Math.Ceiling(chunkSize * 1024.0 * 1024.0);
+        }
+    }
+}

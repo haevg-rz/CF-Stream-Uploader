@@ -1,100 +1,47 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Threading;
+using System.Threading.Tasks;
 
-namespace TusClient
+namespace TusDotNetClient
 {
-    public class TusHTTPRequest
+    /// <summary>
+    /// A class to execute requests against a Tus enabled server.
+    /// </summary>
+    public class TusHttpClient
     {
-        public delegate void UploadingEvent(long bytesTransferred, long bytesTotal);
-        public event UploadingEvent Uploading;
-
-        public delegate void DownloadingEvent(long bytesTransferred, long bytesTotal);
-        public event DownloadingEvent Downloading;
-
-        public Uri URL { get; set; }
-        public string Method { get; set; }
-        public Dictionary<string,string> Headers { get; set; }
-        public byte[] BodyBytes { get; set; }
-
-        public CancellationToken cancelToken;
-
-        public string BodyText
-        {
-            get { return System.Text.Encoding.UTF8.GetString(this.BodyBytes); }
-            set { BodyBytes = System.Text.Encoding.UTF8.GetBytes(value); }
-        }
-        
-
-        public TusHTTPRequest(string u)
-        {
-            this.URL = new Uri(u);
-            this.Method = "GET";
-            this.Headers = new Dictionary<string, string>();
-            this.BodyBytes = new byte[0];
-        }
-
-        public void AddHeader(string k,string v)
-        {
-            this.Headers[k] = v;
-        }
-
-        public void FireUploading(long bytesTransferred, long bytesTotal)
-        {
-            if (Uploading != null)
-                Uploading(bytesTransferred, bytesTotal);
-        }
-
-        public void FireDownloading(long bytesTransferred, long bytesTotal)
-        {
-            if (Downloading != null)
-                Downloading(bytesTransferred, bytesTotal);
-        }
-
-    }
-    public class TusHTTPResponse
-    {
-        public byte[] ResponseBytes { get; set; }
-        public string ResponseString { get { return System.Text.Encoding.UTF8.GetString(this.ResponseBytes); } }
-        public HttpStatusCode StatusCode { get; set; }
-        public Dictionary<string, string> Headers { get; set; }
-
-        public TusHTTPResponse()
-        {
-            this.Headers = new Dictionary<string, string>();
-        }
-
-    }
-
-    public class TusHTTPClient
-    {
-
+        /// <summary>
+        /// Get or set the proxy to use for requests.
+        /// </summary>
         public IWebProxy Proxy { get; set; }
-        
 
-        public TusHTTPResponse PerformRequest(TusHTTPRequest req, string auth)
+        /// <summary>
+        /// Perform a request to the Tus server.
+        /// </summary>
+        /// <param name="request">The <see cref="TusHttpRequest"/> to execute.</param>
+        /// <returns>A <see cref="TusHttpResponse"/> with the response data.</returns>
+        /// <exception cref="TusException">Throws when the request fails.</exception>
+        public async Task<TusHttpResponse> PerformRequestAsync(TusHttpRequest request) //wird bei =new TusClient() ausgeführt
         {
+            var segment = request.BodyBytes;
 
             try
             {
-                var instream = new MemoryStream(req.BodyBytes);
+                var webRequest = WebRequest.CreateHttp(request.Url);
+                webRequest.AutomaticDecompression = DecompressionMethods.GZip;
 
-                HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(req.URL);
-                request.AutomaticDecompression = DecompressionMethods.GZip;
-                
-                request.Timeout = System.Threading.Timeout.Infinite;
-                request.ReadWriteTimeout = System.Threading.Timeout.Infinite;
-                request.Method = req.Method;
-                request.KeepAlive = false;
+                webRequest.Timeout = Timeout.Infinite;
+                webRequest.ReadWriteTimeout = Timeout.Infinite;
+                webRequest.Method = request.Method;
+                webRequest.KeepAlive = false;
 
-                request.Proxy = this.Proxy;
+                webRequest.Proxy = Proxy;
 
                 try
                 {
-                    ServicePoint currentServicePoint = request.ServicePoint;
-                    currentServicePoint.Expect100Continue = false;
+                    webRequest.ServicePoint.Expect100Continue = false;
                 }
                 catch (PlatformNotSupportedException)
                 {
@@ -103,197 +50,106 @@ namespace TusClient
                     //should work in .net core 2.2
                 }
 
-
                 //SEND
-                req.FireUploading(0, 0);
-                byte[] buffer = new byte[4096];
+                var buffer = new byte[4096];
 
-                long contentlength = 0;
+                var totalBytesWritten = 0L;
 
-                int byteswritten = 0;
-                long totalbyteswritten = 0;
+                webRequest.AllowWriteStreamBuffering = false;
+                webRequest.ContentLength = segment.Count;
 
-                contentlength = (long)instream.Length;
-                request.AllowWriteStreamBuffering = false;
-                request.ContentLength = instream.Length;
-
-                foreach (var header in req.Headers)
-                {
+                foreach (var header in request.Headers)
                     switch (header.Key)
                     {
-                        case "Content-Length":
-                            request.ContentLength = long.Parse(header.Value);
+                        case TusHeaderNames.ContentLength:
+                            webRequest.ContentLength = long.Parse(header.Value);
                             break;
-                        case "Content-Type":
-                            request.ContentType = header.Value;
+                        case TusHeaderNames.ContentType:
+                            webRequest.ContentType = header.Value;
                             break;
                         default:
-                            request.Headers.Add(header.Key, header.Value);
+                            webRequest.Headers.Add(header.Key, header.Value);
                             break;
                     }
-                }
 
-                if (req.BodyBytes.Length > 0)
+                if (request.BodyBytes.Count > 0) //TODO is 0
                 {
-                    using (System.IO.Stream requestStream = request.GetRequestStream())
+                    var inputStream = new MemoryStream(request.BodyBytes.Array, request.BodyBytes.Offset,
+                        request.BodyBytes.Count);
+
+                    using (var requestStream = webRequest.GetRequestStream())
                     {
-                        instream.Seek(0, SeekOrigin.Begin);
-                        byteswritten = instream.Read(buffer, 0, buffer.Length);
+                        inputStream.Seek(0, SeekOrigin.Begin);
 
-                        while (byteswritten > 0)
+                        var bytesWritten = await inputStream.ReadAsync(buffer, 0, buffer.Length, request.CancelToken)
+                            .ConfigureAwait(false);
+
+                        request.OnUploadProgressed(0, segment.Count);
+
+                        while (bytesWritten > 0)
                         {
-                            totalbyteswritten += byteswritten;
+                            totalBytesWritten += bytesWritten;
 
-                            req.FireUploading(totalbyteswritten, contentlength);
+                            request.OnUploadProgressed(totalBytesWritten, segment.Count);
 
-                            requestStream.Write(buffer, 0, byteswritten);
+                            await requestStream.WriteAsync(buffer, 0, bytesWritten, request.CancelToken)
+                                .ConfigureAwait(false);
 
-                            byteswritten = instream.Read(buffer, 0, buffer.Length);
-
-                            req.cancelToken.ThrowIfCancellationRequested();
+                            bytesWritten = await inputStream.ReadAsync(buffer, 0, buffer.Length, request.CancelToken)
+                                .ConfigureAwait(false);
                         }
-
-
                     }
                 }
 
-                req.FireDownloading(0, 0);
+                var response = (HttpWebResponse) await webRequest.GetResponseAsync() //TODO absturz 400
+                    .ConfigureAwait(false); //TODO
 
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse(); //TODO BAD REQUEST
-
-
-                contentlength = 0;
-                contentlength = (long)response.ContentLength;
-                //contentlength=0 for gzipped responses due to .net bug
+                //contentLength=0 for gzipped responses due to .net bug
+                long contentLength = Math.Max(response.ContentLength, 0);
 
                 buffer = new byte[16 * 1024];
-                var outstream = new MemoryStream();
 
-                using (Stream responseStream = response.GetResponseStream())
+                var outputStream = new MemoryStream();
+
+                using (var responseStream = response.GetResponseStream())
                 {
-                    int bytesread = 0;
-                    long totalbytesread = 0;
-
-                    bytesread = responseStream.Read(buffer, 0, buffer.Length);
-
-                    while (bytesread > 0)
+                    if (responseStream != null)
                     {
-                        totalbytesread += bytesread;
+                        var bytesRead = await responseStream.ReadAsync(buffer, 0, buffer.Length, request.CancelToken)
+                            .ConfigureAwait(false);
 
-                        req.FireDownloading(totalbytesread, contentlength);
+                        request.OnDownloadProgressed(0, contentLength);
 
-                        outstream.Write(buffer, 0, bytesread);
+                        var totalBytesRead = 0L;
+                        while (bytesRead > 0)
+                        {
+                            totalBytesRead += bytesRead;
 
-                        bytesread = responseStream.Read(buffer, 0, buffer.Length);
+                            request.OnDownloadProgressed(totalBytesRead, contentLength);
 
-                        req.cancelToken.ThrowIfCancellationRequested();
+                            await outputStream.WriteAsync(buffer, 0, bytesRead, request.CancelToken)
+                                .ConfigureAwait(false);
+
+                            bytesRead = await responseStream.ReadAsync(buffer, 0, buffer.Length, request.CancelToken)
+                                .ConfigureAwait(false);
+                        }
                     }
                 }
-                //TODO
-                TusHTTPResponse resp = new TusHTTPResponse();
-                resp.ResponseBytes = outstream.ToArray();
-                resp.StatusCode = response.StatusCode;
-                foreach (string headerName in response.Headers.Keys)
-                {
-                    resp.Headers[headerName] = response.Headers[headerName];
-                }
 
-                return resp;
-
+                return new TusHttpResponse(
+                    response.StatusCode,
+                    response.Headers.AllKeys
+                        .ToDictionary(headerName => headerName, headerName => response.Headers.Get(headerName)),
+                    outputStream.ToArray());
             }
             catch (OperationCanceledException cancelEx)
             {
-                TusException rex = new TusException(cancelEx);
-                throw rex;
+                throw new TusException(cancelEx);
             }
             catch (WebException ex)
             {
-                //TODO Ex 400 Bad Request
-                TusException rex = new TusException(ex);
-                throw rex;
+                throw new TusException(ex);
             }
         }
-    }
-
-
-    public class TusException : WebException
-    {
-
-        public string ResponseContent { get; set; }
-        public HttpStatusCode statuscode { get; set; }
-        public string statusdescription { get; set; }
-
-
-        public WebException OriginalException;
-        public TusException(TusException ex, string msg)
-            : base(string.Format("{0}{1}", msg, ex.Message), ex, ex.Status, ex.Response)
-        {
-            this.OriginalException = ex;
-
-
-            this.statuscode = ex.statuscode;
-            this.statusdescription = ex.statusdescription;
-            this.ResponseContent = ex.ResponseContent;
-
-
-        }
-
-        public TusException(OperationCanceledException ex)
-            : base(ex.Message, ex, WebExceptionStatus.RequestCanceled, null)
-        {
-            this.OriginalException = null;           
-        }
-
-        public TusException(WebException ex, string msg = "")
-            : base(string.Format("{0}{1}", msg, ex.Message), ex, ex.Status, ex.Response)
-        {
-
-            this.OriginalException = ex;
-
-            HttpWebResponse webresp = (HttpWebResponse)ex.Response;
-
-
-            if (webresp != null)
-            {
-                this.statuscode = webresp.StatusCode;
-                this.statusdescription = webresp.StatusDescription;
-
-                StreamReader readerS = new StreamReader(webresp.GetResponseStream());
-
-                var resp = readerS.ReadToEnd();
-
-                readerS.Close();
-
-                this.ResponseContent = resp;
-            }
-           
-
-        }
-
-        public string FullMessage
-        {
-            get
-            {
-                var bits = new List<string>();
-                if (this.Response != null)
-                {
-                    bits.Add(string.Format("URL:{0}", this.Response.ResponseUri));
-                }
-                bits.Add(this.Message);
-                if (this.statuscode != HttpStatusCode.OK)
-                {
-                    bits.Add(string.Format("{0}:{1}", this.statuscode, this.statusdescription));
-                }
-                if (!string.IsNullOrEmpty(this.ResponseContent))
-                {
-                    bits.Add(this.ResponseContent);
-                }
-
-                return string.Join(Environment.NewLine, bits.ToArray());
-            }
-        }
-
     }
 }
-
-

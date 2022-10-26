@@ -408,8 +408,9 @@ namespace CfStreamUploader.Presentation.ViewModels
             }
             catch (Exception e)
             {
-                MessageBox.Show("Something went wrong", "Error", MessageBoxButton.OK,
+                MessageBox.Show(e.Message, "Error", MessageBoxButton.OK,
                     MessageBoxImage.Error);
+                await this.Core.Logger.WriteLogFileAsync(e);
                 this.ButtonsAreEnabled = true;
                 return;
             }
