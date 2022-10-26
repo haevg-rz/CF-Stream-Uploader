@@ -12,10 +12,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Setup .NET5
+    - name: Setup .NET6
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.0.x
+        dotnet-version: 6.0.x
     - name: Publish with dotnet
       run: dotnet publish CfStreamUploader/CfStreamUploader.Presentation/CfStreamUploader.Presentation.csproj -r win-x64 -c Release --self-contained true /p:PublishSingleFile=true /p:useapphost=true
     - name: GH Release
@@ -24,6 +24,6 @@ jobs:
         body: Automatic Published PreRelease
         draft: false
         prerelease: true
-        files: CfStreamUploader/CfStreamUploader.Presentation\bin\Release\net5.0-windows\win-x64\publish\CfStreamUploader.Presentation.exe
+        files: CfStreamUploader/CfStreamUploader.Presentation\bin\Release\net6.0-windows\win-x64\publish\CfStreamUploader.Presentation.exe
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
